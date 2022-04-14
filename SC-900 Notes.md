@@ -114,3 +114,69 @@ Access Controls refers to the decision made after a Conditional Access policy ha
 
 
 ## AAD Roles and RBAC
+### Built-in Roles
+AAD ships with many roles. A few of the common roles include:
+- Global administrator - Users with this role have access to all admin feature sin AAD. The person who signs up for the AAD tenant automatically becomes a global administrator.
+- User administrator - Users with this role can create and manage all aspects of users and groups. Includes the ability to manage support tickets and monitor service health.
+- Billing administrator - Users with this role make purchases, manage subscriptions and support tickets, and monitor service health.
+
+### Custom Roles
+- Custom roles are collections of permissions that you choose from a preset list. The permissions are the same as those used by built-in roles.
+- Requires an AAD Premium P1 or P2 license.
+
+### AAD RBAC vs Azure RBAC
+AAD roles are a form of RBAC referred to as Azure AD RBAC. AAD RBAC controls access to AAD resources. Similarly, Azure can control access to Azure resources using Azure RBAC. AAD RBAC controls access to AAD resources such as users, groups, and applications. Azure RBAC controls access to Azure resources such as VMs or storage using Azure Resource Management.
+
+
+## Identity Governance in AAD
+### Identity Lifecycle
+- Orgs typically follow a "join, move, and leave" process:
+  - Create a new digitial identity if one doesn't exist
+  - Give different access authorizations when they move
+  - Remove their access when they leave
+- AAD Premium can integrate with cloud based HR systems and sync updates from the HR system to ensure consistency.
+- AAD Premium offers Microsoft Identity Manager which can import records from on-prem HR systems.
+
+### Access Lifecycle
+Access lifecycle is the process of managing access throughout the user's organizational life. Orgs can automate the access lifecycle process using things like dynamic groups. Dynamic groups enable admins to create attribute-based rules to determine membership of groups. When attributes of a user or devices changes, the system evaluates all dynamic group rules in a directory to see if the change would trigger any users to be added or removed from a group.
+
+### Privileged Access Lifecycle
+AAD Privileged Identity Management (PIM) provides extra controls tailored to securing access rights. PIM helps minimize the number of people who have acecss to resources across AAD, Azure, and other Microsoft online services. PIM is a feature of AAD Premium P2.
+
+
+## AAD Access Reviews
+- Allows orgs to manage group memberships, access to enterprise apps, and role assignment
+- Access reviews can be created through AAD access reviews or AAD PIM.
+- Can be used to review and manage acecss for both users and guests.
+
+## AAD Terms of User
+AAD terms of use allows orgs to present terms to a user that they must accept before accessing data or an application. Conditional Access policies are used to require terms to be displayed and ensure that users agree to them before accessing an app.
+
+
+## Privileged Identity Management (PIM)
+PIM is a service in AAD that enables you to manage, control, and monitor access to important resource sin your organization. PIM is:
+- JIT
+- Time-bound
+- Approval-based
+- Visible
+- Auditable
+- A feature of AAD Premium P2
+
+
+## Azure Identity Protection
+Identity protection is a tool that allows orgs to accomplish the following: automate detection and remediation of identity-based risks, investigate risks using data in the portal, and export ris kdetection data to third-party utilities for further analysis. Identity Protection is a feature of AAD Premium P2.
+
+Identity Protection can calculate sign-in risk (see previous definition). The following sign-in risks are identifiable by Identity Protection:
+- Anonymous IP address
+- Malware linked IP address
+- Atypical travel
+- Unfamiliar sign-in properties
+- Password spray
+- AAD threat intelligence - Sign in activity which is unusual for the given user or is consistent with known attack patterns
+
+The following user risks can be identified:
+- Leaked creds
+- AAD threat intelligence - User activity that is unusual for the given user or is consistent with known attack patterns
+
+
+# Security
