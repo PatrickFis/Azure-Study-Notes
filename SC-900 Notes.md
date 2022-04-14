@@ -317,3 +317,94 @@ Sentinel's key features:
 
 Cost
 - Sentinal is available using capacity reservations (fixed fee for predictable costs) or pay as you go (billed per GB of data ingested for analysis in Sentinel and stored in the Azure Monitor Log Analytics workspace).
+
+
+# Microsoft 365 Defender
+365 Defender is an enterprise defense suite which protects the following:
+- Identities with Microsoft Defender for Identity and Azure AD Identity Protection
+- Endpoints with Microsoft Defender for Endpoint
+- Applications with Microsoft Defender for Cloud Apps
+- Email and collaboration with Microsoft Defender for Office 365 - Protects against emails, links, and protects collaboration tools (Teams, SharePoint Online, OneDrive for Business, other Office clients)
+
+Defender for Office 365 covers the following areas:
+- Threat protection policies
+- Reports - real time reports for Defender for Office 365
+- Threat investigation and response
+- Automated investigation and response
+
+## Defender for Office 365 plans:
+- Microsoft Defender for Office 365 Plan 1
+  - Safe attachments - Checks email attachments for malicious content
+  - Safe links - Scans link before they're clicked so that malicious content is blocked
+  - Safe Attachments for SharePoint, OneDrive, and Microsoft Teams - Protects from malicious files in collaboration tools
+  - Anti-phishing protection
+  - Real-time detections
+- Microsoft Defender for Office 365 Plan 1
+  - Everything from Plan 1
+  - Threat trackers for prevailing cybersecurity issues
+  - Threat explorer - Real-time report for analyzing recent threats
+  - Automated investigation and response (AIR) - Security playbooks which are launched by alerts (or manually) that can automatically investigate and provide results and recommendations for your security team to approve or reject.
+  - Attack simulation
+  - Threat hunting with query based tools
+  - Alert and incident investigation
+- Availability
+  - Included in certain subscriptions or purchased as an add-on.
+
+## Microsoft Defender for Endpoint
+- Platform designed to protect endpoints for enterprise networks.
+- Prevents, detects, investigates, and responds to advanced threats.
+
+Includes the following features:
+- Threat and vulnerability management
+- Attack surface reduction by providing network and web protection to regulate access to malicious IPs, domains, and URLs
+- Next generation protection using machine learning
+- Endpoint detection and response in near real time
+- Automated investigation and remediation
+- A managed threat hunting service
+- APIs to integrate with other stuff
+- Includes a Secure Score for Devices
+
+## Microsoft Defender for Cloud Apps
+- Defender for Cloud Apps is a Cloud Access Security Broker (CASB). It provides visbility into cloud app usage and helps identify shadow IT. It allows you to control and protect data in sanctioned apps.
+- CASB is a gatekeeper between enterprise user's and the cloud resources they use. It is composed of the following pillars:
+  - Visibility into cloud services and apps and shadow IT
+  - Threat protection and monitoring
+  - Data security - allows classification and control of sensitive info
+  - Compliance for cloud services
+  
+Microsoft Defender for Cloud Apps is built on the following framework:
+- Discover and control the use of Shadow IT
+- Protect against cyberthreats and anomalies
+- Protect your sensitive information anywhere in the cloud
+- Assess your cloud app's compliance
+
+Microsoft Defender for Cloud Apps has the following features:
+- Cloud Discovery - Maps cloud apps your org uses
+- Sanctioning and unsanctioning apps
+- App connectors to integrate cloud apps with Microsoft Defender for Cloud Apps
+- Conditional Access to cloud apps
+- Policies to detect risky behavior, violations, or suspicious activities
+
+## Microsoft Defender for Identity
+Uses on-prem AD data (called signals) to detect and investigate threats and malicious insider actions. It provides the following functions:
+- Monitor and profile user behavior and activities.
+- Protect user identities and reduce the attack surface.
+- Identify and investigate suspicious activities and advanced attacks across the cyberattack kill-chain.
+- Provide clear incident information on a simple timeline for fast triage
+
+## Microsoft 365 Defender Portal
+The portal home page has content grouped into common cards in the following categories:
+- Identities
+- Data
+- Devices
+- Apps
+
+The portal home page can be tweaked to meet your org's needs.
+
+Functions in the left navigation pane include:
+- Email and collaboration tools
+- Incident and alerts
+- Hunting
+- Threat analytics
+- Secure Score
+- Learning Hub
