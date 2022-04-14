@@ -300,7 +300,7 @@ Microsoft Sentinel is a security information event management (SIEM) and securit
 
 Sentinel enables the following functionality:
 - Collecting data from all users, devices, apps, and infrastructure on-prem and in multiple clouds.
-- Detects threats using analytics and threat intell
+- Detects threats using analytics and threat intel
 - Investigates threats using AI
 - Responds to incidents with built-in orchestration and automation
 
@@ -408,3 +408,82 @@ Functions in the left navigation pane include:
 - Threat analytics
 - Secure Score
 - Learning Hub
+- Reports
+- Permissions & roles
+
+
+# Compliance
+
+## Service Trust Portal
+The Service Trust Portal provides information, tools, and other resources about Microsoft security, privacy, and compliance practices. The following features are available from the main menu:
+- Service Trust Portal - Link to home page
+- Compliance Manager - Links to Compliance Manager in Microsoft 365 compliance center.
+- Trust Documents -  Info about security implementation and design information for Microsoft cloud services. The goal here is to make it easier for orgs to meet regulatory compliance objectives. The following options are available:
+  - Audit Reports for Microsoft's cloud services
+  - Data Protection - info on audited controls, white papers, FAQs, pen tests, risk assessment tools, and compliance guides
+  - Azure Stack - Contains security and compliance solutions specifically for Azure Stack customers
+- Industries & Regions - Provides compliance info about Microsoft cloud services organized by industry and region. The following options are available:
+  - Industry Solutions - Specifically for the Financial Services industry. Contains info like compliance offerings, FAQs, and success stories.
+  - Regional Solutions - Provides documentation on compliance with the laws of various countries/regions.
+- Trust Center - Links to Microsoft Trust Center (contains info about privacy, security, and compliance)
+- Resources - Links to the Office 365 Security & Compliance Center
+- My Library - Lets you save documents so that you can quickly access them again. Also allows for email notifications to be set up so that you can be notified when documents are updated.
+- More - Provides an admin selection which is available only to Global Administrators and relates to options associated with Compliance Manager.
+
+## Microsoft's Privacy Principles
+- Control - Putting the customer in control of their data and privacy. Microsoft will not use your data without your permission.
+- Transparency - Transparency around data collection and how it's used.
+- Security - Protecting data that is entrusted to Microsoft using strong security and encryption.
+- Strong legal protections - Respecting local privacy laws and fighting for legal protection of privacy as a fundamental human right.
+- No content-based targeting: Your data (like email, chat, files, other personal content) is not sold or used for targeted advertising.
+- Benefits to you: Data that Microsoft collects is used to benefit you and make your experience better.
+  - Troubleshooting
+  - Feature improvement
+  - Personalized customer experience
+
+## Microsoft 365 Compliance Center
+- Used to bring together tols and data to manage an org's compliance needs.
+- Available to the following:
+  - Global administrator
+  - Compliance administrator
+  - Compliance data administrator
+- Has a dashboard which shows how your org is doing with data compliance and what solutions are available to you. Also displays a summary of active alerts.
+- The default home page contains the following cards:
+  - Compliance Manager - This takes you to the Compliance Manager solution which shows a risk-based compliance score that measures progress toward completing recommended actions to reduce risk associated with data protection and regulatory standards.
+  - Solution Catalog - Links to collections of integrated solutions to help manage end-to-end compliance scenarios. Includes the following:
+    - Information protection & governance - Help classify, protect, and retain data. Includes data loss prevention (DLP), information governance, information protection, and records management.
+    - Privacy
+    - Insider risk management
+    - Discovery & respond - Tools to find, investigate, and respond with relevant data. Includes audit, data subject requests, and eDiscovery.
+  - Active Alerts - Includes a summary of the most active alerts and a link to find more detailed information.
+- In addition to cards a left navigation pane is shown that gives you access to alerts, reports, policies, the solutions catalog, data connectors, and the ability to customize the navigation.
+
+## Compliance Manager
+Compliance Manager is a feature in the Microsoft 365 compliance center that helps admins to manage an org's compliance requirements. It provides the following:
+- Prebuilt assessments for common regs and standards.
+- Workflow capabilities to complete risk assessments.
+- Step-by-step improvement actions to help meet regs and standards.
+- Compliance score to understand overall compliance posture.
+
+Compliance Manager is composed of the following key elements:
+- Controls: A requirement of a reg, standard, or policy. Compliance Manager tracks the following types of controls:
+  - Microsoft-managed controls - Controls which Microsoft is responsible for implementing
+  - Your controls (AKA customer-manager controls) - implemented by you
+  - Shared controls - Responsibility is shared between you and Microsoft for implementing
+- Assessments: Grouping of controls from a specific reg, standard, or policy.
+- Templates: Templates provide a way to help admins quickly create assessments.
+- Improvement Actions: Each action provides recommended guidance that helps align with regs and standards.
+
+### Compliance Score
+- Measures progress in completing recommended improvement actions within controls.
+- Helps orgs understand their current compliance postures.
+- Calculated using scores assigned to actions. There are two types of actions:
+  - Your improved actions - actions that your org is expected to manage.
+  - Microsoft actions - actions that Microsoft manages for the org.
+- Actions are categorized the following ways:
+  - Mandatory - Actions which shouldn't be bypassed
+  - Discretionary - Depend on users understanding and following a policy
+  - Actions have the following subcategories:
+    - Preventative - Designed to handle specific risks 
+    - Detective - Monitor systems to identify irregularities
+    - Corrective - Minimize the impact of security incidents
