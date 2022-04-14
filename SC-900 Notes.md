@@ -180,3 +180,14 @@ The following user risks can be identified:
 
 
 # Security
+## DDoS Protection
+Types of attacks:
+- Volumetic - Volume-based attacks that flood the network with seemingly legit traffic to overwhelm available bandwidth. Legit traffic can't get through. Measured in bits per second.
+- Protocol - Render target inaccessible by exhausting server resources with false protocol requests that exploit weaknesses in layer 3 (network) and layer 4 (transport) protocols. Measured in packets per second.
+- Resource (application) layer attacks - Target web application packets to disrupt the transmission of data between hosts.
+
+Azure DDoS Protection
+- Designed to help protect apps and servers by analyzing network traffic and discarding anything that looks like a DDoS attack.
+- Two tiers
+  - Basic - Enabled automatically for every property in Azure at no extra cost. Has always-on traffic monitoring and real-time mitigation of common network-level attacks.
+  - Standard - Provides extra features tuned for VNet resources. 
