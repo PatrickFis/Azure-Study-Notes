@@ -487,3 +487,158 @@ Compliance Manager is composed of the following key elements:
     - Preventative - Designed to handle specific risks 
     - Detective - Monitor systems to identify irregularities
     - Corrective - Minimize the impact of security incidents
+
+## Information Protection
+- Microsoft Information Protection (MIP) discovers, classifies, and protects sensitive and business-critical content.
+- Microsoft Information Governance (MIG) manges your content lifecycle using solutions to import, store, and classify business-critical data.
+
+Both systems work together and have the following principles:
+- Know your data
+- Protect your data
+- Prevent data loss
+- Govern your data
+
+## Data Classification
+Data can be classified usign tools in the Microsoft 365 compliance center so that data is handled in line with compliance requirements. It provides the following tools:
+- Sensitive Information Types - Pattern based classifiered (for example, credit card numbers or bank account numbers)
+- Trainable Classifiers - AI and ML used to classify your data.
+  - Pre-trained classifiers - Microsoft offers pretrained classifiers that can classify things like resumes, source code, harassment, etc.
+  - Custom trainable classifiers - Orgs can create and train their own classifiers for data unique to an org.
+- Content Explorer - Allows admins to gain visibility into content and get a snapshot of individual items that have been classified. Access is highly restricted.
+- Activity Explorer - Provides visibility into what content has been discovered and labeled and where it is. It shows what happens to content across the org and shows label changes and downgrades.
+
+## Sensitivity Labels
+Orgs can label their content to protect it. Labels are:
+- Customizable
+- Clear text (stored in metadata)
+- Persistent
+
+Sensitivity labels can be configured to do the following:
+- Encrypt emails or documents
+- Mark content when Office apps are used (add watermarks, headers, or footers)
+- Apply labels automatically in Office apps or recommend a label
+- Protect content in containers such as sites and groups
+- Extend sensitivity labels to third-party apps and services
+- Classify content without using any protection settings
+
+Label policies enable admins to:
+- Choose who can see specific labels
+- Apply a default label to things that specific users and groups create
+- Require justifications for label changes
+- Require users to apply a label (mandatory labeling)
+- Link users to custom help pages
+
+## Data Loss Prevention (DLP)
+DLP is a way to protect sensitive info and prevent its disclosure. With DLP admins can do the following:
+- Identify, monitor, and automatically protect sensitive info across Microsoft 365
+- Help users learn how compliance works
+- View DLP reports
+
+DLP policies protect content through rule enforcement. The rules consit of:
+- Conditions that the content must match
+- Actions that the admin wants the rule to do automatically
+- Locations where the policy will be applied
+
+### Endpoint DLP
+Endpoint DLP is extending DLP to Windows 10 devices. Endpoitn DLP enables admins to audit activities that users perform on sensitive content.
+
+### DLP in MS Teams
+DLP can be used in Teams to prevent users from sharing sensitive information through messages or files.
+
+## Retention Policies and Retnention Labels
+Retention policies and labels help orgs manage and govern info and keep it for a specified time before being permanently deleted.
+- Helps orgs comply with regs and internal policies
+- Reduces risk when there's litigation or a breach by deleting old data that you aren't required to keep
+- Ensures users work only with content that's current and relevant to them
+
+### Retention policies 
+- Used to assign retention settings to content at a site or mailbox level
+- Can be assigned to multiple locations or specific locations or users
+- Items inherit retention settings from their container
+
+### Retention labels
+- Used to assign retention settings at an item level (folder, document, email)
+- Email or document can only have one retention label assigned at a time
+- Labels travel with content when it's moved to a different location
+
+## Records Management
+Helps orgs look after legal obligations and demonstrate compliance with regulation. Records management includes many features:
+- Labeling content as a record
+- Establishing retention and deletion policies for record labels
+- Triggering event-based retention
+- Reviewing and validating disposition
+- Proof of records deletion
+- Exporting information about disposed items
+
+Items can be marked as records or as regulatory records. Regulatory records provide other controls and restrictions (they can't be removed and their retention period can't be made shorter after the label has been applied). Regulatory labels aren't available by default as no one, not even a global administrator, can remove them. They must be enabled by the administrator using PowerShell.
+
+## Insider Risk
+Insider risk management helps minimize internal risks. Internal risks include:
+- Data leaks
+- Confidentiality violations
+- IP theft
+- Fraud
+- Insider trading
+- Regulatory compliance violations
+
+Insider risk management is centered around the following principes:
+- Transparency: Balance user privacy versus organization risk with privacy-by-design architecture.
+- Configurable: Configurable policies based on industry, geographical, and business groups.
+- Integrated: Integrated workflow across Microsoft 365 compliance solutions.
+- Actionable: Provides insights to enable user notifications, data investigations, and user investigations.
+
+Insider risk management has the following workflow:
+- Policies - Define risk indicators and how they're used for alerts, who is affected by the policy, what services are prioritized, and what the monitoring time period is.
+- Alerts - Generated by risk indicators that match policy conditions. Displayed in the Alerts dashboard.
+- Triage - Activities that need investigation generate alerts and are assigned a needs review status.
+- Investigate - Cases are created for alerts that require deeper review and investigation around the policy match.
+- Action - After investigation, reviewers can take actions to resolve the case or collaborate with other risk stakeholders in the org.
+
+## Communication Compliance
+Communication compliance helps minimize risks by detecting, capturing, and taking actions for inappropriate messages. It uses the following workflow:
+- Configure
+- Investigate
+- Remediate
+- Monitor
+
+## Information Barriers
+Information barriers can be used when an org wants to restrict communications between some groups to avoid a conflict of interest. In MS Teams it prevents the following:
+- Searching for a user
+- Adding a member to a team
+- Starting a chat session with someone
+- Starting a group chat
+- Inviting someone to join a meeting
+- Sharing a screen
+- Placing a call
+- Sharing a file with another user
+- Access to file through sharing link
+
+## eDiscovery and Audit
+eDiscovery is the process of identifying and delivering electronic info that can be used as evidence in legal cases. Microsoft 365 provides three eDiscovery solutions:
+- Content Search - Used to find content across Microsoft 365 data sources
+- Core eDiscovery - Builds on content search by letting you make eDiscovery cases and assign eDiscovery managers to specific cases. Lets you associate searches and exports with a case and place eDiscovery holds on content locations relevant to the case.
+- Advanced eDiscovery - Bulds on core eDiscovery and provides an end-to-end workflow for handling internal and external investigations. Allows legal teams to manage custodians (people that you've identified as people of interest in the case). Provides analytics and machine learning based predictive coding models to further narrow the scope of your investigation to the most relevant content.
+
+### Auditing
+Microsoft 365 provides two auditing solutions:
+- Basic Audit - Provides the ability to log and search for audited activities. Can export audit records to a CSV file to allow for further analysis. Records are retained for 90 days.
+- Advanced Audit - Builds on Basic Audit and provides audit log retention policies and longer retention of audit records. Provides records of high-value events that can help organizations investigate possible security or compliance breaches and determine the scope of compromise.
+
+## Resource Governance
+### Azure Policy
+- See AZ-900.
+- Designed to enforce standards and assess compliance across an org.Allows for bulk remediation for existing resources and automatic remediation for new resources.
+
+### Azure Blueprints
+- See AZ-900.
+- Provides a way to define a repeatable set of Azure resources and lets development teams rapidly provision and run new environments. 
+
+### Azure Purview
+Azure Purview is designed to address the issues of rapid growth of data and to help enterprises get the most value from their existing information assets.
+- Purview is a unified data governance service that helps manage and govern on-prem, multi-cloud, and SaaS data.
+- Allows orgs to create maps of their data landscape with automated data discovery
+- Supports sensitive data classification
+- Automates data discovery by providing data scanning and calssification as a service
+- Provides a Data Map that serves as the foundation for data discovery and data governance.
+- Provides a Data Catalog that lets business and technical users quickly find data by searching for it.
+- Provides Data Insights that allows data officers and security officers to get information on data that is actively scanned and where sensitive data is and how it moves.
