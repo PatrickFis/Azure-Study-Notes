@@ -1,8 +1,8 @@
 # Shared responsibility model
 https://docs.microsoft.com/en-us/learn/wwl-sci/describe-security-concepts-methodologies/media/3-shared-responsibility-model.png
 
-Some things are always the responsibility of the customer: information and data, devices (mobile and PCs), and accounts and identities
-Some responsibilities vary by service type: identity and directory infrastructure, applications, network controls, and operating systems
+Some things are always the responsibility of the customer: information and data, devices (mobile and PCs), and accounts and identities.
+Some responsibilities vary by service type: identity and directory infrastructure, applications, network controls, and operating systems.
 The following are always responsibilities of the cloud provider: physical hosts, physical networks, and physical datacenters
 
 
@@ -26,12 +26,9 @@ Defense in depth uses a layered approach to security, rather than relying on a s
 
 # Zero Trust Model:
 Zero Trust assumes everything is on an open and untrusted network, even resources behind the firewalls of the corporate network. This model operates on the principle of "trust no one, verify everything." Zero Trust has three principles:
-
-Verify explicitly - Always authenticate and authorize based on the available data points (user identity, location, device, service or workload, data classification, and anomalies).
-
-Least privileged access - Limit user access with just-in-time and just-enough access (JIT/JEA).
-
-Assume breach - Segment access by network, user, devices, and application. Use encryption to protect data, and use analytics to get visibility, detect threats, and improve your security.
+- Verify explicitly - Always authenticate and authorize based on the available data points (user identity, location, device, service or workload, data classification, and anomalies).
+- Least privileged access - Limit user access with just-in-time and just-enough access (JIT/JEA).
+- Assume breach - Segment access by network, user, devices, and application. Use encryption to protect data, and use analytics to get visibility, detect threats, and improve your security.
 
 The Zero Trust model also has six pillars which work together to provide end-to-end security:
 - Identities - Users, services, or devices. Identities attempting to access a resource must be verified with strong authentication and  follow the least privilege access principles.
@@ -179,10 +176,10 @@ The following user risks can be identified:
 - AAD threat intelligence - User activity that is unusual for the given user or is consistent with known attack patterns
 
 
-# Security
+# Security Capabilties in Azure
 ## DDoS Protection
 Types of attacks:
-- Volumetic - Volume-based attacks that flood the network with seemingly legit traffic to overwhelm available bandwidth. Legit traffic can't get through. Measured in bits per second.
+- Volumetric - Volume-based attacks that flood the network with seemingly legit traffic to overwhelm available bandwidth. Legit traffic can't get through. Measured in bits per second.
 - Protocol - Render target inaccessible by exhausting server resources with false protocol requests that exploit weaknesses in layer 3 (network) and layer 4 (transport) protocols. Measured in packets per second.
 - Resource (application) layer attacks - Target web application packets to disrupt the transmission of data between hosts.
 
@@ -191,3 +188,132 @@ Azure DDoS Protection
 - Two tiers
   - Basic - Enabled automatically for every property in Azure at no extra cost. Has always-on traffic monitoring and real-time mitigation of common network-level attacks.
   - Standard - Provides extra features tuned for VNet resources. 
+
+## Azure Firewall
+Managed, cloud-based network security service that protects Azure VNets from attackers.
+- Can be deployed on any VNet, but recommended use is on a centralized VNet that routes to other VNets so that control can be managed centrally.
+- Has built-in high availability and availability zones.
+- Allows network and application level filtering (using IP address, port, protocol).
+- Outbound SNAT and inbound DNAT used to communicate and for IP address translation.
+- Multiple public IP addresses can be associated with Azure Firewall.
+- Threat intelligence - This filtering can be used to alert and deny traffic from/to known malicious IP addresses and domains.
+- Integration with Azure Monitor for handling logging.
+
+## Web Application Firewall (WAF)
+WAF provides centralized protection for web apps from common exploits and vulns.
+
+## Azure Virtual Networks (VNets)
+- VNets are the fundamental building block for your org's private network in Azure.
+- VNets allow network segmentation. Multiple VNets can be created per region in a subscription, and smaller networks (subnets) can be created within each VNet.
+- VNets provide network level containment of resources. No traffic is allowed across VNets or inbound to the VNet by default. Communication has to be set up explicitly.
+
+### Network Security Groups (NSGs)
+- NSGs are used to filter network traffic to and from Azure resources in a VNet.
+- Only one NSG can be associated with a particular VNet subnet and network interface in a VM.
+  - The same NSG can be associated with multiple subnets and network interfaces though.
+- NSGs are made up of inbound and outbound rules that are evaluated in priority order (with lower numbers being higher priority). The following properties are specified by each rule:
+  - Name - NSG rules must be named uniquely
+  - Priority - Processing order for the rules. Once traffic finds a matching rule processing stops.
+  - Source or destination: Specify either with an IP address (or range), service tags (group of IP address prefixes from a given Azure service), or application security group.
+  - Protocol: The network protocol checked by the rule (TCP, UDP, ICMP, Any).
+  - Direction: Inbound or outbound.
+  - Port range: Individual or range of ports.
+  - Action: What happens when the rule is triggered.
+- NSGs come with default rules that cannot be removed, but they can be overridden.
+
+
+## Azure Bastion
+- Bastion is a PaaS service which lets you connect to virtual machines using a browser and the Azure portal instead of exposing ports for RDP or SSH. Bastion provides a secure way to use RDP or SSH over TLS. VMs using Bastion do not need a public IP, agent, or special client software.
+- Bastion provides access to VMs in a VNet or a peered VNet.
+- Bastion has the following features:
+  - RDP and SSH from the Azure portal
+  - The remote session uses TLS (to secure the connection) and an HTML5 web client to stream the session to you.
+  - No public IP required for the VM
+  - Doesn't require modifying NSGs
+  - Provides protection against port scanning because ports aren't made available to internet traffic
+  - Bastion is hardened and protects against zero-day exploits
+
+
+## Just In Time (JIT) Access
+- Used to restrict port access to VMs for selected ports.
+- When users need access to a VM, Defender for Cloud checks if a user has Azure RBAC permissions for the VM. If approved, Defender for Cloud modifies NSGs and Azure Firewall to allow inbound traffic to the selected ports from the relevant IP address (or range) for a specified amount of time. Afterwards, Defender for Cloud reverts the changes without interrupting established connections.
+- JIT requires Microsoft Defender for servers to be enabled on the subscription.
+
+
+## Encryption
+Azure provides various options for encrypting data:
+- Azure Storage Service Encryption - Encrypts data at rest before it is persisted to Azure-managed disks, Blob Storage, Azure Files, or Azure Queue Storage. Also handles decrypting the data before retrieval.
+- Azure Disk Encryption - Encrypts Windows/Linux IaaS VM disks using BitLocker (Windows) or dm-crypt (Linux).
+- Transparent data encryption (TDE) - Real-time encryption/decryption of Azure SQL Database and Azure Data Warehouse. Includes the DB, backups, and transaction log files.
+
+### Azure Key Vault
+Key Vault is a centralized cloud service for storing application secrets with the following features:
+- Secrets management - Control access to tokens, passwords, certs, API keys, etc.
+- Key management - Allows control of encryption keys.
+- Certificate management - SSL/TLS certs can be provisioned, managed, and deployed through Key Vault.
+- Support for secrets backed by HSMs.
+
+
+# Security Management Capabilties in Azure
+## Cloud Security Posture Management (CSPM)
+CSPM is a new class of tools designed to improve cloud security management. Assess systems and alerts IT when vulns are found. CSPM uses a combination of the following tools and services:
+- Zero Trust based access control
+- Real time risk scoring
+- Threat and vulnerability management (TVM)
+- Discover risks to guard against data exposure
+- Technical policy to apply guardrails to enforce standards
+- Threat modeling
+
+## Microsoft Defender for Cloud
+Microsoft Defender for Cloud is a CSPM tool. It allows you to continously assess your security posture, secure your resources, and defend against threats. It provides visibility into your current security and provides guidance for hardening.
+- Visibility is enabled by the Secure Score feature in Defender for Cloud. It allows you to tell how secure your applications are at a glance.
+- Hardening recommendations are shown in Defender for Cloud. The recommendations will improve your security score when all recommendations for a single resource within a control have been resolved.
+- Defender for Cloud is offered in two modes:
+  - Microsoft Defender for Cloud (free) - Enables secure score and related features: security policy, continuous security assessment, and actionable security recommendations.
+  - Microsoft Defender for Cloud with enhanced security features - Extends free mode to workloads in Azure, hybrid, and other cloud platforms. Provides cloud workload protection through various plans.
+- Defender for Cloud offers cloud workload protection (CWP) that provide protection specific to resources and subscriptions. The following plans are available:
+  - Defender for servers - Windows/Linux machines
+  - Defender for App Service - Specific to apps using App Service
+  - Defender for Storage
+  - Defender for SQL
+  - Defender for Kubernetes
+  - Defender for container registries
+  - Defender for Key Vault
+  - Defender for Resource Manager
+  - Defender for DNS
+  - Defender for open-source relational protection - Used for open-source relation databases
+- Defender for Cloud plans include the following enhanced security features:
+  - Endpoint detection and response - included in Defender for servers
+  - Vuln scanning for VMs
+  - Security for accounts in AWS and GCP
+  - Security for on-prem and hybrid workloads
+  - Threat protection alerts for incoming attacks and post-breach activity
+  - Compliance tracking for standards
+  - Access and application controls
+- Defender for Cloud uses Azure Security Benchmarks to assess an org's cloud environment. Azure Security Benchmarks also provide security baselines for services.
+
+
+## Microsoft Sentinel
+Microsoft Sentinel is a security information event management (SIEM) and security orchestration automated response (SOAR) solution.
+- SIEM - A tool used to collection data from infrastructure, software, and resources. Does analysis and looks for anomalies to generate alerts and incidents.
+- SOAR - Takes alerts for systems (like SIEM) which trigger automated workflows and processes to run security tasks to mitigate issues.
+
+Sentinel enables the following functionality:
+- Collecting data from all users, devices, apps, and infrastructure on-prem and in multiple clouds.
+- Detects threats using analytics and threat intell
+- Investigates threats using AI
+- Responds to incidents with built-in orchestration and automation
+
+Sentinel's key features:
+- Built-in connectors to connect to your data
+- Azure Monitor Workbooks - Used for data analysis and reporting in the Azure portal
+- Analytics - Correlates alerts into incidents (groups of related alerts) that need to be investigated and resolved. Provides machine learning rules to map your network behavior and look for anomalies across resources.
+- Incident management
+- Automated workflows (playbooks) that are used for repeatable tasks
+- Investigation to understand the scope of a threat and find the root cause
+- Hunting - Provides search-and-query tools to proactively hunt for threats across your org
+- Notebooks - Support for Jupyter Notebook to extend the scope of what you can do with your data from Sentinel
+- Community - Analysts create new workbooks, playbooks, hunting queries, etc. that are given to the community for your use
+
+Cost
+- Sentinal is available using capacity reservations (fixed fee for predictable costs) or pay as you go (billed per GB of data ingested for analysis in Sentinel and stored in the Azure Monitor Log Analytics workspace).
