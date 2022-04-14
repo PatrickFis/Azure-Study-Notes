@@ -1,0 +1,117 @@
+Key points from videos:
+
+IoT:
+IoT Hub: PaaS that allows bidirectional communication with IoT devices (custom code)
+IoT Central: SaaS that allows for industry standard templates to be used to build IoT applications without deep technical knowledge
+Azure Sphere: Highly secure, delivers microcontroller specs to device manufacterers to build as part of their devices
+
+
+Azure Tools:
+Azure Portal: Web interface for self-service management of Azure
+Azure PowerShell: Terminal access to Azure using PowerShell modules. This is designed to help with automation and is multi-platform with PowerShell Core.
+Azure CLI: Like PowerShell, but instead of using a PowerShell module you'll install it with the CLI. It's multi-platform and based on Python. CLI is just a tool for the native OS terminal for scripting.
+Azure Cloud Shell: The above tools will be pre-installed for you and can be accessed through a web browser. It's based on Ubuntu container. This environment is completely free.
+
+
+Cost:
+Ingress traffic is typically free while charges are typically incurred for egress traffic.
+
+
+Useful Notes:
+Networking:
+Virtual networks: Connect various Azure resources to communicate with each other.
+Service endpoints: Used to connect to Azure resources. Allows you to link multiple Azure resources to virtual networks to improve security and provide optimal routing between resources.
+Point-to-site VPN: Client computer initiating an encrypted VPN connection to connect that computer to the Azure virtual network.
+Site-to-site VPN: VPN which links your on-premises VPN device or gateway to the Azure VPN gateawy in a virtual network. Allows devices in Azure to appear to be on the local network. Connection is encrypted.
+ExpressRoute: Dedicated private connectivity to Azure that doesn't travel over the internet.
+Network security groups: A NSG is a resource that can contain multiple inbound and outbound security rules. They can allow or block traffic based on various factors (source, destination, port, protocol). Can be applied to a subnet or network adapter/NIC.
+Network virtual appliances: A specialized VM that can be compared to a hardened network appliance (which is something that carries out a particular network function like running a firewall or WAN optimization).
+User defined routes (UDR): Allows network admins to control routing tables between subnets within a virtual network or between virtual networks.
+
+VPN Gateways:
+VPN Gateway instances are deployed in a dedicated subnet of a virtual network and enable the following:
+1) Connect on-premises datacenters to virtual networks through a SITE-TO-SITE connection.
+2) Connect individual devices to virtual networks through a POINT-TO-SITE connection.
+3) Connect virtual networks to other virtual networks through a NETWORK-TO-NETWORK connection.
+
+VPN Gateway Subnet: Gateway subnet is part of the virtual network IP address range. Contains the IP address that the virtual network gateway resources and services use. Used for routing traffic from one network to another network.
+
+Only one VPN gateway can be deployed in each virtual network, but you can use one gateway to connect multiple locations (including other virtual networks or on-premises datacenters).
+
+VPN gateways are policy-based or route-based:
+Policy-based: Specify statically the IP addresses of packets that should be encrypted
+Route-based: Tunnels are modeled as a network interface or virtual network interface
+https://docs.microsoft.com/en-us/learn/modules/azure-networking-fundamentals/azure-vpn-gateway-fundamentals
+
+
+Artifical Intelligence:
+Azure Machine Learning: Platform for making predictions. Consists of tools and services that allow you to connect to data to train and test models to find one that will most accurately predict a future result. After running experiments to test the model you can deploy and use it in real time via a web API endpoint. With Azure ML you can do the following:
+1) Create a process that defines how to obtain data, how to handle missing or bad data, how to split the data into either a training set or test set, and deliver the data to the training process
+2) Train and evaluate predictive models
+3) Create pipelines that define where and when to run compute-intensive experiments to score algorithms
+4) Deploy the best performing algorithm as an API
+Azure ML gives data scientists complete control over the design and training of an algorithm using your own data.
+
+Azure Cognitive Services: Provides prebuilt machine learning models that enable applications to see, hear, speak, understand, and even begin to reason. Can be used to solve general problems such as analyzing text for emotional sentiment or analyzing images to recognize objects or faces. You don't need special machine learning or data science knowledge to use these services.
+Azure Cognitive Services, for the most part, provides pretrained models so that you can bring in your live data to get predictions on.
+Azure Cognitive Services can be divided into the following categories:
+1) Language services: Allow your apps to process natural language
+2) Speech services: Convert speech into text and text into natural-sounding speech. Translate from one language to another and enable speaker verification and recognition.
+3) Vision services: Add recognition and identification capabilities when you're analyzing pictures, videos, and other visual content.
+4) Decision services: Add personalized recommendations for each user that automatically improve each time they're used, moderate content to monitor and remove offensive or risky content, and detect abnormalities in your time series data.
+
+Azure Bot Service: This and Bot Framework are platforms for creating virtual agents that understand and reply to questions just like a human. This is different from Azure ML or Cognitive Services as it has a specific use case: creating a virtual agent that can intelligently communicate with humans.
+Behind the scenes the bot can use other Azure services like Cognitive Services so that it can understand what humans are asking for.
+
+
+Misc:
+Azure Monitor: Platform for collecting, analyzing, visualizing, and potentially taking action based on metric and logging data from your entire Azure and on-premises environment. https://docs.microsoft.com/en-us/learn/modules/monitoring-fundamentals/2-identify-product-options
+Azure Advisor: Consultant service that provides recommendations and best practices for cost, security, reliability, performance, and operational excellence. https://docs.microsoft.com/en-us/learn/modules/monitoring-fundamentals/2-identify-product-options
+Azure Service Health: Provides a personalized view of the health of the Azure services, regions, and resources you rely on. Displays both major and smaller, localized issues that affect you. Alerts can be set to help you triage outages and planned maintenance. After outages Service Health provides official incident reports (root cause analyses). Service Health helps you keep track of service issues, planned maintenance, and health advisories. https://docs.microsoft.com/en-us/learn/modules/monitoring-fundamentals/2-identify-product-options
+Azure Cost Management: Centralized service for reporting usage and billing of your Azure environment. Has self-service cost exploration capabilities, budgets and alerts, cost recommendations, and automated exports. This is used after you to deploy to help you analyze, manage, and optimize the costs of your workloads.
+Azure Security Center: Centralized infrastructure and platform security management service. Natively embedded in Azure services and integrated with Azure Advisor. Has a free tier included in all Azure services which provides continuous assessments, security score, and actionable security recommendations. Paid tier has hybrid security, threat protection alerts, vuln scanning, JIT VM access, etc.
+Azure Sentinel: A cloud-native, security information event management (SIEM) and security orchestration automated response (SOAR) solution. Not only can it ingest data, it can provide orchestrated, automated responses where necessary. Uses AI out of the box.
+Dedicated Hosts: A service that provides dedicated physical servers able to host one or more virtual machines in one Azure subscription. Used for high security reasons.
+Reserved Instancces: Allows you to reserve VM instances with a 1-year or 3-year option to save costs.
+Reserved Capacity: Allows you to reserve capacity for services like Azure SQL Database, Cosmos DB, Synapse Analytics, and Cache for Redis to save costs.
+Hybrid Use Benefit: Let's you use your on-premises Software Assurance-enabled Windows Server and SQL Server licenses on Azure.
+Spot Pricing: Allows you to access unused Azure compute capacity at deep discounts with the possibility of your workload being evicted when Microsoft needs capacity (applies to Azure VMs only).
+Azure Trust Center: Trust Center is a website which provides support and resources for the legal and compliance community. Provides in-depth information about security, privacy, compliance offerings, policies, features, and practices across Microsoft cloud products.
+
+
+Cloud adoption framework:
+Consists of a set of tools, best practices, guidelines, and documentation prepared by Microsoft to help companies with their cloud adoption journey. There are four phases (likely 3 outside of Strategy will appear on the exam):
+Strategy - Understand why you want to move, define outcomes, define justifications, choose a first project.
+Plan - Inventory your digital assets, align your org, review current skills and gaps, create a cloud adoption plan
+Ready - Create an appropriate landing zone (an Azure Subscription) that suits your needs, review and make sure best practices are followed
+Adopt - Migrate your first application and then innovate
+
+
+Core Architectural Components:
+Geography: Typically contains two or more regions and preserves data residency and compliance boundaries
+Azure Regions: A geographical area on the planet that contains at least one but potentially multiple datacenters that are nearby and networked together with a low-latency network.
+Availability Zones: Physically separate datacenters within an azure region. Availability zones are connected through high-speed, private fiber-optic networks and are designed to operate when other datacenters in the same region go down. Availability Zones are not supported in all regions.
+Azure Region Pairs: Regions are always paired with another region within the same geography at least 300 miles away to minimize the likelihood of being impacted by issues.
+Resource: A manageable item that's available through Azure (examples: VMs, storage accounts, web apps, databases, and virtual networks)
+Resource Groups: A container that holds related resources for an Azure solution. The resource group includes resources that you want to manage as a group. You decide which resources belong in a resource group based on what makes the most sense for your organization.
+Azure Resource Manager: The deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Enables management features like access control, locks, and tags. Allows you to manage your infrastructure through JSON.
+Azure Subscriptions: A subscription provides you with authenticated and authorized access to Azure products and services. Allows you to provision resources. Logical unit of Azure services that links to an Azure account, which is an identity in Azure Active Directory or in a directory that Azure AD trusts. An account can only have one subscription or multiple subscriptions that have different billing models and to which you apply different access-management policies.
+Management groups: Provide a level of scope above subscriptions. Each directory is given a single top-level management group called the Root.
+
+
+Defense in depth:
+Layred Approach
+A strategy to slow the advance of an attack that aims at acquiring unauthorized access to data. Composed of the following layers:
+Physical: First line of defense to protect computing hardware in the datacenter.
+Identity & Access: Controls access to infrastructure and change control.
+Perimeter: Uses DDoS protection to filter large-scale attacks before they can cause a denial of service for users.
+Network: Limits communication between resources through segmentation and access controls.
+Compute: Secures access to VMs.
+Application: Ensure that applications are secure and free of security vulns.
+Data: Controls access to business and customer data that you need to protect.
+
+
+Service Lifecycle:
+Private Preview: Allows you to use a service in advance of its full release. Only open to companies or users who have applied and been accepted to use a service. This is for evaluation.
+Public Preview: Open to the public, but still shouldn't be run in production.
+General Availability (GA): Approved for production use and has an SLA (unlike the others).
