@@ -1,9 +1,9 @@
 - [Shared responsibility model](#shared-responsibility-model)
 - [Defense in depth](#defense-in-depth)
-    - [Layers:](#layers)
+    - [Layers](#layers)
 - [Confidentiality, Integrity, Availability (CIA)](#confidentiality-integrity-availability-cia)
-- [Zero Trust Model:](#zero-trust-model)
-- [Compliance concepts:](#compliance-concepts)
+- [Zero Trust Model](#zero-trust-model)
+- [Compliance concepts](#compliance-concepts)
 - [Azure Active Directory (AAD)](#azure-active-directory-aad)
   - [Editions](#editions)
   - [AAD Identity Types](#aad-identity-types)
@@ -55,7 +55,7 @@
   - [Data Loss Prevention (DLP)](#data-loss-prevention-dlp)
     - [Endpoint DLP](#endpoint-dlp)
     - [DLP in MS Teams](#dlp-in-ms-teams)
-  - [Retention Policies and Retnention Labels](#retention-policies-and-retnention-labels)
+  - [Retention Policies and Retention Labels](#retention-policies-and-retention-labels)
     - [Retention policies](#retention-policies)
     - [Retention labels](#retention-labels)
   - [Records Management](#records-management)
@@ -79,7 +79,7 @@ The following are always responsibilities of the cloud provider: physical hosts,
 
 # Defense in depth
 Defense in depth uses a layered approach to security, rather than relying on a single perimeter. A defense in depth strategy uses a series of mechanisms to slow the advance of an attack.
-### Layers:
+### Layers
 - Physical security: Limiting access to datacenters
 - Identity & Access: MFA or condition-based access to control access to infra and change control
 - Perimeter: Securing your corporate network from attacks like DDoS to prevent denial of service to users
@@ -95,7 +95,7 @@ Defense in depth uses a layered approach to security, rather than relying on a s
 - Availability - Making data available to those who need it when they need it. Data must be kept secure, but at the same time it must be available to employees to help customers.
 
 
-# Zero Trust Model:
+# Zero Trust Model
 Zero Trust assumes everything is on an open and untrusted network, even resources behind the firewalls of the corporate network. This model operates on the principle of "trust no one, verify everything." Zero Trust has three principles:
 - Verify explicitly - Always authenticate and authorize based on the available data points (user identity, location, device, service or workload, data classification, and anomalies).
 - Least privileged access - Limit user access with just-in-time and just-enough access (JIT/JEA).
@@ -110,8 +110,8 @@ The Zero Trust model also has six pillars which work together to provide end-to-
 - Networks - Should be segmented and incorporate real-time threat protection, end-to-end encryption, monitoring, and analytics.
 
 
-# Compliance concepts:
-- Data residency - Regulations which govern the physical locations where data can be stored and how and when it can be transferred, processed, or acecssed internationally.
+# Compliance concepts
+- Data residency - Regulations which govern the physical locations where data can be stored and how and when it can be transferred, processed, or accessed internationally.
 - Data sovereignty - The concept that data, particularly personal data, is subject to the laws and regulations of the country/region in which it's physically collected, held, or processed.
 - Data privacy - Providing notice and being transparent about the collection, processing, use, and sharing of personal data are fundamental principles of privacy laws and regulations. 
 
@@ -130,7 +130,7 @@ The Zero Trust model also has six pillars which work together to provide end-to-
   - Several users with the same access needs can be organized into groups (which can give access permissions to all members of the group instead of having to assign individual permissions).
   - AAD business-to-business (B2B) collaboration (a feature within External Identities) includes the capability to add guest users. This allows orgs to securely share apps and services with guest users from another org.
 - Service Principal - An identity for an application.
-  - Apps must first be registered with AAD to delegate its identity and acecss functions to AAD. Once registered, a service prinipal is created in each AAD tenant where the app is used.
+  - Apps must first be registered with AAD to delegate its identity and access functions to AAD. Once registered, a service prinipal is created in each AAD tenant where the app is used.
   - Enables core features such as authentication and authorization to resources secured by the AAD tenant.
 - Managed Identity - A type of service principal that are automatically managed in AAD and don't require devs to manage credentials.
   - Provide an identity for apps to use when connecting to Azure resources that support AAD authentication.
@@ -184,7 +184,7 @@ Access Controls refers to the decision made after a Conditional Access policy ha
 ## AAD Roles and RBAC
 ### Built-in Roles
 AAD ships with many roles. A few of the common roles include:
-- Global administrator - Users with this role have access to all admin feature sin AAD. The person who signs up for the AAD tenant automatically becomes a global administrator.
+- Global administrator - Users with this role have access to all admin features in AAD. The person who signs up for the AAD tenant automatically becomes a global administrator.
 - User administrator - Users with this role can create and manage all aspects of users and groups. Includes the ability to manage support tickets and monitor service health.
 - Billing administrator - Users with this role make purchases, manage subscriptions and support tickets, and monitor service health.
 
@@ -209,20 +209,20 @@ AAD roles are a form of RBAC referred to as Azure AD RBAC. AAD RBAC controls acc
 Access lifecycle is the process of managing access throughout the user's organizational life. Orgs can automate the access lifecycle process using things like dynamic groups. Dynamic groups enable admins to create attribute-based rules to determine membership of groups. When attributes of a user or devices changes, the system evaluates all dynamic group rules in a directory to see if the change would trigger any users to be added or removed from a group.
 
 ### Privileged Access Lifecycle
-AAD Privileged Identity Management (PIM) provides extra controls tailored to securing access rights. PIM helps minimize the number of people who have acecss to resources across AAD, Azure, and other Microsoft online services. PIM is a feature of AAD Premium P2.
+AAD Privileged Identity Management (PIM) provides extra controls tailored to securing access rights. PIM helps minimize the number of people who have access to resources across AAD, Azure, and other Microsoft online services. PIM is a feature of AAD Premium P2.
 
 
 ## AAD Access Reviews
 - Allows orgs to manage group memberships, access to enterprise apps, and role assignment
 - Access reviews can be created through AAD access reviews or AAD PIM.
-- Can be used to review and manage acecss for both users and guests.
+- Can be used to review and manage access for both users and guests.
 
 ## AAD Terms of User
 AAD terms of use allows orgs to present terms to a user that they must accept before accessing data or an application. Conditional Access policies are used to require terms to be displayed and ensure that users agree to them before accessing an app.
 
 
 ## Privileged Identity Management (PIM)
-PIM is a service in AAD that enables you to manage, control, and monitor access to important resource sin your organization. PIM is:
+PIM is a service in AAD that enables you to manage, control, and monitor access to important resources in your organization. PIM is:
 - JIT
 - Time-bound
 - Approval-based
@@ -232,7 +232,7 @@ PIM is a service in AAD that enables you to manage, control, and monitor access 
 
 
 ## Azure Identity Protection
-Identity protection is a tool that allows orgs to accomplish the following: automate detection and remediation of identity-based risks, investigate risks using data in the portal, and export ris kdetection data to third-party utilities for further analysis. Identity Protection is a feature of AAD Premium P2.
+Identity protection is a tool that allows orgs to accomplish the following: automate detection and remediation of identity-based risks, investigate risks using data in the portal, and export risk detection data to third-party utilities for further analysis. Identity Protection is a feature of AAD Premium P2.
 
 Identity Protection can calculate sign-in risk (see previous definition). The following sign-in risks are identifiable by Identity Protection:
 - Anonymous IP address
@@ -513,7 +513,7 @@ The Service Trust Portal provides information, tools, and other resources about 
   - Personalized customer experience
 
 ## Microsoft 365 Compliance Center
-- Used to bring together tols and data to manage an org's compliance needs.
+- Used to bring together tools and data to manage an org's compliance needs.
 - Available to the following:
   - Global administrator
   - Compliance administrator
@@ -570,8 +570,8 @@ Both systems work together and have the following principles:
 - Govern your data
 
 ## Data Classification
-Data can be classified usign tools in the Microsoft 365 compliance center so that data is handled in line with compliance requirements. It provides the following tools:
-- Sensitive Information Types - Pattern based classifiered (for example, credit card numbers or bank account numbers)
+Data can be classified using tools in the Microsoft 365 compliance center so that data is handled in line with compliance requirements. It provides the following tools:
+- Sensitive Information Types - Pattern based classifier (for example, credit card numbers or bank account numbers)
 - Trainable Classifiers - AI and ML used to classify your data.
   - Pre-trained classifiers - Microsoft offers pretrained classifiers that can classify things like resumes, source code, harassment, etc.
   - Custom trainable classifiers - Orgs can create and train their own classifiers for data unique to an org.
@@ -616,7 +616,7 @@ Endpoint DLP is extending DLP to Windows 10 devices. Endpoitn DLP enables admins
 ### DLP in MS Teams
 DLP can be used in Teams to prevent users from sharing sensitive information through messages or files.
 
-## Retention Policies and Retnention Labels
+## Retention Policies and Retention Labels
 Retention policies and labels help orgs manage and govern info and keep it for a specified time before being permanently deleted.
 - Helps orgs comply with regs and internal policies
 - Reduces risk when there's litigation or a breach by deleting old data that you aren't required to keep
@@ -652,7 +652,7 @@ Insider risk management helps minimize internal risks. Internal risks include:
 - Insider trading
 - Regulatory compliance violations
 
-Insider risk management is centered around the following principes:
+Insider risk management is centered around the following principles:
 - Transparency: Balance user privacy versus organization risk with privacy-by-design architecture.
 - Configurable: Configurable policies based on industry, geographical, and business groups.
 - Integrated: Integrated workflow across Microsoft 365 compliance solutions.
@@ -688,7 +688,7 @@ Information barriers can be used when an org wants to restrict communications be
 eDiscovery is the process of identifying and delivering electronic info that can be used as evidence in legal cases. Microsoft 365 provides three eDiscovery solutions:
 - Content Search - Used to find content across Microsoft 365 data sources
 - Core eDiscovery - Builds on content search by letting you make eDiscovery cases and assign eDiscovery managers to specific cases. Lets you associate searches and exports with a case and place eDiscovery holds on content locations relevant to the case.
-- Advanced eDiscovery - Bulds on core eDiscovery and provides an end-to-end workflow for handling internal and external investigations. Allows legal teams to manage custodians (people that you've identified as people of interest in the case). Provides analytics and machine learning based predictive coding models to further narrow the scope of your investigation to the most relevant content.
+- Advanced eDiscovery - Builds on core eDiscovery and provides an end-to-end workflow for handling internal and external investigations. Allows legal teams to manage custodians (people that you've identified as people of interest in the case). Provides analytics and machine learning based predictive coding models to further narrow the scope of your investigation to the most relevant content.
 
 ### Auditing
 Microsoft 365 provides two auditing solutions:
@@ -709,7 +709,7 @@ Azure Purview is designed to address the issues of rapid growth of data and to h
 - Purview is a unified data governance service that helps manage and govern on-prem, multi-cloud, and SaaS data.
 - Allows orgs to create maps of their data landscape with automated data discovery
 - Supports sensitive data classification
-- Automates data discovery by providing data scanning and calssification as a service
+- Automates data discovery by providing data scanning and classification as a service
 - Provides a Data Map that serves as the foundation for data discovery and data governance.
 - Provides a Data Catalog that lets business and technical users quickly find data by searching for it.
 - Provides Data Insights that allows data officers and security officers to get information on data that is actively scanned and where sensitive data is and how it moves.
