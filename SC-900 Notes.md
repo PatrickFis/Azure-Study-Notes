@@ -319,29 +319,35 @@ AAD terms of use allows orgs to present terms to a user that they must accept be
 
 ## Privileged Identity Management (PIM)
 PIM is a service in AAD that enables you to manage, control, and monitor access to important resources in your organization. PIM is:
-- JIT
-- Time-bound
-- Approval-based
-- Visible
-- Auditable
+- JIT - Provides privileged access only when needed and not before
+- Time-bound - Roles can be assigned for specific start and end dates
+- Approval-based - Requires specific users or groups to provide approval to activate packages
+- Visible - Sends notifications when privileged roles are activated
+- Auditable - Allows a full access history to be downloaded
 - A feature of AAD Premium P2
+- Used to reduce the chance of a malicious actor getting access by minimizing the amount of people with access to sensitive resources.
+- Reduces risk of authorized users accidentally affecting sensitive resources by time-limiting their roles.
+- Provides oversight into what users are doing with their administrator privileges.
 
 
 ## Azure Identity Protection
 Identity protection is a tool that allows orgs to accomplish the following: automate detection and remediation of identity-based risks, investigate risks using data in the portal, and export risk detection data to third-party utilities for further analysis. Identity Protection is a feature of AAD Premium P2.
 
 Identity Protection can calculate sign-in risk (see previous definition). The following sign-in risks are identifiable by Identity Protection:
-- Anonymous IP address
-- Malware linked IP address
-- Atypical travel
-- Unfamiliar sign-in properties
-- Password spray
-- AAD threat intelligence - Sign in activity which is unusual for the given user or is consistent with known attack patterns
+- Anonymous IP address. This risk detection type indicates a sign-in from an anonymous IP address; for example, a Tor browser or anonymized VPNs.
+- Atypical travel. This risk detection type identifies two sign-ins originating from geographically distant locations, where at least one of the locations may also be atypical for the user, given past behavior.
+- Malware linked IP address. This risk detection type indicates sign-ins from IP addresses infected with malware that is known to actively communicate with a bot server.
+- Unfamiliar sign-in properties. This risk detection type considers past sign-in history to look for anomalous sign-ins. The system stores information about previous locations used by a user, and considers these "familiar" locations. The risk detection is triggered when the sign-in occurs from a location that's not already in the list of familiar locations.
+- Password spray. This risk detection is triggered when a password spray attack has been performed.
+- AAD threat intelligence. This risk detection type indicates sign-in activity that is unusual for the given user or is consistent with known attack patterns based on Microsoft's internal and external threat intelligence sources.
 
 The following user risks can be identified:
-- Leaked creds
-- AAD threat intelligence - User activity that is unusual for the given user or is consistent with known attack patterns
+- Leaked credentials. This risk detection type indicates that the user's valid credentials have been leaked. When cybercriminals compromise valid passwords of legitimate users, they often share those credentials. This sharing is typically done by posting publicly on the dark web, paste sites, or by trading and selling the credentials on the black market. When the Microsoft leaked credentials service acquires user credentials from the dark web, paste sites, or other sources, they're checked against Azure AD users' current valid credentials to find valid matches.
+- Azure AD threat intelligence. This risk detection type indicates user activity that is unusual for the given user or is consistent with known attack patterns based on Microsoft's internal and external threat intelligence sources.
 
+Identity Protection only generates risk detections when correct creds are used in the authentication request. Incorrect creds will not be flagged by Identity Protection since there isn't a risk of credential compromise unless a bad actor uses the correct creds. Risk detections can trigger actions like requiring MFA, resetting passwords, or blocking access until an admin takes action.
+
+Identity Protection provides three reports: risky users, risky sign-ins, and risk detections.
 
 # Security Capabilities in Azure
 ## DDoS Protection
