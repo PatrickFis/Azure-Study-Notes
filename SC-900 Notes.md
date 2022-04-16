@@ -9,6 +9,15 @@
   - [AAD Identity Types](#aad-identity-types)
   - [External Identities](#external-identities)
   - [Hybrid Identity](#hybrid-identity)
+  - [Authentication Methods](#authentication-methods)
+    - [Passwords](#passwords)
+    - [Phone](#phone)
+    - [OATH (Open Authentication)](#oath-open-authentication)
+    - [Passwordless Authentication](#passwordless-authentication)
+    - [MFA in AAD](#mfa-in-aad)
+    - [Security Defaults](#security-defaults)
+    - [Self-Service Password Reset (SSPR)](#self-service-password-reset-sspr)
+    - [Password Protection and Management Capabilities of AAD](#password-protection-and-management-capabilities-of-aad)
   - [Conditional Access](#conditional-access)
     - [Access Controls](#access-controls)
   - [AAD Roles and RBAC](#aad-roles-and-rbac)
@@ -139,8 +148,8 @@ The Zero Trust model also has six pillars which work together to provide end-to-
     - User-assigned - A managed identity which is created as a standalone Azure resource. One user-assigned managed identity can be assigned to one or more instances of an Azure service. These identities are managed separately from the resources that use it.
 - Device - A piece of hardware (mobile devices, laptops, servers, printers, etc).
   - AAD Registered Devices - Supports a bring your own device scenario. Users can access your org's resources using a personal device. AAD registered devices register to AAD without requiring an organization account to sign in to the device. Supported OSes: Windows 10 and above, iOS, Android, and macOS.
-  - AAD Joined Devices - Device joined to AAD through an org account which is used to sign in to the device. AAD joined devices are generally owned by the org. Supported OSes: Windows 10 or greater (except Home edition) and Windows Server 2019 Virtual Machines running in Azure.
-  - Hybrid AAD Joined Devices - Orgs with existing on prem AD can use this functionality. These devices are joined to your on-prem AD and AAD and require an organizational account to sign in to the device.
+  - AAD Joined Devices - Device joined to AAD through an org account which is used to sign in to the device. AAD joined devices are generally owned by the org. These exist only in the cloud. Supported OSes: Windows 10 or greater (except Home edition) and Windows Server 2019 Virtual Machines running in Azure.
+  - Hybrid AAD Joined Devices - Orgs with existing on prem AD can use this functionality. These devices are joined to your on-prem AD and AAD and require an organizational account to sign in to the device. Supported OSes: Windows 7, 8.1, 10, Windows Server 2008 or newer.
   - Registering and joining devices to AAD gives users SSO to cloud-based resources. It also allows SSO to on-perm resources.
 
 
@@ -156,6 +165,70 @@ Hybrid identity is a solution which spans on-prem and cloud-based capabilities. 
 - Federated authentication - Recommended as an authentication for orgs that have advanced features not currently supported in AAD (like smart cards or certs, an on-prem MFA server, or sign-on using a third party authentication solution). AAD hands off the authentication process to a separate trusted authentication system (like Active Directory Federation Services).
 
 
+## Authentication Methods
+### Passwords
+- Password access is the most common form of authentication, but they need to be augmented with more secure authentication methods available in AAD because of their many problems.
+
+### Phone
+- SMS-based authentication - Text messages can be sent to users for authentication. With SMS the user doesn't need to know a username or password to acecss applications and services. They enter their registered phone number, receive a text with a verification code, and then enter the code. SMS may also be used as a secondary form of authentication during self-service password reset (SSPR) or AAD MFA.
+- Voice call verification - Users can receive a voice call as a secondary form of authentication. The number the user registered with is called and prompts the user to press the # key on their keypad to finish authentication. Voice calls are not supported as a primary form of authentication.
+
+### OATH (Open Authentication)
+OATH is an open password that specifies how time-based, one-time password (TOTP) codes are generated. They can be used to authenticate a user. OATH is only supported as a secondary form of authentication for use in SSPR or AAD MFA.
+- Software OATH tokens - Typically applications. AAD generates a secret key (or seed) that's used by the app to generate each OTP.
+- OATH TOTP hardware tokens - Public preview. Small hardware devices that display a code that refreshes every 30 or 60 seconds. Typically come with a secret key (or seed) pre-programmed in the token. These details must be input into AAD and then activated for end-users.
+
+### Passwordless Authentication
+- Windows Hello for Business - Replaces passwords with strong two-factor authentication on devices. This two-factor authentication is a combination of a key or cert tied to a device and something that the person knows (a PIN) or something that the person is (biometrics). Both options trigger the user of the private key to crptographically sign data that is sent to the identity provider. The IDP verifies the user's identity and authenticates the user. Windows Hello for Business serves as a primary form of authentication and can also be used as a secondary form of authentication during MFA.
+- FIDO2 - Fast Identity Online (FIDO) is an open standard for passwordless authentication. FIDO2 is the latest standard that incorporates the web authentication (WebAuthn) standard and is supported by Azure AD. FIDO2 security keys are an unphishable standards-based passwordless authentication method that can come in any form of factor. They are typically USB devices but can also be Bluetooth or NFC based devices. Can be used to sign in to AAD or hybrid AAD joined Windows 10 devices to get SSO to the cloud and on-prem resources. This serves as a primary form of authentication and can also be used as a secondary form of authentication during MFA.
+- Microsoft Authentication App - Can be used to sign in to an AAD account or as an additional verification option during SSPR or MFA. Users must download the app to their phone and register their account. Available on Android and iOs.
+
+### MFA in AAD
+MFA requires more than one form of verification to prove that an identity is legitimate. This protects a user even when their password is compromised. AAD MFA requires the following:
+- Something you know (password or PIN) and requires one of the following
+  - Something you have (trusted device like a phone or hardware key)
+  - Something you are (biometrics like a fingerprint or face scan)
+
+The authentication methods detailed above can be used with AAD MFA.
+
+### Security Defaults
+Security defaults are a set of basic identity security mechanisms recommended by Microsoft. When enabled, these recommendations will be automatically enforced in your organization. The goal is to provide a basic level of security at no extra cost. Some of the common features are the following:
+- Enforcing AAD MFA registration for all users
+- Forcing admins to use MFA
+- Requiring all users to complete MFA when needed
+
+These options are good for organizations that want to increase their security posture but don't know where to start. They're also good for organizations using the free tier of AAD licensing. Security defaults may not be appropriate for organizations with AAD premium licenses or more complex security requirements.
+
+### Self-Service Password Reset (SSPR)
+SSPR is a feature in AAD that allows users to change or reset their password without admin/help desk involvement. SSPR works in the following scenarios:
+- Password change (password known but user wants to change it to something new)
+- Password reset - User can't sign in and wants to reset their password
+- Account unlock - User can't sign in because their account is locked out
+
+To use SSPR users must:
+- Be assigned an AAD license
+- Have SSPR be enabled by an admin
+- Be registered with the authentication methods they want to use. 2+ methods are recommended in case one is unavailable.
+
+SSPR supports the following authentication methods:
+- Mobile app notification
+- Mobile app code
+- Email
+- Mobile phone
+- Office phone
+- Security questions - note: users pick these from a set of questions and these can only be used during SSPR, they can't be used for authentication during a sign-in event. Admin accounts can't use them as a verification method with SSPR.
+
+### Password Protection and Management Capabilities of AAD
+Password Protection is an AAD feature that reduces the risk of users setting weak passwords by detecting and blocking known weak passwords and their variants. 
+- Global banned password list - A list automatically updated and enforced by Microsoft. Blocks weak or compromised passwords and their variations. Automatically applied and can't be disabled. Sourced from real-world, actual password spray attacks.
+- Custom banned password lists - Admins can create custom banned password lists that support their business. Feature of AAD P1 or P2. Should be focused on organizational-specific terms such as:
+  - Brand names
+  - Product names
+  - Locations, such as company headquarters
+  - Company-specific internal terms
+  - Abbreviations that have specific company meaning
+- Helps defend against password spray attacks[type of brute force dictionary attack] (which typically submit only a few of the known weakest passwords against each of the accounts in an enterprise). This attack allows an attacker to quickly search for an easily compromised account and avoid potential detection thresholds. AAD Password Protection blocks known weak passwords that are likely to be used in password spray attacks.
+- AAD Password Protection can be enabled within an on-premises AD environment. A component on-prem receives the global and custom banned password lists from AAD and domain controllers use them to process password change events.
 ## Conditional Access
 Conditional Access is a feature of AAD that provides an extra layer of security before allowing authenticated users to access data or other assets. It is implemented through policies created and managed in AAD. A Conditional Access policy analyses signals including user, location, device, application, and risk to automate authorization decisions.
 - User or group membership - Policies can be targeted to all users, specific groups of users, directory roles, or external guest users
