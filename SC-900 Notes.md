@@ -44,10 +44,11 @@
     - [Azure Key Vault](#azure-key-vault)
 - [Security Management Capabilties in Azure](#security-management-capabilties-in-azure)
   - [Cloud Security Posture Management (CSPM)](#cloud-security-posture-management-cspm)
-  - [Microsoft Defender for Cloud](#microsoft-defender-for-cloud)
+  - [Microsoft Defender for Cloud (formerly Azure Defender)](#microsoft-defender-for-cloud-formerly-azure-defender)
   - [Microsoft Sentinel](#microsoft-sentinel)
 - [Microsoft 365 Defender](#microsoft-365-defender)
-  - [Defender for Office 365 plans:](#defender-for-office-365-plans)
+  - [Defender for Office 365](#defender-for-office-365)
+    - [Defender for Office 365 plans:](#defender-for-office-365-plans)
   - [Microsoft Defender for Endpoint](#microsoft-defender-for-endpoint)
   - [Microsoft Defender for Cloud Apps](#microsoft-defender-for-cloud-apps)
   - [Microsoft Defender for Identity](#microsoft-defender-for-identity)
@@ -77,6 +78,7 @@
     - [Azure Policy](#azure-policy)
     - [Azure Blueprints](#azure-blueprints)
     - [Azure Purview](#azure-purview)
+- [Resouces](#resouces)
 
 # Shared responsibility model
 https://docs.microsoft.com/en-us/learn/wwl-sci/describe-security-concepts-methodologies/media/3-shared-responsibility-model.png
@@ -229,6 +231,7 @@ Password Protection is an AAD feature that reduces the risk of users setting wea
   - Abbreviations that have specific company meaning
 - Helps defend against password spray attacks[type of brute force dictionary attack] (which typically submit only a few of the known weakest passwords against each of the accounts in an enterprise). This attack allows an attacker to quickly search for an easily compromised account and avoid potential detection thresholds. AAD Password Protection blocks known weak passwords that are likely to be used in password spray attacks.
 - AAD Password Protection can be enabled within an on-premises AD environment. A component on-prem receives the global and custom banned password lists from AAD and domain controllers use them to process password change events.
+
 ## Conditional Access
 Conditional Access is a feature of AAD that provides an extra layer of security before allowing authenticated users to access data or other assets. It is implemented through policies created and managed in AAD. A Conditional Access policy analyses signals including user, location, device, application, and risk to automate authorization decisions.
 - User or group membership - Policies can be targeted to all users, specific groups of users, directory roles, or external guest users
@@ -357,7 +360,7 @@ WAF provides centralized protection for web apps from common exploits and vulns.
   - The same NSG can be associated with multiple subnets and network interfaces though.
 - NSGs are made up of inbound and outbound rules that are evaluated in priority order (with lower numbers being higher priority). The following properties are specified by each rule:
   - Name - NSG rules must be named uniquely
-  - Priority - Processing order for the rules. Once traffic finds a matching rule processing stops.
+  - Priority - Processing order for the rules. Once traffic finds a matching rule processing stops. The priority is a number between 100 and 4096 (with lower numbers meaning higher priority).
   - Source or destination: Specify either with an IP address (or range), service tags (group of IP address prefixes from a given Azure service), or application security group.
   - Protocol: The network protocol checked by the rule (TCP, UDP, ICMP, Any).
   - Direction: Inbound or outbound.
@@ -408,7 +411,7 @@ CSPM is a new class of tools designed to improve cloud security management. Asse
 - Technical policy to apply guardrails to enforce standards
 - Threat modeling
 
-## Microsoft Defender for Cloud
+## Microsoft Defender for Cloud (formerly Azure Defender)
 Microsoft Defender for Cloud is a CSPM tool. It allows you to continously assess your security posture, secure your resources, and defend against threats. It provides visibility into your current security and provides guidance for hardening.
 - Visibility is enabled by the Secure Score feature in Defender for Cloud. It allows you to tell how secure your applications are at a glance.
 - Hardening recommendations are shown in Defender for Cloud. The recommendations will improve your security score when all recommendations for a single resource within a control have been resolved.
@@ -470,20 +473,21 @@ Cost
 - Applications with Microsoft Defender for Cloud Apps
 - Email and collaboration with Microsoft Defender for Office 365 - Protects against emails, links, and protects collaboration tools (Teams, SharePoint Online, OneDrive for Business, other Office clients)
 
-Defender for Office 365 covers the following areas:
+## Defender for Office 365 
+Covers the following areas:
 - Threat protection policies
 - Reports - real time reports for Defender for Office 365
 - Threat investigation and response
 - Automated investigation and response
 
-## Defender for Office 365 plans:
+### Defender for Office 365 plans:
 - Microsoft Defender for Office 365 Plan 1
   - Safe attachments - Checks email attachments for malicious content
   - Safe links - Scans link before they're clicked so that malicious content is blocked
   - Safe Attachments for SharePoint, OneDrive, and Microsoft Teams - Protects from malicious files in collaboration tools
   - Anti-phishing protection
   - Real-time detections
-- Microsoft Defender for Office 365 Plan 1
+- Microsoft Defender for Office 365 Plan 2
   - Everything from Plan 1
   - Threat trackers for prevailing cybersecurity issues
   - Threat explorer - Real-time report for analyzing recent threats
@@ -523,7 +527,7 @@ Microsoft Defender for Cloud Apps is built on the following framework:
 - Assess your cloud app's compliance
 
 Microsoft Defender for Cloud Apps has the following features:
-- Cloud Discovery - Maps cloud apps your org uses
+- Cloud Discovery - Maps cloud apps your org uses (note: Cloud App Discovery is included in AAD Premium P1 at no extra cost)
 - Sanctioning and unsanctioning apps
 - App connectors to integrate cloud apps with Microsoft Defender for Cloud Apps
 - Conditional Access to cloud apps
@@ -771,11 +775,13 @@ Microsoft 365 provides two auditing solutions:
 ## Resource Governance
 ### Azure Policy
 - See AZ-900.
-- Designed to enforce standards and assess compliance across an org.Allows for bulk remediation for existing resources and automatic remediation for new resources.
+- Designed to enforce standards and assess compliance across an org. Allows for bulk remediation for existing resources and automatic remediation for new resources.
 
 ### Azure Blueprints
 - See AZ-900.
-- Provides a way to define a repeatable set of Azure resources and lets development teams rapidly provision and run new environments. 
+- Provides a way to define a repeatable set of Azure resources and lets development teams rapidly provision and run new environments.
+- Relationship between the blueprint definition (what should be deployed) and the blueprint assignment (what was deployed).
+- Supports improved tracking and auditing of deployments.
 
 ### Azure Purview
 Azure Purview is designed to address the issues of rapid growth of data and to help enterprises get the most value from their existing information assets.
@@ -786,3 +792,9 @@ Azure Purview is designed to address the issues of rapid growth of data and to h
 - Provides a Data Map that serves as the foundation for data discovery and data governance.
 - Provides a Data Catalog that lets business and technical users quickly find data by searching for it.
 - Provides Data Insights that allows data officers and security officers to get information on data that is actively scanned and where sensitive data is and how it moves.
+
+
+# Resouces
+https://docs.microsoft.com/en-us/learn/certifications/exams/sc-900
+
+https://www.youtube.com/watch?v=LLKza5oULAA
