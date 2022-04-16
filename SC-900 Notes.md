@@ -28,11 +28,12 @@
     - [Identity Lifecycle](#identity-lifecycle)
     - [Access Lifecycle](#access-lifecycle)
     - [Privileged Access Lifecycle](#privileged-access-lifecycle)
+  - [Entitlement Management](#entitlement-management)
   - [AAD Access Reviews](#aad-access-reviews)
   - [AAD Terms of User](#aad-terms-of-user)
   - [Privileged Identity Management (PIM)](#privileged-identity-management-pim)
   - [Azure Identity Protection](#azure-identity-protection)
-- [Security Capabilties in Azure](#security-capabilties-in-azure)
+- [Security Capabilities in Azure](#security-capabilities-in-azure)
   - [DDoS Protection](#ddos-protection)
   - [Azure Firewall](#azure-firewall)
   - [Web Application Firewall (WAF)](#web-application-firewall-waf)
@@ -42,7 +43,7 @@
   - [Just In Time (JIT) Access](#just-in-time-jit-access)
   - [Encryption](#encryption)
     - [Azure Key Vault](#azure-key-vault)
-- [Security Management Capabilties in Azure](#security-management-capabilties-in-azure)
+- [Security Management Capabilities in Azure](#security-management-capabilities-in-azure)
   - [Cloud Security Posture Management (CSPM)](#cloud-security-posture-management-cspm)
   - [Microsoft Defender for Cloud (formerly Azure Defender)](#microsoft-defender-for-cloud-formerly-azure-defender)
   - [Microsoft Sentinel](#microsoft-sentinel)
@@ -78,7 +79,7 @@
     - [Azure Policy](#azure-policy)
     - [Azure Blueprints](#azure-blueprints)
     - [Azure Purview](#azure-purview)
-- [Resouces](#resouces)
+- [Resources](#resources)
 
 # Shared responsibility model
 https://docs.microsoft.com/en-us/learn/wwl-sci/describe-security-concepts-methodologies/media/3-shared-responsibility-model.png
@@ -141,7 +142,7 @@ The Zero Trust model also has six pillars which work together to provide end-to-
   - Several users with the same access needs can be organized into groups (which can give access permissions to all members of the group instead of having to assign individual permissions).
   - AAD business-to-business (B2B) collaboration (a feature within External Identities) includes the capability to add guest users. This allows orgs to securely share apps and services with guest users from another org.
 - Service Principal - An identity for an application.
-  - Apps must first be registered with AAD to delegate its identity and access functions to AAD. Once registered, a service prinipal is created in each AAD tenant where the app is used.
+  - Apps must first be registered with AAD to delegate its identity and access functions to AAD. Once registered, a service principal is created in each AAD tenant where the app is used.
   - Enables core features such as authentication and authorization to resources secured by the AAD tenant.
 - Managed Identity - A type of service principal that are automatically managed in AAD and don't require devs to manage credentials.
   - Provide an identity for apps to use when connecting to Azure resources that support AAD authentication.
@@ -152,7 +153,7 @@ The Zero Trust model also has six pillars which work together to provide end-to-
   - AAD Registered Devices - Supports a bring your own device scenario. Users can access your org's resources using a personal device. AAD registered devices register to AAD without requiring an organization account to sign in to the device. Supported OSes: Windows 10 and above, iOS, Android, and macOS.
   - AAD Joined Devices - Device joined to AAD through an org account which is used to sign in to the device. AAD joined devices are generally owned by the org. These exist only in the cloud. Supported OSes: Windows 10 or greater (except Home edition) and Windows Server 2019 Virtual Machines running in Azure.
   - Hybrid AAD Joined Devices - Orgs with existing on prem AD can use this functionality. These devices are joined to your on-prem AD and AAD and require an organizational account to sign in to the device. Supported OSes: Windows 7, 8.1, 10, Windows Server 2008 or newer.
-  - Registering and joining devices to AAD gives users SSO to cloud-based resources. It also allows SSO to on-perm resources.
+  - Registering and joining devices to AAD gives users SSO to cloud-based resources. It also allows SSO to on-prem resources.
 
 
 ## External Identities
@@ -172,18 +173,18 @@ Hybrid identity is a solution which spans on-prem and cloud-based capabilities. 
 - Password access is the most common form of authentication, but they need to be augmented with more secure authentication methods available in AAD because of their many problems.
 
 ### Phone
-- SMS-based authentication - Text messages can be sent to users for authentication. With SMS the user doesn't need to know a username or password to acecss applications and services. They enter their registered phone number, receive a text with a verification code, and then enter the code. SMS may also be used as a secondary form of authentication during self-service password reset (SSPR) or AAD MFA.
+- SMS-based authentication - Text messages can be sent to users for authentication. With SMS the user doesn't need to know a username or password to access applications and services. They enter their registered phone number, receive a text with a verification code, and then enter the code. SMS may also be used as a secondary form of authentication during self-service password reset (SSPR) or AAD MFA.
 - Voice call verification - Users can receive a voice call as a secondary form of authentication. The number the user registered with is called and prompts the user to press the # key on their keypad to finish authentication. Voice calls are not supported as a primary form of authentication.
 
 ### OATH (Open Authentication)
-OATH is an open password that specifies how time-based, one-time password (TOTP) codes are generated. They can be used to authenticate a user. OATH is only supported as a secondary form of authentication for use in SSPR or AAD MFA.
+OATH is an open password standard that specifies how time-based, one-time password (TOTP) codes are generated. They can be used to authenticate a user. OATH is only supported as a secondary form of authentication for use in SSPR or AAD MFA.
 - Software OATH tokens - Typically applications. AAD generates a secret key (or seed) that's used by the app to generate each OTP.
 - OATH TOTP hardware tokens - Public preview. Small hardware devices that display a code that refreshes every 30 or 60 seconds. Typically come with a secret key (or seed) pre-programmed in the token. These details must be input into AAD and then activated for end-users.
 
 ### Passwordless Authentication
-- Windows Hello for Business - Replaces passwords with strong two-factor authentication on devices. This two-factor authentication is a combination of a key or cert tied to a device and something that the person knows (a PIN) or something that the person is (biometrics). Both options trigger the user of the private key to crptographically sign data that is sent to the identity provider. The IDP verifies the user's identity and authenticates the user. Windows Hello for Business serves as a primary form of authentication and can also be used as a secondary form of authentication during MFA.
-- FIDO2 - Fast Identity Online (FIDO) is an open standard for passwordless authentication. FIDO2 is the latest standard that incorporates the web authentication (WebAuthn) standard and is supported by Azure AD. FIDO2 security keys are an unphishable standards-based passwordless authentication method that can come in any form of factor. They are typically USB devices but can also be Bluetooth or NFC based devices. Can be used to sign in to AAD or hybrid AAD joined Windows 10 devices to get SSO to the cloud and on-prem resources. This serves as a primary form of authentication and can also be used as a secondary form of authentication during MFA.
-- Microsoft Authentication App - Can be used to sign in to an AAD account or as an additional verification option during SSPR or MFA. Users must download the app to their phone and register their account. Available on Android and iOs.
+- Windows Hello for Business - Replaces passwords with strong two-factor authentication on devices. This two-factor authentication is a combination of a key or cert tied to a device and something that the person knows (a PIN) or something that the person is (biometrics). Both options trigger the use of the private key to cryptographically sign data that is sent to the identity provider. The IDP verifies the user's identity and authenticates the user. Windows Hello for Business serves as a primary form of authentication and can also be used as a secondary form of authentication during MFA.
+- FIDO2 - Fast Identity Online (FIDO) is an open standard for passwordless authentication. FIDO2 is the latest standard that incorporates the web authentication (WebAuthn) standard and is supported by AAD. FIDO2 security keys are an unphishable standards-based passwordless authentication method that can come in any form factor. They are typically USB devices but can also be Bluetooth or NFC based devices. Can be used to sign in to AAD or hybrid AAD joined Windows 10 devices to get SSO to the cloud and on-prem resources. This serves as a primary form of authentication and can also be used as a secondary form of authentication during MFA.
+- Microsoft Authenticator App - Can be used to sign in to an AAD account or as an additional verification option during SSPR or MFA. Users must download the app to their phone and register their account. Available on Android and iOs.
 
 ### MFA in AAD
 MFA requires more than one form of verification to prove that an identity is legitimate. This protects a user even when their password is compromised. AAD MFA requires the following:
@@ -250,11 +251,11 @@ Access Controls refers to the decision made after a Conditional Access policy ha
 - Require one or more conditions:
   - Require MFA
   - Require a device to be marked as compliant
-  - Require hybrid AAD joiend device
+  - Require hybrid AAD joined device
   - Require approved client app
   - Require app protection policy
   - Require password change
-- Control user access based on session controls to enable limited experiences within specific cloud applications. Example: Conditional Access App Control uses signals from Microsoft Defender for Cloud Apps to block the download, cut, copy, and print capabilities for senstive documents or to require labeling of sensitive files.
+- Control user access based on session controls to enable limited experiences within specific cloud applications. Example: Conditional Access App Control uses signals from Microsoft Defender for Cloud Apps to block the download, cut, copy, and print capabilities for sensitive documents or to require labeling of sensitive files.
 
 
 ## AAD Roles and RBAC
@@ -288,10 +289,29 @@ Access lifecycle is the process of managing access throughout the user's organiz
 AAD Privileged Identity Management (PIM) provides extra controls tailored to securing access rights. PIM helps minimize the number of people who have access to resources across AAD, Azure, and other Microsoft online services. PIM is a feature of AAD Premium P2.
 
 
+## Entitlement Management
+Entitlement management is an identity governance feature that enables orgs to manage the identity and access lifecycle at scale. It automates access request workflows, access assignments, reviews, and expiration. It is used when orgs face the following challenges:
+- Users don't know what access they should have, or if they do know they can't find the right person to approve it.
+- Users may hold on to access for longer than is required for business purposes.
+- Managing access for external users.
+
+Entitlement management addresses these challenges with the following capabilities:
+- Delegate the creation of access packages to non-admins. These access packages contain resources that users can request. The delegated access package managers then define policies that include rules such as which users can request access, who must approve their access, and when access expires.
+- Managing external users. When a user who isn't yet in your directory requests access, and is approved, they're automatically invited into your directory and assigned access. When their access expires, if they have no other access package assignments, their B2B account in your directory can be automatically removed.
+
+Entitlement management is a feature of AAD Premium P2 and uses access packages to manage access to resources.
+
 ## AAD Access Reviews
 - Allows orgs to manage group memberships, access to enterprise apps, and role assignment
 - Access reviews can be created through AAD access reviews or AAD PIM.
 - Can be used to review and manage access for both users and guests.
+- Can be set up to require users to review their own access.
+
+Access reviews are helpful when:
+- You have too many users in privileged roles (like global administrator)
+- When automation isn't possible (like when HR data isn't in AAD)
+- You want to control business critical data access
+- Your governance policies require periodic reviews of access permissions
 
 ## AAD Terms of User
 AAD terms of use allows orgs to present terms to a user that they must accept before accessing data or an application. Conditional Access policies are used to require terms to be displayed and ensure that users agree to them before accessing an app.
@@ -323,7 +343,7 @@ The following user risks can be identified:
 - AAD threat intelligence - User activity that is unusual for the given user or is consistent with known attack patterns
 
 
-# Security Capabilties in Azure
+# Security Capabilities in Azure
 ## DDoS Protection
 Types of attacks:
 - Volumetric - Volume-based attacks that flood the network with seemingly legit traffic to overwhelm available bandwidth. Legit traffic can't get through. Measured in bits per second.
@@ -401,7 +421,7 @@ Key Vault is a centralized cloud service for storing application secrets with th
 - Support for secrets backed by HSMs.
 
 
-# Security Management Capabilties in Azure
+# Security Management Capabilities in Azure
 ## Cloud Security Posture Management (CSPM)
 CSPM is a new class of tools designed to improve cloud security management. Assess systems and alerts IT when vulns are found. CSPM uses a combination of the following tools and services:
 - Zero Trust based access control
@@ -412,7 +432,7 @@ CSPM is a new class of tools designed to improve cloud security management. Asse
 - Threat modeling
 
 ## Microsoft Defender for Cloud (formerly Azure Defender)
-Microsoft Defender for Cloud is a CSPM tool. It allows you to continously assess your security posture, secure your resources, and defend against threats. It provides visibility into your current security and provides guidance for hardening.
+Microsoft Defender for Cloud is a CSPM tool. It allows you to continuously assess your security posture, secure your resources, and defend against threats. It provides visibility into your current security and provides guidance for hardening.
 - Visibility is enabled by the Secure Score feature in Defender for Cloud. It allows you to tell how secure your applications are at a glance.
 - Hardening recommendations are shown in Defender for Cloud. The recommendations will improve your security score when all recommendations for a single resource within a control have been resolved.
 - Defender for Cloud is offered in two modes:
@@ -463,7 +483,7 @@ Sentinel's key features:
 - Community - Analysts create new workbooks, playbooks, hunting queries, etc. that are given to the community for your use
 
 Cost
-- Sentinal is available using capacity reservations (fixed fee for predictable costs) or pay as you go (billed per GB of data ingested for analysis in Sentinel and stored in the Azure Monitor Log Analytics workspace).
+- Sentinel is available using capacity reservations (fixed fee for predictable costs) or pay as you go (billed per GB of data ingested for analysis in Sentinel and stored in the Azure Monitor Log Analytics workspace).
 
 
 # Microsoft 365 Defender
@@ -513,7 +533,7 @@ Includes the following features:
 - Includes a Secure Score for Devices
 
 ## Microsoft Defender for Cloud Apps
-- Defender for Cloud Apps is a Cloud Access Security Broker (CASB). It provides visbility into cloud app usage and helps identify shadow IT. It allows you to control and protect data in sanctioned apps.
+- Defender for Cloud Apps is a Cloud Access Security Broker (CASB). It provides visibility into cloud app usage and helps identify shadow IT. It allows you to control and protect data in sanctioned apps.
 - CASB is a gatekeeper between enterprise user's and the cloud resources they use. It is composed of the following pillars:
   - Visibility into cloud services and apps and shadow IT
   - Threat protection and monitoring
@@ -682,13 +702,13 @@ DLP is a way to protect sensitive info and prevent its disclosure. With DLP admi
 - Help users learn how compliance works
 - View DLP reports
 
-DLP policies protect content through rule enforcement. The rules consit of:
+DLP policies protect content through rule enforcement. The rules consist of:
 - Conditions that the content must match
 - Actions that the admin wants the rule to do automatically
 - Locations where the policy will be applied
 
 ### Endpoint DLP
-Endpoint DLP is extending DLP to Windows 10 devices. Endpoitn DLP enables admins to audit activities that users perform on sensitive content.
+Endpoint DLP is extending DLP to Windows 10 devices. Endpoint DLP enables admins to audit activities that users perform on sensitive content.
 
 ### DLP in MS Teams
 DLP can be used in Teams to prevent users from sharing sensitive information through messages or files.
@@ -794,7 +814,7 @@ Azure Purview is designed to address the issues of rapid growth of data and to h
 - Provides Data Insights that allows data officers and security officers to get information on data that is actively scanned and where sensitive data is and how it moves.
 
 
-# Resouces
+# Resources
 https://docs.microsoft.com/en-us/learn/certifications/exams/sc-900
 
 https://www.youtube.com/watch?v=LLKza5oULAA
