@@ -47,6 +47,7 @@
   - [Cloud Security Posture Management (CSPM)](#cloud-security-posture-management-cspm)
   - [Microsoft Defender for Cloud (formerly Azure Defender)](#microsoft-defender-for-cloud-formerly-azure-defender)
   - [Microsoft Sentinel](#microsoft-sentinel)
+  - [Azure Security Benchmark and Security Baselines for Azure](#azure-security-benchmark-and-security-baselines-for-azure)
 - [Microsoft 365 Defender](#microsoft-365-defender)
   - [Defender for Office 365](#defender-for-office-365)
     - [Defender for Office 365 plans:](#defender-for-office-365-plans)
@@ -360,7 +361,7 @@ Azure DDoS Protection
 - Designed to help protect apps and servers by analyzing network traffic and discarding anything that looks like a DDoS attack.
 - Two tiers
   - Basic - Enabled automatically for every property in Azure at no extra cost. Has always-on traffic monitoring and real-time mitigation of common network-level attacks.
-  - Standard - Provides extra features tuned for VNet resources. 
+  - Standard - Provides extra features tuned for VNet resources. Requires no application changes. Protection policies are applied to public IP addresses (which are associated with resources deployed in VNets such as Azure Load Balancer and Application Gateway). This tier has a fixed monthly charge that includes protection for 100 resources. Additional resources are charged on a monthly per-resource basis.
 
 ## Azure Firewall
 Managed, cloud-based network security service that protects Azure VNets from attackers.
@@ -393,6 +394,7 @@ WAF provides centralized protection for web apps from common exploits and vulns.
   - Port range: Individual or range of ports.
   - Action: What happens when the rule is triggered.
 - NSGs come with default rules that cannot be removed, but they can be overridden.
+- NSGs and Azure Firewall complement each other for better defense-in-depth network security. NSGs provide distributed network layer ***within*** VNets in each subscription. Azure Firewall provides network and application-level protection ***across*** different subscriptions and VNets.
 
 
 ## Azure Bastion
@@ -409,7 +411,8 @@ WAF provides centralized protection for web apps from common exploits and vulns.
 
 ## Just In Time (JIT) Access
 - Used to restrict port access to VMs for selected ports.
-- When users need access to a VM, Defender for Cloud checks if a user has Azure RBAC permissions for the VM. If approved, Defender for Cloud modifies NSGs and Azure Firewall to allow inbound traffic to the selected ports from the relevant IP address (or range) for a specified amount of time. Afterwards, Defender for Cloud reverts the changes without interrupting established connections.
+- Uses Microsoft Defender for Cloud to ensure that "deny all inbound traffic" rules exist for the ports you've selected. If other rules already exist for those ports then they will take priority over these new rules.
+- When users need access to a VM, Microsoft Defender for Cloud checks if a user has Azure RBAC permissions for the VM. If approved, Microsoft Defender for Cloud modifies NSGs and Azure Firewall to allow inbound traffic to the selected ports from the relevant IP address (or range) for a specified amount of time. Afterwards, Microsoft Defender for Cloud reverts the changes without interrupting established connections.
 - JIT requires Microsoft Defender for servers to be enabled on the subscription.
 
 
@@ -430,9 +433,9 @@ Key Vault is a centralized cloud service for storing application secrets with th
 # Security Management Capabilities in Azure
 ## Cloud Security Posture Management (CSPM)
 CSPM is a new class of tools designed to improve cloud security management. Assess systems and alerts IT when vulns are found. CSPM uses a combination of the following tools and services:
-- Zero Trust based access control
-- Real time risk scoring
-- Threat and vulnerability management (TVM)
+- Zero Trust based access control - Considers the active threat level during access control decisions
+- Real time risk scoring - Provides visibility into top risks
+- Threat and vulnerability management (TVM) - View of org's attack surface and risk and integrates it into operations and engineering decision making
 - Discover risks to guard against data exposure
 - Technical policy to apply guardrails to enforce standards
 - Threat modeling
@@ -454,7 +457,7 @@ Microsoft Defender for Cloud is a CSPM tool. It allows you to continuously asses
   - Defender for Key Vault
   - Defender for Resource Manager
   - Defender for DNS
-  - Defender for open-source relational protection - Used for open-source relation databases
+  - Defender for open-source relational protection - Used for open-source relational databases
 - Defender for Cloud plans include the following enhanced security features:
   - Endpoint detection and response - included in Defender for servers
   - Vuln scanning for VMs
@@ -491,6 +494,22 @@ Sentinel's key features:
 Cost
 - Sentinel is available using capacity reservations (fixed fee for predictable costs) or pay as you go (billed per GB of data ingested for analysis in Sentinel and stored in the Azure Monitor Log Analytics workspace).
 
+## Azure Security Benchmark and Security Baselines for Azure
+Azure Security Benchmark (ASB) provides best practices and recommendations to help improve the security of workloads, data, and services on Azure. ASB is an Excel spreadsheet with each ASB containing the following:
+- ASB ID
+- Control domain - High-level feature or activity that isn't specific to a technology or implementation (network security, data protection, etc)
+- Mapping to industry frameworks such as CIS, NIST, or PCI DSS
+- Recommendations
+- Security principle - Each recommendation has a security principle that explains the "what" for the control at the technology-agnostic level
+- Azure Guidance - Focused on how controls should be implemented in Azure
+
+Security baselines apply ASBs to specific services. Security baselines help orgs strengthen their security through improved tooling, tracking, and security features. They provide orgs a consistent experience when securing their environment. Each security baseline includes the following information:
+- Azure ID - ASB ID that corresponds to the recommendation
+- Azure control - Content is grouped by control domain
+- Benchmark recommendation - Maps to the recommendation for the ASB ID
+- Customer guidance - The rationale for the recommendation and links on guidance on how to implement it
+- Responsibility - Who is responsible for implementing the control (customer, Microsoft, or shared)
+- Microsoft Defender for Cloud monitoring - Indicates if Microsoft Defender for Cloud monitors the control
 
 # Microsoft 365 Defender
 365 Defender is an enterprise defense suite which protects the following:
@@ -503,7 +522,7 @@ Cost
 Covers the following areas:
 - Threat protection policies
 - Reports - real time reports for Defender for Office 365
-- Threat investigation and response
+- Threat investigation and response (also simulations)
 - Automated investigation and response
 
 ### Defender for Office 365 plans:
@@ -512,7 +531,7 @@ Covers the following areas:
   - Safe links - Scans link before they're clicked so that malicious content is blocked
   - Safe Attachments for SharePoint, OneDrive, and Microsoft Teams - Protects from malicious files in collaboration tools
   - Anti-phishing protection
-  - Real-time detections
+  - Real-time detections for analyzing recent events
 - Microsoft Defender for Office 365 Plan 2
   - Everything from Plan 1
   - Threat trackers for prevailing cybersecurity issues
@@ -568,10 +587,10 @@ Uses on-prem AD data (called signals) to detect and investigate threats and mali
 
 ## Microsoft 365 Defender Portal
 The portal home page has content grouped into common cards in the following categories:
-- Identities
-- Data
-- Devices
-- Apps
+- Identities - Monitor the identities in your organization and keep track of suspicious or risky behaviors.
+- Data - Help track user activity that could lead to unauthorized data disclosure.
+- Devices - Get up-to-date information on alerts, breach activity, and other threats on your devices.
+- Apps - Gain insight into how cloud apps are being used in your organization.
 
 The portal home page can be tweaked to meet your org's needs.
 
