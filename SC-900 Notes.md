@@ -661,7 +661,7 @@ Compliance Manager is a feature in the Microsoft 365 compliance center that help
 Compliance Manager is composed of the following key elements:
 - Controls: A requirement of a reg, standard, or policy. Compliance Manager tracks the following types of controls:
   - Microsoft-managed controls - Controls which Microsoft is responsible for implementing
-  - Your controls (AKA customer-manager controls) - implemented by you
+  - Your controls (AKA customer-managed controls) - implemented by you
   - Shared controls - Responsibility is shared between you and Microsoft for implementing
 - Assessments: Grouping of controls from a specific reg, standard, or policy.
 - Templates: Templates provide a way to help admins quickly create assessments.
