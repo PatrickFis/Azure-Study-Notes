@@ -686,10 +686,10 @@ Compliance Manager is composed of the following key elements:
 - Microsoft Information Governance (MIG) manges your content lifecycle using solutions to import, store, and classify business-critical data.
 
 Both systems work together and have the following principles:
-- Know your data
-- Protect your data
-- Prevent data loss
-- Govern your data
+- Know your data - Organizations can understand their data landscape and identify important data across on-premises, cloud, and hybrid environments. Capabilities and tools such as trainable classifiers, activity explorer, and content explorer allow organizations to know their data.
+- Protect your data - Organizations can apply flexible protection actions including encryption, access restrictions, and visual markings.
+- Prevent data loss - Organizations can detect risky behavior and prevent accidental oversharing of sensitive information. Capabilities such as data loss prevention policies and endpoint data loss prevention enable organizations to avoid data loss.
+- Govern your data - Organizations can automatically keep, delete, and store data and records in a compliant manner. Capabilities like retention policies, retention labels, and records management enable organizations to govern their data.
 
 ## Data Classification
 Data can be classified using tools in the Microsoft 365 compliance center so that data is handled in line with compliance requirements. It provides the following tools:
@@ -711,7 +711,7 @@ Sensitivity labels can be configured to do the following:
 - Mark content when Office apps are used (add watermarks, headers, or footers)
 - Apply labels automatically in Office apps or recommend a label
 - Protect content in containers such as sites and groups
-- Extend sensitivity labels to third-party apps and services
+- Extend sensitivity labels to third-party apps and services through the Microsoft Information Protection SDK
 - Classify content without using any protection settings
 
 Label policies enable admins to:
@@ -816,6 +816,7 @@ eDiscovery is the process of identifying and delivering electronic info that can
 Microsoft 365 provides two auditing solutions:
 - Basic Audit - Provides the ability to log and search for audited activities. Can export audit records to a CSV file to allow for further analysis. Records are retained for 90 days.
 - Advanced Audit - Builds on Basic Audit and provides audit log retention policies and longer retention of audit records. Provides records of high-value events that can help organizations investigate possible security or compliance breaches and determine the scope of compromise.
+- It can take up to 30 minutes or up to 24 hours after an event occurs for the corresponding audit log record to be returned in the results of an audit log search.
 
 ## Resource Governance
 ### Azure Policy
