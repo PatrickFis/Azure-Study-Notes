@@ -30,7 +30,7 @@
     - [Privileged Access Lifecycle](#privileged-access-lifecycle)
   - [Entitlement Management](#entitlement-management)
   - [AAD Access Reviews](#aad-access-reviews)
-  - [AAD Terms of User](#aad-terms-of-user)
+  - [AAD Terms of Use](#aad-terms-of-use)
   - [Privileged Identity Management (PIM)](#privileged-identity-management-pim)
   - [Azure Identity Protection](#azure-identity-protection)
 - [Security Capabilities in Azure](#security-capabilities-in-azure)
@@ -314,7 +314,7 @@ Access reviews are helpful when:
 - You want to control business critical data access
 - Your governance policies require periodic reviews of access permissions
 
-## AAD Terms of User
+## AAD Terms of Use
 AAD terms of use allows orgs to present terms to a user that they must accept before accessing data or an application. Conditional Access policies are used to require terms to be displayed and ensure that users agree to them before accessing an app.
 
 
