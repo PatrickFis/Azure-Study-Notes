@@ -54,7 +54,7 @@ az webapp show \
 mkdir htmlapp
 cd htmlapp
 ```
-4. Clone this git repo insode the directory: git clone https://github.com/Azure-Samples/html-docs-hello-world.git
+4. Clone this git repo inside the directory: git clone https://github.com/Azure-Samples/html-docs-hello-world.git
 5. CD into the cloned directory
 6. Run the az webapp up command to set up the application
 ``` shell
@@ -76,7 +76,7 @@ az webapp up --location eastus --name patrickHtmlTestApp419 --html
   - Platform settings - Hosting platform config
     - Bitness - 32/64 bit
     - WebSocket protocol
-    - Always On - Keeys the app loaded even without traffic. By default apps are unloaded after 20 minutes of no incoming requests
+    - Always On - Keeps the app loaded even without traffic. By default apps are unloaded after 20 minutes of no incoming requests
     - Managed pipeline version - IIS pipeline mode
     - HTTP version
     - ARR affinity - Used in multi-instance deployments to ensure clients are routed to same instance throughout their session
@@ -189,7 +189,7 @@ az webapp up --location eastus --name patrickHtmlTestApp419 --html
   - Automatically encrypted
     - Uses AES256 transparently
     - Encryption keys can be managed by Microsoft. You can also manage your own keys or provide a key.
-  - Can be controled with AAD and RBAC
+  - Can be controlled with AAD and RBAC
   - Can be secured in transit to apps
   - Can encrypt OS and data disks
   - Supports delegated access
