@@ -233,12 +233,15 @@ https://docs.microsoft.com/en-us/learn/modules/work-azure-blob-storage/3-develop
 # Resources/Misc
 Azure Cloud Shell can be accessed directly at https://shell.azure.com/
 
+YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt
+
 Various things to install:
 - .NET SDK 5.0
 - .NET Core Tools
 - Azure CLI
 - VS Code Extensions
   - Azure Functions
+  - Azure Tools
   - C#
   - Azure Account
   - Azure CLI Tools
