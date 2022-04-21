@@ -113,5 +113,5 @@ az webapp up --location eastus --name patrickHtmlTestApp419 --html
 
 ## Deployment Slots
 - Deployment slots allow you to preview, manage, test, and deploy your different development environments. Apps can be deployed to non-prod slots and apps can be swapped between two deployment slots (including the prod slot).
-- App settings can be swaped, though this requires adding the WEBSITE_OVERRIDE_PRESERVE_DEFAULT_STICKY_SLOT_SETTINGS with a value of 0 or false to every slot of the app. Managed identities are never swapped. Settings and connection strings won't be swapped if they are set as a "Deployment slot setting."
+- App settings can be swapped, though this requires adding the WEBSITE_OVERRIDE_PRESERVE_DEFAULT_STICKY_SLOT_SETTINGS with a value of 0 or false to every slot of the app. Managed identities are never swapped. Settings and connection strings won't be swapped if they are set as a "Deployment slot setting."
 - By default traffic is routed to the prod slot when using the prod URL. This can be configured to send traffic to another slot. A percentage of traffic can be sent to the other slot. Sessions will be pinned to the slot using cookies (specifically the x-ms-routing-name cookie with a value of self for prod and a name of the environment for another slot). This can also be routed manually with a query parameter of the same name.

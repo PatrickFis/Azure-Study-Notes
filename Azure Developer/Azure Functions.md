@@ -13,7 +13,7 @@
 - The bindings property in the functions.json file are used to configure both triggers and bindings. Each binding requires a type, direction, and name.
 - Triggers are what cause a function to run. There can only be one. They define how a function is invoked. They can have associated data which can be provided as the payload of the function.
 - Bindings are a way of declaratively connecting another resource to the function and are input or output bindings (or both).
-- Developing a function app locally requires a number of tools to be installed. This section will be updated later.
+- Developing a function app locally requires a number of tools to be installed. The documentation can be found here: https://docs.microsoft.com/en-us/learn/modules/develop-azure-functions/5-create-function-visual-studio-code. The code is available in [Code/Azure Functions](Code/Azure%20Functions/) and uses .NET 6 instead of the version noted in the docs.
 
 ## Durable Functions
 - Durable Functions are an extension of Azure Functions that allow for stateful functions.
