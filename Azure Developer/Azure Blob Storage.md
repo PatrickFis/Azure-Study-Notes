@@ -58,3 +58,14 @@ az group delete --name az204-blob-patrick-rg --no-wait
 
 ## Working with blob storage
 https://docs.microsoft.com/en-us/learn/modules/work-azure-blob-storage/3-develop-blob-storage-dotnet has examples of using a .NET SDK for this.
+
+## Useful Commands
+Show a table of your storage accounts
+``` shell
+az storage account list --output table
+```
+
+Show the connection string for a storage account
+``` shell
+az storage account show-connection-string --name <name>
+```
