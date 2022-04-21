@@ -56,7 +56,7 @@ az group delete --name az204-blob-patrick-rg --no-wait
   - A priority can be set for the rehydration operation by using the x-ms-rehydrate-priority header. Standard priority may take up to 15 hours and high priority will be prioritized over standard and may complete in under an hour for objects under 10 GB in size.
   - Note that changing a blob's tier doesn't affect last modified times and can result in data being archived after rehydration.
 
-## Working with blob storage
+## Working with blob storage (come back and add documentation about .NET and REST)
 https://docs.microsoft.com/en-us/learn/modules/work-azure-blob-storage/3-develop-blob-storage-dotnet has examples of using a .NET SDK for this.
 
 ## Useful Commands

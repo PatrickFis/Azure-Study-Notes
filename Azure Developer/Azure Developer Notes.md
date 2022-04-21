@@ -22,7 +22,7 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Durable Functions
 
 ## Develop for Azure storage (15-20%)
-- Cosmos DB
+- Cosmos DB [Link](Azure%20Cosmos%20DB.md)
   - API/SDK usage
   - Partitioning
   - Data operations
