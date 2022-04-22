@@ -35,7 +35,7 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Storage policies, data archiving, retention
 
 ## Implement Azure security (20-25%)
-- User authN and authZ
+- User authN and authZ [Link](Azure%20User%20Authentication%20and%20Authorization.md)
   - AuthN and AuthZ using Microsoft Identity platform
   - AuthN and AuthZ using AAD
   - Shared access signatures
@@ -70,6 +70,8 @@ The Azure Developer certification covers a number of different areas (https://qu
 Azure Cloud Shell can be accessed directly at https://shell.azure.com/
 
 YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt
+
+Fixing Intellisense with Omnisharp in VS Code: https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
 
 Various things to install:
 - .NET SDK 5.0/6.0
