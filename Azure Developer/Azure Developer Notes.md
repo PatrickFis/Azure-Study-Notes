@@ -71,7 +71,7 @@ Azure Cloud Shell can be accessed directly at https://shell.azure.com/
 
 YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt
 
-Fixing Intellisense with Omnisharp in VS Code: https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
+Fixing Intellisense with OmniSharp in VS Code (solution: Ctrl+Shift+P -> OmniSharp: Select Project -> select the Azure Study Notes project): https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
 
 Various things to install:
 - .NET SDK 5.0/6.0
