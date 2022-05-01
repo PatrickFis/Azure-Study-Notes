@@ -40,7 +40,7 @@ The Azure Developer certification covers a number of different areas (https://qu
   - AuthN and AuthZ using AAD
   - Shared access signatures
   - Microsoft Graph
-- Secure cloud solutions
+- Secure cloud solutions [Link](Azure%20Secure%20Cloud%20Solutions.md)
   - Secure app config data with App Configuration or Azure Key Vault
   - Use keys, secrets, and certs in Azure Key Vault
   - Managed Identities
@@ -54,15 +54,15 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Analysis of metrics and log data
 
 ## Connect to and consume Azure services and third-party services (15-20%)
-- API Management
+- API Management [Link](Azure%20API%20Management.md)
   - APIM instances
   - Create and document APIs
   - API authN
   - Policies for APIs
-- Event-based solutions
+- Event-based solutions [Link](Azure%20Event%20Based%20Solutions.md)
   - Azure Event Grid
   - Azure Event Hub
-- Message-based solutions
+- Message-based solutions [Link (note that you need to finish the exercises for this and write some C# code)](Azure%20Message%20Based%20Solutions.md)
   - Azure Service Bus
   - Azure Queue Storage
 
@@ -72,6 +72,8 @@ Azure Cloud Shell can be accessed directly at https://shell.azure.com/
 YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt
 
 Fixing Intellisense with OmniSharp in VS Code (solution: Ctrl+Shift+P -> OmniSharp: Select Project -> select the Azure Study Notes project): https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
+
+Tables can be easily copied from the documentation using https://www.tablesgenerator.com/markdown_tables
 
 Various things to install:
 - .NET SDK 5.0/6.0
