@@ -49,7 +49,7 @@ The Azure Developer certification covers a number of different areas (https://qu
 - Caching
   - Cache and expiration policies for Azure Cache for Redis
   - Data sizing, connections, encryption, and expiration
-- Troubleshooting with metrics and log data
+- Troubleshooting with metrics and log data [Link](Azure%20Message%20Based%20Solutions.md)
   - Application Insights
   - Analysis of metrics and log data
 
