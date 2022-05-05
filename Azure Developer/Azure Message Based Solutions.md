@@ -66,7 +66,31 @@ Topics and subscriptions
 ### Service Bus message payloads and serialization
 It may just be better to read the documentation on MS Learn for this: https://docs.microsoft.com/en-us/learn/modules/discover-azure-message-queue/5-messages-payloads-serialization.
 
-### Interacting with Service Bus with C# (TODO)
+### Interacting with Service Bus with C# (Documentation [here](https://docs.microsoft.com/en-us/learn/modules/discover-azure-message-queue/6-send-receive-messages-service-bus))
+Create Azure resources using the following:
+``` bash
+myLocation=eastus
+myNameSpaceName=az204svcbus$RANDOM
+
+az group create --name az204-svcbus-patrick-rg --location $myLocation
+
+az servicebus namespace create \
+    --resource-group az204-svcbus-patrick-rg \
+    --name $myNameSpaceName \
+    --location $myLocation
+
+az servicebus queue create --resource-group az204-svcbus-patrick-rg \
+    --namespace-name $myNameSpaceName \
+    --name az204-queue    
+```
+Navigate to the service bus in the Azure portal, select Shared access policies, select the RootManageSharedAccessKey policy, and then copy the Primary Connection String for use in your code.
+
+The C# code for this can be found in [here](Code/Azure%20Service%20Bus/)
+
+After finishing you can delete the resource group.
+``` bash
+az group delete --name az204-svcbus-patrick-rg --no-wait
+```
 
 ## Azure Queue Storage
 Queues contain the following components
