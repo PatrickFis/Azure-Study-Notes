@@ -6,7 +6,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
-        static string connectionString = "Endpoint=sb://az204svcbus11752.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=2Tqzooj75w+UUwKiY1a6C/uShKBLQbkW52TuaENOTYA=";
+        static string connectionString = "primary connection string";
         static string queueName = "az204-queue";
         static ServiceBusClient client;
         static ServiceBusSender sender;

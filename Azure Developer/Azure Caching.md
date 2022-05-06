@@ -6,7 +6,7 @@
 Scenarios
 
 | Pattern                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Data cache               | Databases are often too large to load directly into a cache. It's common to use the cache-aside pattern to load data into the cache only as needed. When the system makes changes to the data, the system can also update the cache, which is then distributed to other clients.                                                                                                                                                                                                                                                 |
 | Content cache            | Many web pages are generated from templates that use static content such as headers, footers, banners. These static items shouldn't change often. Using an in-memory cache provides quick access to static content compared to backend datastores.                                                                                                                                                                                                                                                                               |
 | Session store            | This pattern is commonly used with shopping carts and other user history data that a web application might associate with user cookies. Storing too much in a cookie can have a negative effect on performance as the cookie size grows and is passed and validated with every request. A typical solution uses the cookie as a key to query the data in a database. Using an in-memory cache, like Azure Cache for Redis, to associate information with a user is much faster than interacting with a full relational database. |
@@ -16,7 +16,7 @@ Scenarios
 Service Tiers
 
 | Tier             | Description                                                                                                                                                                                                                       |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Basic            | An OSS Redis cache running on a single VM. This tier has no service-level agreement (SLA) and is ideal for development/test and non-critical workloads.                                                                           |
 | Standard         | An OSS Redis cache running on two VMs in a replicated configuration.                                                                                                                                                              |
 | Premium          | High-performance OSS Redis caches. This tier offers higher throughput, lower latency, better availability, and more features. Premium caches are deployed on more powerful VMs compared to the VMs for Basic or Standard caches.  |
@@ -34,8 +34,21 @@ Service Tiers
 - A time to live (TTL) can be applied to keys in Redis so that it expires
 - Clients can access Redis using the host name, port, and an access key. Two access keys are provided so that you can regenerate the primary key and have no downtime by switching your apps to use the secondary key.
 
-## Connecting to Redis using C# (TODO)
+## Connecting to Redis using C#
+Create a resource group and resources for Redis
+``` bash
+az group create --name az204-redis-patrick-rg --location eastus
 
+redisName=az204redis$RANDOM
+az redis create --location eastus \
+  --resource-group az204-redis-patrick-rg \
+  --name $redisName \
+  --sku Basic --vm-size c0
+```
+The code for interacting with Redis can be found [here](Code/Azure%20Redis/). When finished the resource group can be deleted.
+``` bash
+az group delete --name az204-redis-patrick-rg --no-wait
+```
 
 # Azure Content Delivery Network (CDN)
 - CDNs are distributed networks of servers used to efficiently deliver web content to users
