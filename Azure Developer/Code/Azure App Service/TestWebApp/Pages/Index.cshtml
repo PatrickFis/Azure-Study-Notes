@@ -1,0 +1,31 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div>
+    <table>
+        <thead>
+            <th>Course ID</th>
+            <th>Name</th>
+            <th>Rating</th>
+        </thead>
+        <!-- Unsure how exactly this should be handled in cshtml since generally I work through frameworks like Primefaces and try to avoid code like this. -->
+        <tbody>
+            @foreach (var item in Model.GetCourses())
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.CourseID)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CourseName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Rating)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
