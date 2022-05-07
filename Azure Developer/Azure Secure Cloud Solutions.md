@@ -102,7 +102,9 @@ Misc:
 2.  3f62c591-d1f0-4488-90d0-7f8bf3a5c276 secret ID
 
 ### API/SDK
-TODO - The link used for REST access also has an example for this.
+I added some of the Key Vault packages to [this](Code/Azure%20App%20Service/) and used it to retrieve a connection string.
+
+API documentation for the Azure Identity library that I used https://docs.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme.
 
 ## Additional Azure Key Vault Resources
 https://docs.microsoft.com/en-us/azure/key-vault/general/developers-guide

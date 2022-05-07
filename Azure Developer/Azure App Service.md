@@ -117,5 +117,24 @@ az webapp up --location eastus --name patrickHtmlTestApp419 --html
 - By default traffic is routed to the prod slot when using the prod URL. This can be configured to send traffic to another slot. A percentage of traffic can be sent to the other slot. Sessions will be pinned to the slot using cookies (specifically the x-ms-routing-name cookie with a value of self for prod and a name of the environment for another slot). This can also be routed manually with a query parameter of the same name.
 
 # Studying from Youtube [video here](https://www.youtube.com/watch?v=4ys2Y1rs4-I&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=4)
+## Development Notes
 - I'm going to continue using the resource group that was created for the initial webapp that was deployed using documentation from Microsoft Learn.
-- I'm spinning up a SQL database to utilize in the app because part of the exam expects you to understand connection strings. (Username: az204patrick, password: N#*Zn3i7vzUUBf)
+
+### SQL Server & Managed Identity
+- I'm spinning up a SQL database to utilize in the app because part of the exam expects you to understand connection strings. (Username: az204patrick)
+- Note that I started looking into the built in dependency injection provided by the framework in Program.cs (https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0 has more information about it).
+- At first I added the connection string to appsettings.json, and then moved it to the app service configuration in Azure. This doesn't work locally and I don't really want to commit my database password into Github, so I'm going to replace it with Key Vault.
+  - I enabled the system assigned identity for my Azure App Service and added the Key Vault Secrets User role to it. I had to create a new Key Vault int he same resource group so that I could use RBAC to access it, as the existing one that I had created while going through Microsoft Learn used a "Vault access policy" permission model and I was using it to retrieve values using Postman. I also had to grant myself the Key Vault Administrator role to work with the new Key Vault.
+  - I added the Azure.Security.KeyVault.Secrets and Azure.Identity packages to the app.
+  - I updated [this](Code/Azure%20App%20Service/TestWebApp/Services/CourseService.cs) with the code to retrieve secrets from the Key Vault.
+
+### App Configuration
+- I created a free App Configuration for the web app through the Azure portal.
+- I added the Microsoft.Extensions.Configuration.AzureAppConfiguration and Microsoft.FeatureManagement packages to my application.
+- I created a new [class](Code/Azure%20App%20Service/TestWebApp/Services/AppConfigService.cs) with the code needed to retrieve values from the config. I used Key Vault to store the connection string under the name AppConfigurationConnectionString.
+- I added a config value and displayed it on the index page.
+- I added a feature flag and used it to conditionally display a value on the index page.
+
+## Other notes (things I couldn't deal with like custom domains and SSL)
+- Custom domains can be added through the Azure portal's Custom domains section. You can add DNS records to verify that you own the domain, and then Azure will allow you use your domain.
+- TLS/SSL can be added through the TLS/SSL settings menu. You can provide your own certificates or you can have Azure generate some for you.

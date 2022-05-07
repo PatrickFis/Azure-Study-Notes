@@ -1,6 +1,8 @@
 using System;
 using System.Data.SqlClient;
 using System.Text;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using TestWebApp.Models;
 
 namespace TestWebApp.Services
@@ -9,7 +11,7 @@ namespace TestWebApp.Services
     {
         private IConfiguration config;
 
-        // configuration is passed through with dependency injection
+        // configuration is passed through with dependency injection, not currently used but it was used for retrieving the connection string for the database.
         public CourseService(IConfiguration configuration)
         {
             config = configuration;
@@ -17,7 +19,10 @@ namespace TestWebApp.Services
 
         private SqlConnection GetConnection()
         {
-            return new SqlConnection(config.GetConnectionString("SQLConnection"));
+            // Create a client to connect to the Key Vault. DefaultAzureCredential will use my Azure account locally and a managed identity in Azure when deployed.
+            var client = new SecretClient(new Uri("https://az204appservicekeyvault.vault.azure.net/"), new DefaultAzureCredential());
+            // Retrieve the connection string from the Key Vault
+            return new SqlConnection(client.GetSecret("SQLConnection").Value.Value);
         }
 
         public IEnumerable<Course> GetCourses()

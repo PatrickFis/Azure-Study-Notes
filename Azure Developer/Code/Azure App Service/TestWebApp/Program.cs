@@ -10,9 +10,8 @@ namespace TestWebApp
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            // Add the course service so it can be resolved with dependency injection
-            builder.Services.AddScoped<ICourseService, CourseService>();
-            builder.Services.AddScoped<IConfiguration>();
+            // Add services so that they can be resolved with dependency injection
+            builder.Services.AddScoped<ICourseService, CourseService>().AddScoped<IAppConfigService, AppConfigService>();
 
             var app = builder.Build();
 
