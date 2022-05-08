@@ -48,3 +48,8 @@
   - Critical sections - Orchestration instances are single threaded, but there can be race conditions when interacting with external systems. Critical sections can be defined programmatically.
   - Calling HTTP endpoints - Use activity functions to make HTTP calls and return the result to the orchestration
   - Passing multiple parameters
+
+
+# Studying from Youtube [video here](https://www.youtube.com/watch?v=Mo8dYQBx5ic&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=5)
+- I added a few functions to [Code/Azure Functions](Code/Azure%20Functions/) which connect to a SQL database and retrieve or add data.
+- I updated my [Code/Azure App Service](Code/Azure%20App%20Service/) code to call a function to retrieve values from the database.

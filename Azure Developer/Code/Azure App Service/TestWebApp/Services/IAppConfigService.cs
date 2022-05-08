@@ -7,5 +7,7 @@ namespace TestWebApp.Services
         string RetrieveDemoAppConfigSetting();
 
         Task<bool> IsDemoFlagEnabled();
+
+        Task<bool> IsFlagEnabled(string flagName);
     }
 }

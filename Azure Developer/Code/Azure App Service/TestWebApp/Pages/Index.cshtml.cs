@@ -25,7 +25,16 @@ public class IndexModel : PageModel
 
     public IEnumerable<Course> GetCourses()
     {
-        return _courseService.GetCourses();
+        if (_appConfigService.IsFlagEnabled("getCoursesFromFunction").GetAwaiter().GetResult())
+        {
+            _logger.LogInformation("Retrieved courses from function");
+            return _courseService.GetCoursesFromFunction().GetAwaiter().GetResult();
+        }
+        else
+        {
+            _logger.LogInformation("Retrieved courses from database");
+            return _courseService.GetCourses();
+        }
     }
 
     public string GetAppConfigValue()

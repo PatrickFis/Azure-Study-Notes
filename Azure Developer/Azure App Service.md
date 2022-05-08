@@ -134,6 +134,7 @@ az webapp up --location eastus --name patrickHtmlTestApp419 --html
 - I created a new [class](Code/Azure%20App%20Service/TestWebApp/Services/AppConfigService.cs) with the code needed to retrieve values from the config. I used Key Vault to store the connection string under the name AppConfigurationConnectionString.
 - I added a config value and displayed it on the index page.
 - I added a feature flag and used it to conditionally display a value on the index page.
+- I added a feature flag to retrieve courses from the database directly or go through an Azure Function.
 
 ## Other notes (things I couldn't deal with like custom domains and SSL)
 - Custom domains can be added through the Azure portal's Custom domains section. You can add DNS records to verify that you own the domain, and then Azure will allow you use your domain.

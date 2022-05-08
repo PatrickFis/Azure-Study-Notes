@@ -1,6 +1,6 @@
 using System;
 using System.Data.SqlClient;
-using System.Text;
+using System.Text.Json;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using TestWebApp.Models;
@@ -49,6 +49,19 @@ namespace TestWebApp.Services
 
             connection.Close();
             return courses;
+        }
+
+        // Retrieves courses from an Azure Function instead of directly going against the database.
+        public async Task<IEnumerable<Course>> GetCoursesFromFunction()
+        {
+            string functionUrl = "https://az204patrickfunction.azurewebsites.net/api/GetCourses?code=T4OvfG30RMJxrKoI6KyogxeUDeSVZPe0pfjco0u8WnnGAzFuVNf89g==";
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(functionUrl);
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<IEnumerable<Course>>(content);
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace My.Functions
 
             List<Course> courses = GetCoursesFromDatabase();
 
-            return new OkObjectResult(courses);
+            return new OkObjectResult(JsonConvert.SerializeObject(courses));
         }
 
         [FunctionName("AddCourse")]
