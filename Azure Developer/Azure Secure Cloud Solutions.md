@@ -177,5 +177,5 @@ The feature manager supports appsettings.json as a config source for feature fla
 }
 ```
 
-## Creating and using App Config (this needs fleshing out)
-TODO
+## Creating and using App Config
+There are examples of this in [Code/Azure App Service](Code/Azure%20App%20Service/).

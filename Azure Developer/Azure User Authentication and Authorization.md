@@ -104,3 +104,6 @@ Microsoft Graph is used to retrieve data from Microsoft 365, Windows 10, and Ent
 
 ## SDK Usage
 There are a variety of SDKs available to query Microsoft Graph.
+
+
+# Studying from Youtube [video here](https://www.youtube.com/watch?v=gb5yU0Gh9Kg&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=15)

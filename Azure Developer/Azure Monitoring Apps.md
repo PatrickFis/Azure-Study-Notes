@@ -59,3 +59,6 @@
 ### Application Map
 - Application Map lets you spot performance bottlenecks or failure hotspots across components in distributed apps
 - Clicking through visual data shows more detailed diagnostics from things like Application Insights events or Azure diagnostics
+
+
+# Studying from Youtube [video here](https://www.youtube.com/watch?v=7uZ8-_CsgkU&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=15)

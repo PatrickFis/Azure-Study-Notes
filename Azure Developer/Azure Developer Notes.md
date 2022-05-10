@@ -7,7 +7,7 @@ The Azure Developer certification covers a number of different areas (https://qu
 - Implement IaaS solutions [Link](Azure%20IaaS.md)
   - VMs
   - ARM
-  - Containers
+  - Containers (Note: ACI does not have a free tier)
 - Azure App Service Web Apps [Link](Azure%20App%20Service.md)
   - Creation
   - Diagnostics logging
@@ -46,7 +46,7 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Managed Identities
 
 ## Monitor, troubleshoot, and optimize Azure solutions (15-20%)
-- Caching
+- Caching (Note: Redis does not have a free tier)
   - Cache and expiration policies for Azure Cache for Redis
   - Data sizing, connections, encryption, and expiration
 - Troubleshooting with metrics and log data [Link](Azure%20Message%20Based%20Solutions.md)
@@ -54,14 +54,14 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Analysis of metrics and log data
 
 ## Connect to and consume Azure services and third-party services (15-20%)
-- API Management [Link](Azure%20API%20Management.md)
+- API Management [Link](Azure%20API%20Management.md) (Note: APIM allows for 1 million calls for free per month)
   - APIM instances
   - Create and document APIs
   - API authN
   - Policies for APIs
 - Event-based solutions [Link](Azure%20Event%20Based%20Solutions.md)
   - Azure Event Grid
-  - Azure Event Hub
+  - Azure Event Hub (Note: Event Hub does not have a free tier)
 - Message-based solutions [Link (note that you need to finish the exercises for this and write some C# code)](Azure%20Message%20Based%20Solutions.md)
   - Azure Service Bus
   - Azure Queue Storage
