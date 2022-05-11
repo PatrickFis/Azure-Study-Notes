@@ -50,6 +50,8 @@ The code for interacting with Redis can be found [here](Code/Azure%20Redis/). Wh
 az group delete --name az204-redis-patrick-rg --no-wait
 ```
 
+More code for interacting with Redis can be found [here](Code/Azure%20App%20Service/).
+
 # Azure Content Delivery Network (CDN)
 - CDNs are distributed networks of servers used to efficiently deliver web content to users
 - CDNs are located close to end users to minimize latency

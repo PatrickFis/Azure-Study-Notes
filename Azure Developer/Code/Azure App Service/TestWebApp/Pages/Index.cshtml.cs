@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using StackExchange.Redis;
+using System.Text.Json;
 using TestWebApp.Services;
 using TestWebApp.Models;
 
@@ -23,7 +25,32 @@ public class IndexModel : PageModel
 
     }
 
+    /// <summary>
+    /// Retrives courses from Redis if the courses are cached, otherwise retrieves them from the database or a function
+    /// </summary>
     public IEnumerable<Course> GetCourses()
+    {
+        using (var db = ConnectionMultiplexer.Connect(_appConfigService.RetrieveConnectionUrl("RedisConnectionString")))
+        {
+            IDatabase cache = db.GetDatabase();
+
+            if (cache.KeyExists("Courses"))
+            {
+                _logger.LogInformation("Retrieved courses from Redis");
+                return JsonSerializer.Deserialize<IEnumerable<Course>>(cache.StringGet("Courses"));
+            }
+            else
+            {
+                _logger.LogInformation("Retrieved courses from Azure and stored them in Redis");
+                IEnumerable<Course> result = GetCoursesFromAzure();
+                cache.StringSet("Courses", JsonSerializer.Serialize<IEnumerable<Course>>(result));
+                cache.KeyExpire("Courses", TimeSpan.FromMinutes(15));
+                return result;
+            }
+        }
+    }
+
+    private IEnumerable<Course> GetCoursesFromAzure()
     {
         if (_appConfigService.IsFlagEnabled("getCoursesFromFunction").GetAwaiter().GetResult())
         {

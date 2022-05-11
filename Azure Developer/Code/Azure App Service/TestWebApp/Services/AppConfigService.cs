@@ -18,6 +18,11 @@ namespace TestWebApp.Services
 
         public string RetrieveDemoAppConfigSetting()
         {
+            return RetrieveAppConfigSetting("demokey");
+        }
+
+        public string RetrieveAppConfigSetting(string setting)
+        {
             // Create a client to connect to the Key Vault. DefaultAzureCredential will use my Azure account locally and a managed identity in Azure when deployed.
             var client = new SecretClient(new Uri("https://az204appservicekeyvault.vault.azure.net/"), new DefaultAzureCredential());
             // Retrieve the connection string from the Key Vault and use it to retrieve a value from Azure App Configuration
@@ -25,10 +30,18 @@ namespace TestWebApp.Services
             builder.AddAzureAppConfiguration(client.GetSecret("AppConfigurationConnectionString").Value.Value);
 
             var appConfig = builder.Build();
-            string value = appConfig["demokey"];
+            string value = appConfig[setting];
             _logger.LogInformation(value);
 
             return value;
+        }
+
+        public string RetrieveConnectionUrl(string connection)
+        {
+            // Create a client to connect to the Key Vault. DefaultAzureCredential will use my Azure account locally and a managed identity in Azure when deployed.
+            var client = new SecretClient(new Uri("https://az204appservicekeyvault.vault.azure.net/"), new DefaultAzureCredential());
+            // Retrieve the connection string from the Key Vault
+            return client.GetSecret(connection).Value.Value;
         }
 
         public async Task<bool> IsDemoFlagEnabled()
