@@ -283,3 +283,19 @@ TODO
 3. Store the connection string in local.settings.json using the connection string name you configured in 1.1 (note that in the program file the connection string is referenced in the function method)
 4. Update the AzureWebJobsStorage setting in local.settings.json to the following: "AzureWebJobsStorage": "UseDevelopmentStorage=true". This will allow you to avoid setting up storage when running locally. Note that this isn't set by default and will cause errors until updated.
 5. Run the function and note the events sent earlier.
+
+## Interact with Event Hub using the Event Hub Processor library
+[Code here](Code/Visual%20Studio%20Projects/EventHub_Processor/)
+
+The Event Hub Processor is a dependency that gives you the ability to read events and keep track of what your program has read. It requires a storage account to save checkpoints in.
+
+1. Create a new console application in Visual Studio and add the Azure.Messaging.EventHubs.Processor and Azure.Storage.Blobs dependencies to it
+2. Create a Storage Account in Azure and create a container named eventhub inside it
+3. Store the connection strings for the listen policy from the Event Hub and the connection string for the storage account in the console app
+4. Use BlobContainerClient and EventProcessorClient to interact with Azure resources
+5. Run the program and note the events that are logged. You can view the container in the storage account to determine the checkpoint that the program got to. Running the program again without sending more events will not log anything.
+
+## Capturing events in Event Hub (note: capture is extremely expensive)
+1. Navigate to an Event Hub (specifically one using the standard pricing tier) and go to the capture section
+2. Enable capture and select a container to store the events in
+3. You can browse the files that were captured inside the container

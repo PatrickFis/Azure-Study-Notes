@@ -14,9 +14,15 @@ namespace EventHub
 
         static async Task Main(string[] args)
         {
-            //SendEvents();
+            SendEvents();
+
+            // Wait for user input after sending the events
+            Console.ReadKey();
 
             ReceiveEvents();
+
+            // Wait for user input so that the events can be read
+            Console.ReadKey();
         }
 
         static void SendEvents()
@@ -65,9 +71,6 @@ namespace EventHub
                 Console.WriteLine($"Partition Key {_event.Data.PartitionKey})");
                 Console.WriteLine($"Event Body {Encoding.UTF8.GetString(_event.Data.EventBody)}");
             }
-
-            // Wait for user input so that the events can be read
-            Console.ReadKey();
         }
     }
 }
