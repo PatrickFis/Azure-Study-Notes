@@ -234,9 +234,10 @@ Table generated from https://www.tablesgenerator.com/markdown_tables.
 
 
 # Studying from Youtube Event Grid [Link](https://www.youtube.com/watch?v=ekJFp3TJN14&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=17)
+TODO
 
 # Studying from Youtube Event Hubs [Link](https://www.youtube.com/watch?v=HwZldR8KlKM&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=18)
-##  Creating a new Event Hubs resource
+##  Creating a new Event Hubs resource (this is a somewhat expensive resource so I would recommend removing it when you're done using it)
 1. Go to the portal and start creating an Event Hubs resource
 2. Select a subscription and resource group
 3. Enter a name for the namespace and the other options
@@ -249,6 +250,7 @@ Table generated from https://www.tablesgenerator.com/markdown_tables.
 4. Create the Event Hub
 
 ## Interact with the Event Hub in a C# console application to send events
+[Code here](Code/Visual%20Studio%20Projects/EventHub/)
 1. Generate a console application as usual in Visual Studio.
 2. Add the Azure.Messaging.EventHubs dependency
 3. Navigate to the Shared access policies for the hub that you created in the previous step
@@ -265,9 +267,19 @@ Table generated from https://www.tablesgenerator.com/markdown_tables.
 14. Run the program
 
 ## Interact with the Event Hub in a C# console application to receive events (modify program from previous section)
+[Code here](Code/Visual%20Studio%20Projects/EventHub/)
 1. Using the existing Event Hub add another Shared access policy that allows for listening and store it in a variable in the program
 2. To receive events you need to use a consumer group and Event Hubs comes with a default consumer group of $Default that can be used
 3. Create an EventHubConsumerClient using the consumer group and connection string from step 1 and 2
 4. Receive the events using the client and print out information about them
 5. Run the program (and note that it can be run multiple times)
    1. Events are not deleted from Event Hubs as the point is to allow multiple readers to read the data at the same time. Events are instead deleted after the retention period expires.
+
+## Interact with the Event Hub in an Azure Function
+[Code here](Code/Visual%20Studio%20Projects/EventHubFunction/)
+1. Create a new Azure Function in Visual Studio using the Event Hub trigger
+   1. Specify a connection string name and the name of the Event Hub that you created earlier
+2. Create a new shared access policy for the function and give it the ability to manage the Event Hub
+3. Store the connection string in local.settings.json using the connection string name you configured in 1.1 (note that in the program file the connection string is referenced in the function method)
+4. Update the AzureWebJobsStorage setting in local.settings.json to the following: "AzureWebJobsStorage": "UseDevelopmentStorage=true". This will allow you to avoid setting up storage when running locally. Note that this isn't set by default and will cause errors until updated.
+5. Run the function and note the events sent earlier.
