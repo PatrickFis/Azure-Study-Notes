@@ -46,7 +46,7 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Managed Identities
 
 ## Monitor, troubleshoot, and optimize Azure solutions (15-20%)
-- Caching (Note: Redis does not have a free tier)
+- Caching (Note: Redis does not have a free tier) [Link](Azure%20Caching.md)
   - Cache and expiration policies for Azure Cache for Redis
   - Data sizing, connections, encryption, and expiration
 - Troubleshooting with metrics and log data [Link](Azure%20Message%20Based%20Solutions.md)
@@ -74,6 +74,8 @@ YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=P
 Fixing Intellisense with OmniSharp in VS Code (solution: Ctrl+Shift+P -> OmniSharp: Select Project -> select the Azure Study Notes project): https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
 
 Tables can be easily copied from the documentation using https://www.tablesgenerator.com/markdown_tables
+
+There are a variety of samples available on Github: https://github.com/Azure-Samples
 
 Various things to install:
 - .NET SDK 5.0/6.0

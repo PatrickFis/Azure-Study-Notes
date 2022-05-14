@@ -1,5 +1,5 @@
 # Microsoft Identity Platform
-The Microsoft identity platform for developers is a set of tools which includes authentication service, open-source libraries, and application management tools. The platform is make of several components
+The Microsoft identity platform for developers is a set of tools which includes authentication service, open-source libraries, and application management tools. The platform is made of several components
 - OAuth 2.0 and OpenID Connect standard-compliant authentication service
 - Open-source libraries
 - Application management portal for registration, configuration, and management
@@ -107,3 +107,23 @@ There are a variety of SDKs available to query Microsoft Graph.
 
 
 # Studying from Youtube [video here](https://www.youtube.com/watch?v=gb5yU0Gh9Kg&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=15)
+## Implementing OAuth in App Service
+[Github](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/tree/master/1-WebApp-OIDC) has a number of OAuth samples.
+
+1. Install two dependencies: Microsoft.Identity.Web and Microsoft.Identity.Web.UI
+2. Create a new app registration in AAD
+3. Add the following to your appsettings.json file (note: AzureAD can be whatever name you want):
+``` json
+  "AzureAD": {
+    "Instance": "https://login.microsoft.com/",
+    "TenantID": "replace me",
+    "ClientID": "replace me",
+    "CallbackPath": "/signin-oidc",
+    "SignedOutCallbackPath": "/signout-oidc"
+  }
+```
+4. In AAD go to the Authentication section of the app registration
+5. Click Add a platform and select Web
+6. Enter https://localhost:<port your app is listening on>/signin-oidc in the redirect URI input (can retrieve these values from launchSettings.json), and https://localhost:<port your app is listening on>/signout-oidc in the logout URL
+7. Check the ID tokens checkbox
+8. Follow along using the video or the sample code at https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/tree/master/1-WebApp-OIDC/1-1-MyOrg to get your application running and using OIDC
