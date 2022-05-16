@@ -19,6 +19,7 @@ class Program
         // Client to interact with Event Hubs
         EventProcessorClient eventClient = new EventProcessorClient(blobClient, consumerGroup, listenEventConnectionString);
 
+        // Register handlers
         eventClient.ProcessErrorAsync += OurErrorHandler;
         eventClient.ProcessEventAsync += OurEventsHandler;
 

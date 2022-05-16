@@ -234,7 +234,51 @@ Table generated from https://www.tablesgenerator.com/markdown_tables.
 
 
 # Studying from Youtube Event Grid [Link](https://www.youtube.com/watch?v=ekJFp3TJN14&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=17)
-TODO
+## Setting up Event Grid
+1. Create a new resource group with a storage account in it
+2. Create a new container in the storage account that will be used to send events
+3. Create a new Azure Function and set up an Event Grid trigger
+4. Navigate to the Events section on the storage account and create a new subscription for blob events that sends events to the Azure Function in step 3
+5. Upload or delete a file in the container created in step 2 while viewing the Azure Function's log stream and note the information output by the function
+
+## Event Grid Filters
+- Filters can be added while creating an event subscription or afterwards by navigating to the subscription and clicking on the filter button
+- To add simple filtering on things like file type you can enable subject filtering and specify what the subject ends with
+- Similarly, you can apply filtering for data stored in specific containers by using the subject begins with filter
+
+## Events at the Resource Group level
+- Event subscriptions can also be created on Resource Groups
+- These events are for writing, deleting, and actions taken at the Resource Group level
+
+## Custom Topics
+[Code here](Code/Visual%20Studio%20Projects/EventGridCustomTopicPublisher/)
+1. Custom topics can be created by creating a Event Grid Topic resource
+2. Generate a console application as usual in Visual Studio
+3. Add the Azure.Messaging.EventGrid dependency
+4. Create a Uri with the endpoint of the custom topic that you created for step 1
+5. Create an AzureKeyCredential using an access key from the custom topic you created for step 1
+6. Create a new POJO style class
+7. Create an instance of your class
+8. Store it in a List of EventGridEvents
+   1. Add a subject, an event type, an event version, and a serialized form of your object to the list
+9. Use EventGridPublisherClient to send the list of events
+10. Create a subscription on the event and send it somewhere (ideally an Azure Function that you can create directly in the portal, see [Azure Function for logging event data](#azure-function-for-logging-event-data))
+
+
+## Azure Function for logging event data
+This Function can be created in the UI and be used as a target for events to be sent to.
+``` C#
+#r "Microsoft.Azure.EventGrid"
+using Microsoft.Azure.EventGrid.Models;
+
+public static void Run(EventGridEvent eventGridEvent, ILogger log)
+{
+    log.LogInformation(eventGridEvent.Data.ToString());
+    log.LogInformation($"Event type: {eventGridEvent.EventType}");
+    log.LogInformation($"Event ID: {eventGridEvent.Id}");
+    log.LogInformation($"Event subject: {eventGridEvent.Subject}");
+}
+```
 
 # Studying from Youtube Event Hubs [Link](https://www.youtube.com/watch?v=HwZldR8KlKM&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=18)
 ##  Creating a new Event Hubs resource (this is a somewhat expensive resource so I would recommend removing it when you're done using it)
@@ -251,7 +295,7 @@ TODO
 
 ## Interact with the Event Hub in a C# console application to send events
 [Code here](Code/Visual%20Studio%20Projects/EventHub/)
-1. Generate a console application as usual in Visual Studio.
+1. Generate a console application as usual in Visual Studio
 2. Add the Azure.Messaging.EventHubs dependency
 3. Navigate to the Shared access policies for the hub that you created in the previous step
 4. Click + Add to add a new policy
@@ -295,7 +339,7 @@ The Event Hub Processor is a dependency that gives you the ability to read event
 4. Use BlobContainerClient and EventProcessorClient to interact with Azure resources
 5. Run the program and note the events that are logged. You can view the container in the storage account to determine the checkpoint that the program got to. Running the program again without sending more events will not log anything.
 
-## Capturing events in Event Hub (note: capture is extremely expensive)
+## Capturing events in Event Hub (note: capture gives extremely pricey estimates even though it's supposed to be free)
 1. Navigate to an Event Hub (specifically one using the standard pricing tier) and go to the capture section
 2. Enable capture and select a container to store the events in
 3. You can browse the files that were captured inside the container
