@@ -100,3 +100,22 @@ Queues contain the following components
 - Message - A message, in any format, up to 64 KB. Can include a TTL of any positive number, -1 to indicate it doesn't expire, or be omitted to default to to 7 days.
 
 ### Interacting with Azure Queue Storage with C# (TODO)
+
+
+
+# Studying from Youtube Service Bus [Link](https://www.youtube.com/watch?v=LbzZLkmO_WE&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=16)
+Create a standard tier Service Bus namespace so that topics and queues can be created. Also, Service Bus is similar to Event Hub but the messages are deleted after being received. Basically think of JMS.
+
+## Using Queues from the Azure Portal
+1. Create a queue using the Azure portal or the CLI inside your Service Bus namespace
+2. Navigate to the queue
+3. Click on Service Bus Explorer (preview feature, may or may not be on exam)
+4. Use this tool to send, receive, and peek at messages
+
+## Using Queues with C#
+[Code here](Code/Visual%20Studio%20Projects/ServiceBusQueues/)
+1. Create a new console application in Visual Studio as normal
+2. Add the Azure.Messaging.ServiceBus dependency
+3. Create a ServiceBusClient using connection strings retrieved from shared access policies that allow you to send and receive messages
+4. Use ServiceBusSender to send messages and ServiceBusReceiver to receive them
+   1. Note that ServiceBusSender has a constructor which takes ServiceBusReceiverOptions as a parameter. This parameter allows you to specify if the receiver should peek at messages or if it should receive and delete them.
