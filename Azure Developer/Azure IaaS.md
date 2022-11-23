@@ -3,20 +3,43 @@
 ## Availability
 VMs have various options for ensuring availability
 
-### Availability zones
+### Availability zones [MS Documentation on regions and availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?context=%2Fazure%2Fvirtual-machines%2Fcontext%2Fcontext)
 Physically separate zones within an Azure region. Combo of a fault domain and an update domain.
 -  Fault domains - Logical group of underlying hardware similar to a rack in an on-prem datacenter. VMs created in Azure are distributed across fault domains to minimize the impact of hardware failures.
 -  Update domains - Logical group of underlying hardware that can undergo maintenance or rebooted at the same time. Azure distributes your VMs over update domains so that at least one instance is up at a time.
 -  HA made possible through the following
    -  Zonal services - Resource pinned to a specific zone
    -  Zone-redundant services - Azure replicates things across zones
-- Availability Sets - Logical grouping of VMs used by Azure to provide redundancy and availability to your application. Composed of fault domains and update domains.
 
-### VM Scale Sets
-Group of load balanced VMs. VM instances increase or decrease in response to demand or on a defined schedule.
+### Availability Sets [MS Documentation on availability sets](https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview)
+Logical grouping of VMs used by Azure to provide redundancy and availability to your application. Composed of fault domains and update domains. 
+- No cost to availability sets themselves. The costs come from each VM instance that you create.
+- Availability sets can be configured with up to 3 fault domains and 20 update domains.
+- Fault Domain: Groups of VMs that share a common power source and network switch. Similar to a rack in an on-prem datacenter.
+  - Limits the impact of hardware failures.
+  - Disk fault domains are used for managed disks that are attached to VMs (the disks are within the same fault domain). Note that VMs with managed disks can only be created in a managed availability set with the number of managed disk fault domains varying by region.
+- Update Domain: Groups of VMs and underlying physical hardware that can be rebooted at the same time. 
+  - The order that they are rebooted during planned maintenance may not be sequential.
+  - Only one domain is rebooted at a time. A domain is given 30 minutes to recover before maintenance proceeds to the next one.
+  - Example of usage with 5 update domains: 6th VM created goes in the first domain, 7th in the second, and so on.
 
-### Load Balancer
+### VM Scale Sets [MS Documentation on VM scale sets](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview?context=%2Fazure%2Fvirtual-machines%2Fcontext%2Fcontext)
+- Group of load balanced VMs. VM instances increase or decrease in response to demand or on a defined schedule.
+- Benefits
+  - Easy to create and manage multiple VMs
+    - Maintains a consistent config across VMs
+  - Provides high availability by using availability zones and sets
+  - Automatic scaling
+  - Large-scale
+    - Supports up to 1000 VM instances for standard marketplace and custom images. Note that using a managed image that the limit is reduced to 600 VM instances.
+- Two modes: Uniform and Flexible [Documentation](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-orchestration-modes)
+- Supports the use of Azure load balancer for layer-4 traffic distribution and Azure Application Gateway for layer-7 traffic distribution and TLS termination.
+
+### Load Balancer [MS Documentation on Azure Load Balancer](https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-overview)
 Azure Load Balancer is a layer 4 (TCP, UDP) load balancer that distributes incoming traffic among healthy VMs.
+- Layer 4 of the OSI model is the single point of contact for clients.
+- Public load balancers provide outbound connections for VMs inside your virtual network. Used to balance internet traffic to your VMs.
+- Internal or private load balancers are used to balance traffic inside a virtual network. Can be connected to from an on-prem network in a hybrid scenario.
 
 ## VM Sizing
 | VM Type                  | Description                                                                            |
@@ -65,7 +88,7 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
 - Results are repeatable using templates
 - ARM orchestrates ordering operations for you
 
-## Templates
+## Templates [MS Documentation on Template Functions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions)
 - Template files can be written to extend JSON and use functions provided by ARM. Templates have the following sections
   - Parameters - Allows templates to be used in different environments
   - Variables - Can be constructed from parameters
@@ -112,7 +135,7 @@ Code can be found in [Code/Azure ARM](Code/Azure%20ARM/)
 https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions
 
 
-# Container Registry
+# Container Registry [MS Documentation on ACR](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-intro)
 Azure Container Registry (ACR) is a managed, private Docker registry. It can support CI/CD pipelines and build automation.
 
 ACR allows for deployments to various targets
@@ -121,8 +144,8 @@ ACR allows for deployments to various targets
 
 ACR has three tiers
 - Basic - Cost optimized with throughput suited for lower usage
-- Standard - Same capabilities as basic but with more throughput
-- Premium - Highest amount of throughput and features like geo-replication, content trust, and private links
+- Standard - Same capabilities as basic but with more storage and throughput
+- Premium - Highest amount of storage and throughput and features like geo-replication, content trust, and private links
 
 ACR supports the following images and artifacts
 - Windows and Linux Docker images
@@ -135,18 +158,21 @@ ACR supports the following images and artifacts
 - Availability zones are used for Premium registries
 - Repos, images, layers, and tags can be created up to the registry storage limit
 
-## Tasks
+## ACR Tasks
 ACR Tasks is a feature suite within ACR.
 - Used for image building and automated patching for Docker containers
 - Used for automated builds from source code updates, updates to a container's base image, or timers
 
 The following tasks are supported
 - Quick task - Builds and pushes a single container image to a registry on demand (docker build and docker push in the cloud)
+  - Can be used to provide an integrated development environment by offloading container image builds to Azure
 - Automatically triggered tasks triggered by the following
   - Source code updates
   - Base image updates
   - Schedule
 - Multi-step task - Specify build and push operations for one or more containers in a YAML file
+
+Each ACR Task has an associated source code context (the location of the source required to build the container image like a Git repo or a local filesystem).
 
 ## Creating an ACR and building and running an image using tasks
 https://docs.microsoft.com/en-us/learn/modules/publish-container-image-to-azure-container-registry/6-build-run-image-azure-container-registry
@@ -177,10 +203,10 @@ az group delete --name az204-acr-rg-patrick --no-wait
 ```
 
 
-# Azure Container Instances (ACI)
+# Azure Container Instances (ACI) [MS Documentation on ACI](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview)
 ACI offers a simple and fast way to run a container in Azure without managing VMs or higher-level services. It's a good solution with the following benefits
-- Fast startup
-- Container access - Containers are given an IP address and a FQDN
+- Fast startup - Containers can start quickly since you don't need to deal with provisioning a VM
+- Container access - Containers are given an IP address and a FQDN so they can be exposed directly to the internet
 - Apps are isolated as they would be in a VM
 - The minimum amount of customer data is stored to run the container
 - ACI allows CPU cores and memory to be specified
