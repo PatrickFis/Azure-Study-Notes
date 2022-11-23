@@ -1,9 +1,10 @@
-# Azure App Service
+# Azure App Service [MS Documentation for Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/overview)
 - Service for hosting web apps, REST APIs, mobile back ends.
 - Supports lots of languages
 - Has built in support to scale up/down or out/in. Can scale CPU cores and RAM as well as machine instances running app.
+- Provides support for CI/CD out-of-the-box using Azure DevOps, GitHub, Bitbucket, FTP, or a local Git repo on a development machine.
 
-## Azure App Service Plans
+## Azure App Service Plans [MS Documentation for App Service Plans](https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans)
 - A plan defines a set of compute resources for an app to run in. One or more apps can use the same resources/plan. Azure Functions can also run in a plan.
 - Plans define the region, amount and size of VMs, and the pricing tier.
 - Pricing tier categories
