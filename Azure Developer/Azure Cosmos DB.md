@@ -1,4 +1,4 @@
-# Cosmos DB
+# Cosmos DB [MS Documentation on Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/introduction)
 Cosmos DB is a globally distributed database that is designed for low latency and elastic scalability. It has a 99.999% read and write availability SLA.
 
 ## Resource Hierarchy
@@ -13,24 +13,39 @@ Cosmos DB is a globally distributed database that is designed for low latency an
     - Dedicated provisioned throughput mode - Throughput is reserved for that container and backed by SLAs
     - Shared provisioned throughput mode - Throughput is shared with other containers in the same database
   - Containers are schema agnostic containers of items
+    - Items can represent a document in a collection, a row in a table, or a node or edge in a graph. This depends on the API you're using to interact with Cosmos.
     - Items with different schemas can be placed in the same container
     - All items in a container are automatically indexed without requiring explicit indexes or schema management
 - An Azure Cosmos database is the unit of management for a set of Cosmos containers
   - Databases are analogous to namespaces
 
-## Consistency Levels (this needs more info than what MS learn provides)
+## Consistency Levels (reference MS Documentation for more info) [MS Documentation on Consistency Levels](https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels)
 - Cosmos DB provides five different consistency options and custom options as well
   - Strong
+    - Offers a linearizability (meaning servicing requests concurrently) guarantee.
+    - Reads are guaranteed to return the most recent committed version of an item.
+    - Clients never see uncommitted or partial writes.
   - Bounded staleness
     - Recommended for apps requiring strong consistency
+    - Reads are guaranteed to honor the consistent-prefix guarantee. Reads might lag behind writes by at most "K" versions (aka "updates") of an item or by "T" time interval, whichever is reached first.
+    - Reads performed within a region that accepts writes offers consistency identical to strong consistency
+    - As the staleness window approaches the service will throttle new writes to allow replication to catch up and honor the consistency guarantee.
   - Session
     - Recommended for many real world scenarios
+    - Provides write latencies, availability, and read throughput similar to eventual consistency while also offering consistency guarantees that suit the needs of applications that operate in the context of a user.
   - Consistent prefix
+    - Updates made as single document writes see eventual consistency.
+    - Updates made as a batch within a transaction are returned consistent to the transaction in which they are committed.
+    - Write operations within a transaction of multiple documents are always visible together.
   - Eventual
+    - No ordering guarantee for reads. Without further writes the replicas eventually converge.
+    - Ideal when an application does not require ordering guarantees (like Retweets, likes, or non-threaded comments).
+
+
 
 ## Supported APIs
 Various APIs allow your applications to treat Cosmos DB like it was another database technology without management overhead.
-- Core(SQL) API
+- API for NoSQL
   - Features are available in this API first
   - Data is stored in document format
   - Provides query support through SQL
@@ -40,6 +55,9 @@ Various APIs allow your applications to treat Cosmos DB like it was another data
 - Cassandra API
   - Stores data in a column-oriented schema
   - Apache Cassandra client drivers can use this API to interact with Cosmos
+- PostgreSQL API
+  - Managed service running PostgreSQL at any scale using Citus open source for distributed tables
+  - Stores data either ona  single node or distributed in a multi-node configuration
 - Table API
   - Stores data in a key/value format
   - Has limitations in latency, scaling, throughput, global distribution, index management, and low query performance
@@ -49,13 +67,18 @@ Various APIs allow your applications to treat Cosmos DB like it was another data
   - Graph queries
   - Used with data too complex for relational databases
   - Only supports OLTP scenarios
+- Table API
+  - Stores values in key/value pairs
+  - If you're already using Azure Table storage you may have limitations in latency, scaling, throughput, global distribution, index management, and low query performance which are mitigated by this API.
+  - Only supports OLTP scenarios
+
 
 ## Request Units
 - The cost of database operations is expressed by request units (RUs)
 - Represents system resources (SPU, IOPS, memory)
 - The cost to do a point read of a single 1 KB item is 1 RU
 - RUs are charged in three different ways depending on the type of Cosmos account you've created
-  - Provisioned throughput mode - You select how many RUs you want in increments of 100
+  - Provisioned throughput mode - You select how many RUs you want in increments of 100. Changes can be made programmatically or through the Azure portal. Throughput is provisioned at container and database granularity level.
   - Serverless mode - You get billed for however many RUs you consumed at the end of your billing period
   - Autoscale mode - Allows RU scaling based on usage
 
