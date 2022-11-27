@@ -77,6 +77,8 @@ Tables can be easily copied from the documentation using https://www.tablesgener
 
 There are a variety of samples available on Github: https://github.com/Azure-Samples
 
+Labs are available here: https://microsoftlearning.github.io/AZ-204-DevelopingSolutionsforMicrosoftAzure/
+
 Various things to install:
 - .NET SDK 5.0/6.0
 - .NET Core Tools
