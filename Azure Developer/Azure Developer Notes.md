@@ -4,10 +4,10 @@ The exam will require knowledge of C# or Python
 The Azure Developer certification covers a number of different areas (https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4oZ7B):
 
 ## Develop Azure compute solutions (25-30%)
-- Implement IaaS solutions [Link](Azure%20IaaS.md)
-  - VMs
-  - ARM
-  - Containers (Note: ACI does not have a free tier)
+- Implement IaaS solutions
+  - VMs [Link](Azure%20IaaS%20-%20VMs.md)
+  - ARM [Link](Azure%20IaaS%20-%20ARM.md)
+  - Containers (Note: ACI does not have a free tier) [Link](Azure%20IaaS%20-%20Containers.md)
 - Azure App Service Web Apps [Link](Azure%20App%20Service.md)
   - Creation
   - Diagnostics logging
