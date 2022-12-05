@@ -140,3 +140,44 @@ az webapp up --location eastus --name patrickHtmlTestApp419 --html
 ## Other notes (things I couldn't deal with like custom domains and SSL)
 - Custom domains can be added through the Azure portal's Custom domains section. You can add DNS records to verify that you own the domain, and then Azure will allow you use your domain.
 - TLS/SSL can be added through the TLS/SSL settings menu. You can provide your own certificates or you can have Azure generate some for you.
+
+
+# Studying from Udemy
+An App Service Plan was created using the following settings (note: the app service plan will be deleted when not in use since it's fairly expensive):
+- OS: Windows
+- Region: East US
+- Pricing Plan: Standard S1
+
+A web app was created with the following settings (note: you won't be able to publish from Visual Studio without this, even if you have an App Service Plan):
+- Publish: Code
+- Runtime stack: .NET 6 (LTS)
+- OS: Windows
+- Region: East US
+- Application Insights: No
+
+The application published to the app service is stored [here](Code/Visual%20Studio%20Projects/UdemyWebApp/).
+
+## Connecting the app to a SQL Server instance
+- An existing SQL database was reused for this. The password was reset and stored in a connection string to try out the App Service's configuration settings for connection strings.
+
+
+## Logging
+- Logs were temporarily enabled to test out log streaming. This was done through the Azure portal.
+- The app service can log to storage associated with the managed service hosting the app service.
+
+## Deployment Slots
+- A deployment slot named staging was created from the portal
+  - App Service -> Deployment section -> Deployment slots
+- A small tweak was made to the app's index page and deployed to the staging deployment slot to try out the feature
+  - The swapping feature was also tested. This let me swap my staging version into the production slot.
+- A second SQL database was provisioned to test out deployment slot settings.
+  - The connection string configured for the SQL database the app is using was updated to be a deployment slot setting. This allowed me to specify a specific connection string for my staging slot to use. Swapping staging and production showed that the app would display the correct data from the database each slot was supposed to connect to.
+
+## App Configuration
+- I already have a free app config in another resource group so I'm reusing that.
+- Using this resource required updates to my application.
+  - I needed to add a dependency on Microsoft.Extensions.Configuration.AzureAppConfiguration.
+  - Features flags required Microsoft.FeatureManagement.AspNetCore.
+  - Program.cs needed to be updated to tell the builder to use the app config as well as to enable feature flags.
+    - I stored the connection string for the app config inside a connection string setting in the app service's configuration so that I could avoid hardcoding it.
+  - The service the program uses for retrieving data was updated to get a connection string for the SQL server from the app config as well as a method to check a feature flag.
