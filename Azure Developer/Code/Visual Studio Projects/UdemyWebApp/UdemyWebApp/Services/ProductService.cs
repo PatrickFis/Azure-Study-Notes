@@ -1,4 +1,5 @@
 ﻿using Microsoft.FeatureManagement;
+using Newtonsoft.Json;
 using System.Data.SqlClient;
 using UdemyWebApp.Models;
 
@@ -24,32 +25,12 @@ namespace UdemyWebApp.Services
             return false;
         }
 
-        public List<Product> GetProducts()
+        public async Task<List<Product>> GetProducts()
         {
-            SqlConnection conn = GetConnection();
-            List<Product> values = new();
-            string statement = "SELECT * FROM DBO.PRODUCTS";
-
-            conn.Open();
-
-            SqlCommand cmd = new SqlCommand(statement, conn);
-
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    Product product = new()
-                    {
-                        ProductId = reader.GetInt32(0),
-                        ProductName = reader.GetString(1),
-                        Quantity = reader.GetInt32(2)
-                    };
-                    values.Add(product);
-                }
-            }
-
-            conn.Close();
-            return values;
+            using HttpClient client = new();
+            HttpResponseMessage response = await client.GetAsync(_configuration["GetProductsUrl"]);
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Product>>(content);
         }
 
         private SqlConnection GetConnection()

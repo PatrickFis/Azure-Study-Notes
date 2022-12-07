@@ -19,7 +19,7 @@ namespace UdemyWebApp.Pages
 
         public void OnGet()
         {
-            Products = _productService.GetProducts();
+            Products = _productService.GetProducts().GetAwaiter().GetResult();
             IsBeta = _productService.IsBeta().Result;
         }
     }

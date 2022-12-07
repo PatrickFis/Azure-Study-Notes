@@ -77,3 +77,9 @@
 # Studying from Youtube [video here](https://www.youtube.com/watch?v=Mo8dYQBx5ic&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=5)
 - I added a few functions to [Code/Azure Functions](Code/Azure%20Functions/) which connect to a SQL database and retrieve or add data.
 - I updated my [Code/Azure App Service](Code/Azure%20App%20Service/) code to call a function to retrieve values from the database.
+
+
+# Studying from Udemy
+- Code is located in [Code/Visual Studio Projects/UdemyAzureFunction](Code/Visual%20Studio%20Projects/UdemyAzureFunction/)
+- Note that Azure Functions that need to be deployed that don't use a custom language must have a publish type of code and use a custom handler (see  https://docs.microsoft.com/en-us/azure/azure-functions/functions-custom-handlers).
+- 
