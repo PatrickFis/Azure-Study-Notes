@@ -84,6 +84,20 @@ ACI offers a simple and fast way to run a container in Azure without managing VM
   - Empty directory
   - Cloned git repo
 
+## ACI Documentation from Microsoft [link](https://docs.microsoft.com/en-us/azure/container-instances/) (These notes were from work, see if they can be merged into the section above)
+### Container Groups [reference](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-container-groups)
+- Container groups are the top-level resource in ACI
+- Container groups are collections of containers that get scheduled on the same host machine (similiar to a pod in k8s)
+- Multi-container groups are currently only supported for Linux containers
+- Multi-container groups are commonly deployed using ARM templates (recommended when you need to deploy additional Azure resources) or yaml files (recommended if you're only deploying container instances)
+  - Container group's configuration can be exported to a yaml file using the CLI command `az container export`
+- ACI allocates resources to a multi-container group by adding the resource requests of the instances in the group (so if you have a group creating two container instances that each requests 1 CPU the entire group is allocated 2 CPUs)
+  - Resource usage may be different than the maximum resources requested if resource limits are configured. This lets an instance use resources up to the configured limit. Resource usage by other container instances in the group may decrease because of this.
+- Container groups share an external-facing IP address, 1 or more ports on that IP address, and a DNS label with a fully qualifed domain name (FQDN). External clients can reach the container if you expose a port on the IP address. The IP and FQDN are released when the container group is deleted.
+  - Containers inside a group can reach each other via localhost on any port (even if they aren't exposed externally)
+  - Container groups can be deployed within an Azure VNet to allow them to securely communicate with other resources in the VNet
+- External volumes can be mounted within a container group: Azure file shares, secrets, empty directories, and cloned git repos
+
 ## Deploying a container instance with Azure CLI
 1. Create a new group for ACI
 ``` bash
@@ -129,3 +143,72 @@ By default containers are stateless. To persist state data must be stored extern
 - Azure Files shares are only supported by Linux containers
   - Requires the container to run as root
   - Limited to CIFS support
+
+
+# Studying from Udemy
+## Why use containers?
+- Let's say you want to install two separate apps on one virtual machine. One app could have a dependency on a third party library that conflicts with a library that the other app uses. It's difficult to isolate applications on the same virtual machine.
+- Containers allow you to package your app along with it's libraries, frameworks, dependencies, etc. and deploy them to your VM. This helps you avoid having one app impact other apps. This also makes your app portable since you can just move it to another VM as long as it has your container runtime.
+
+## What is Docker?
+- An open platform for developing, shipping, and running apps in an app in an isolated environment called a container.
+- Requires the Docker runtime
+  - Allows containers to interact with underlying resources on the host machine
+  - Images are the template used to create a Docker container
+  - Containers are the runnable instances of images
+
+## Containerizing a .NET application
+- The code used for this is located in [Code/Visual Studio Projects/UdemyWebApp/](Code/Visual%20Studio%20Projects/UdemyWebApp/). This project was deployed earlier to an Azure App Service plan, but it can run inside a Docker container instead.
+- The above code was turned into a Docker image by using Visual Studio's built in "Add Docker Support" functionality.
+  - The course on Udemy had instructions for using a Linux VM to create the image, but I just built it on my personal computer since I have WSL2 and Docker Desktop already setup.
+
+## Azure Container Registry
+- A basic Container Registry was created to push images to.
+  - I had to make the registry in Visual Studio since Visual Studio couldn't find the one I made directly in the portal for some reason.
+- The course on Udemy has you publish it using the Azure CLI from a Linux VM, but I don't need to do that with my personal computer's setup.
+
+## Azure Container Instances
+- ACI provides a fast and easy way to deploy containers
+- Don't need to manage container's infrastructure
+- ACI can have a public IP and DNS name
+- Files can be persisted to Azure File Shares
+
+### Deploying from our registry
+- The admin user must be enabled on the registry to deploy a container instance.
+  - This can be enabled in Settings -> Access keys -> toggle the Admin user setting.
+- Creating a new container instance from the portal:
+  - Locate Container Instances in the marketplace
+  - Choose your resource group, name, region, etc
+  - Select Azure Container Registry as your image source
+  - Select the image you would like to use from your registry
+  - Other values can be left as their default values
+- After creating a container the instance can be found in the Container Instances resource in your resource group
+  - The Containers blade under settings has a list of running containers in your resource
+    - This blade also contains information about events (like starting the container, pulling the image, etc)
+    - This blade contains container properties (memory, CPU, etc)
+    - This blade contains the logs for your container
+    - This blade provides a utility to connect to your container (like using docker exec to get inside the container)
+
+## Azure Container Groups (Consider coming back to this)
+- I just followed along with Udemy on this. Consider coming back to this.
+- This has to be deployed using yaml or an ARM template.
+
+## Azure Kubernetes
+- Fully managed k8s service in Azure.
+- Created a cluster using a dev/test pricing with a single node. Integrated with my existing registry.
+- Deployments can be done by providing yaml through the portal. I made use of the yaml for Nginx as an example from https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/.
+  - A load balancer was applied to make this publicly accessible:
+``` yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxservice
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+```

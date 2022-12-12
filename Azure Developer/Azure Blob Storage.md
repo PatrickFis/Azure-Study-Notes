@@ -92,3 +92,75 @@ Show the connection string for a storage account
 ``` shell
 az storage account show-connection-string --name <name>
 ```
+
+# Udemy Study Notes
+- A storage account is a resource which provides storage in the cloud.
+- Storage accounts have different types
+  - Standard General Purpose V2: Standard storage account for blobs, file shares, queues, and tables
+  - Premium block blobs: Supported for block and sppend blobs. Used when you want fast access to blobs with high transaction rates.
+  - Premium Page blobs: See MS documentation, also remember that these are used to store virtual hard disks for VMs.
+  - Premium file shares: Faster access for file shares, also used for high transaction rates.
+
+## Creating storage accounts
+- Creating storage accounts is fairly simple in Azure:
+  - Create a resource as usual and select storage accounts
+  - Give the resource a unique name
+  - Select the region for the storage
+  - Select if you'd like a standard storage account or one of the various premium account types
+  - Select a redundancy option
+  - For testing the other default options are fine
+- After the storage account is created the Azure portal will display various different options that you can explore with some of the more important ones listed below:
+  - Under the data storage section you can find containers, file shares, queues, and tables. This will give you access to these respective resources inside your storage account.
+  - Under the security + networking section you can find access keys and shared access signatures to enable applications to connect and use your storage account.
+
+## Azure Blob service
+- Optimized for large amounts of unstructured data (images, videos, etc.)
+- Organizes data inside containers (which can be thought of as a folder)
+  - Data will be uploaded as binary objects into the container
+  - You'll receive a unique URL for each object
+- There are different types of blobs:
+  - Block blobs: blocks of data that can be managed individually (text files, images, etc.)
+  - Append blobs: block blobs that are optimized for append operations, useful for logging
+  - Page blobs: used for virtual disks
+- Containers can be created through the Azure portal
+  - Objects can be uploaded through the portal or through a program accessing the container
+  - Objects can be uploaded into folders inside the blob service
+- There are various ways to access objects stored inside a container
+  - If you're logged in to Azure you can simply download the resource through the portal
+  - It can be accessed via the unique URL given by the container (the URL will container details like the name of the storage account [just a subdomain off windows.net], the name of the service [blob.core.windows.net], the name of the container, and then the name of the object). By default this will give a 404 not found if accessed anonymously. To allow anonymous access you can change the access level of the container (to private [no anonymouse access], blob [read access to blobs in the container], or container [read access for containers and blobs]).
+
+
+## Shared Access Signatures
+- Objects inside a container can have a SAS generated for them. The following features are available:
+  -  You can specify the start and end dates for the SAS. 
+  -  You can restrict who can use the SAS by allowed IP addresses.
+- Storage accounts themselves can have SAS created for them. The following features are available:
+  - You can pick which services (blob, file, queue, or table) the client is allowed to use.
+  - You can pick their allowed resource types (service, container, or object).
+  - You can change their allowed permissions (read, write, delete, list, add, create, update, process, or immutable storage).
+  - Various other permissions settings.
+  - Start and end dates.
+  - IP address restrictions.
+  - Allowed protocols (HTTPS or HTTPS and HTTP).
+
+## Stored Access Policy
+- Containers can have access policies set on them.
+  - Policies need names and a list of permissions along with a start and end date.
+- Access policies can be used when generating SASes to quickly create one which follows the policy.
+  - Changing access policies can invalidate SASes if they're updated.
+
+## Managing storage access through AAD
+Go back to work on this to try it out. It's video 120 in the Udemy course.
+
+## Access Tiers
+- There are 3 access tiers.
+  - Hot: Data which is accessed frequently.
+  - Cool: Data which is accessed infrequently and stored for at least 30 days.
+  - Archive: Data which is rarely accessed and stored for at least 180 days.
+- Access tiers can be set at the blob level. By default Azure sets things in the hot access tier, though this can be changed.
+- Data stored in the archive tier must be rehydrated before it can be accessed.
+- Lifecycle management policies are available to make moving blobs between tiers (or even deleting them) can be managed more easily. The following policies can be defined:
+  - Transition blobs between tiers.
+  - Delete blobs.
+  - Apply policies to the entire storage account or to a subset of blobs.
+- Lifecycle policies can have filtering 
