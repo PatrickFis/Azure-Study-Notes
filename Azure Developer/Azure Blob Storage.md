@@ -178,7 +178,7 @@ The following steps will walk you through setting up a new AD account and granti
   - Cool: Data which is accessed infrequently and stored for at least 30 days.
   - Archive: Data which is rarely accessed and stored for at least 180 days.
 - Access tiers can be set at the blob level. By default Azure sets things in the hot access tier, though this can be changed.
-- Data stored in the archive tier must be rehydrated before it can be accessed.
+- Data stored in the archive tier must be rehydrated before it can be accessed. This can take significant amounts of time.
 
 ## Lifecycle Management Policies
 - Lifecycle management policies are available to make moving blobs between tiers (or even deleting them) can be managed more easily. The following policies can be defined:
@@ -189,3 +189,32 @@ The following steps will walk you through setting up a new AD account and granti
   - Filters can be applied for different blob types
   - Actions like tierToCool, tierToArchive, and delete can be performed
   - Rules are supported for blob and append blobs in general-purpose V2 accounts, premium block blob and blob storage accounts
+
+## Blob Versioning
+- Allows you to maintain previous versions of a blob
+- Previous versions can be restored
+- Each blob gets an initial ID which is updated alongside the blob
+- Blob versioning can be enabled or disabled at any time
+- Blob versioning is available in the the portal when viewing a storage account. It's available by clicking on data protection under the data management section. After enabling it you will see a versions tab displayed when viewing a blob in the portal. Other options are then made available to set a blob to a previous version.
+- If blob versioning is disabled you will still be able to versions of blobs that were created while versioning was enabled.
+
+## Blob Snapshots
+- Blob snapshots are available when viewing blobs in the portal
+- Snapshots create a copy of a blob at a point in time
+- Snapshots can be promoted to the blob to restore it to the version in the snapshot
+- The main difference between snapshots and versioning is scale. Versioning is applied to all blobs in your storage account (and incurs higher costs). Snapshots can be taken at an individual blob level.
+
+## Soft Delete
+- Safeguards against deletions by allowing a retention period of 1-365 days to be set
+- Data will be available even after deleted or overwritten
+- During the retention period you can also restore a blob's snapshot
+- The retention period can be changed at any time
+- Soft delete is available in the data protection blade on a storage account
+- By default deleted blobs are kept for 7 days
+- In the portal a toggle is available inside containers that shows deleted blobs
+
+## Lab Notes
+- The lab makes use of the Azure.Storage.Blobs dependency
+- The storage account used for the labs is az204patrickstorage
+- Metadata can be added to blobs through the Azure portal and used by your program
+- I skipped doing the labs for table storage. I use table storage at work.
