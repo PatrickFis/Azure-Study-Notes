@@ -150,7 +150,27 @@ az storage account show-connection-string --name <name>
   - Changing access policies can invalidate SASes if they're updated.
 
 ## Managing storage access through AAD
-Go back to work on this to try it out. It's video 120 in the Udemy course.
+The following steps will walk you through setting up a new AD account and granting them access to a storage account.
+1. Navigate to AAD
+2. Click on Users
+3. Click on new user
+4. Click on create new user
+5. Give the account a username and password (storageaccounttemp Vabo9669zxx)
+6. Click create
+7. Login to the account in Storage Explorer
+8. Note that you can't see any storage accounts on it
+9. Navigate to the storage account you want to grant the account access to
+10. Navigate to Access Control
+11. Click Add
+12. Click add role assignment
+13. Select the Storage Account Contributor role
+14. Click next
+15. Click select members
+16. Locate the account that you just created and select it
+17. Assign the role
+18. Go to Storage Explorer
+19. Refresh it
+20. Verify that you're now able to access the storage account
 
 ## Access Tiers
 - There are 3 access tiers.
@@ -159,8 +179,13 @@ Go back to work on this to try it out. It's video 120 in the Udemy course.
   - Archive: Data which is rarely accessed and stored for at least 180 days.
 - Access tiers can be set at the blob level. By default Azure sets things in the hot access tier, though this can be changed.
 - Data stored in the archive tier must be rehydrated before it can be accessed.
+
+## Lifecycle Management Policies
 - Lifecycle management policies are available to make moving blobs between tiers (or even deleting them) can be managed more easily. The following policies can be defined:
   - Transition blobs between tiers.
   - Delete blobs.
   - Apply policies to the entire storage account or to a subset of blobs.
-- Lifecycle policies can have filtering 
+- Lifecycle policies can have the following properties:
+  - Filters can be applied for different blob types
+  - Actions like tierToCool, tierToArchive, and delete can be performed
+  - Rules are supported for blob and append blobs in general-purpose V2 accounts, premium block blob and blob storage accounts

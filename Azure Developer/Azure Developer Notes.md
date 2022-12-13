@@ -80,6 +80,10 @@ There are a variety of samples available on Github: https://github.com/Azure-Sam
 Labs are available here: https://microsoftlearning.github.io/AZ-204-DevelopingSolutionsforMicrosoftAzure/
 
 Various things to install:
+- VS Code
+- Visual Studio 2022 Community Edition (just install this instead of the SDK and VS Code Extensions below)
+- Azure Data Studio
+- Azure Storage Explorer
 - .NET SDK 5.0/6.0
 - .NET Core Tools
 - Azure CLI
@@ -90,3 +94,9 @@ Various things to install:
   - Azure Account
   - Azure CLI Tools
     - Sign out of this with Ctrl+Shift+P -> Azure: Sign Out
+
+
+# Udemy Progress
+- Complete: Sections 1-5
+- Todo: Section 6, skipped because it's easier to work on other sections while in the office
+- Started: Section 7: On 126
