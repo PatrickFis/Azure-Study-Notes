@@ -123,3 +123,135 @@ Retrieve the primary key for the account
 ``` shell
 az cosmosdb keys list --name accountName --resource-group resourceGroup
 ```
+
+
+# Udemy Notes
+- Cosmos DB is a fully managed NoSQL database.
+- Fast response times.
+- Scales based on demand.
+- Various APIs available to interact with Cosmos.
+
+## Partitions
+- Items in a container are divided into subsets called logical partitions
+- Partitions are decided based on their partition key
+- Each item has an item ID to uniquely identify an item in the partition (note that partition key + item ID uniquely identifies an item in the container)
+
+## Setting up Cosmos
+- Creating a new Cosmos DB resource is fairly simple, just remember to select the free tier so that you aren't charged for it.
+- After the resource is created you'll need to make a new database.
+  - Give the database a name
+  - Create a container and give it a name
+  - Choose a partition key for the container
+  - Add an item to the container and note that some auto generated values are attached to the item
+
+## Working with Cosmos
+- SQL queries can be used with Cosmos, though their syntax is slightly different than what I use at work (things like using " instead of ' or being forced to alias a table to reference a column in the table). The columns also seem to be case sensitive when referenced.
+- SQL can reference arrays inside of items using the following syntax (see Customers.json for setting up the items for this query): `SELECT o.quantity FROM o in Customers.orders`
+- Assignment 3 from Udemy was to create query to display the total quantity from a customer. I solved this using this query (see the JOINs section on https://devblogs.microsoft.com/cosmosdb/understanding-how-to-query-arrays-in-azure-cosmos-db/ for information on how joins work in Cosmos since it's different from other DBs):
+```sql
+select c.customerId, sum(orders.quantity) as totalQuantity from Customers c
+join orders in c.orders
+group by c.customerId
+```
+
+## .NET and Cosmos
+- Install the Microsoft.Azure.Cosmos dependency in your project for this
+- IDs associated with items must be specified in an id field in the object or Cosmos will send you a bad request response (this is different from the UI which would generate it for you when you add an item).
+
+## Stored Procs
+- Stored procs in Cosmos are written in JS and called programmatically through a Container's Scripts field. The stored procs made as part of this course are these two (the first is a demo while the second creates orders in the orders container):
+```js
+function Display() 
+{
+    var context = getContext();
+    var response = context.getResponse();
+    
+    response.setBody("This is a stored procedure");    
+}
+```
+
+```js
+function createItems(items)
+{
+    var context = getContext();
+    var response = context.getResponse();
+    
+    if(!items) {
+        response.setBody("Error: Items are undefined");
+        return;
+    }
+    
+    var numOfItems = items.length;
+    checkLength(numOfItems);
+    
+    for(let i=0; i<numOfItems; i++) {
+        createItem(items[i]);
+    }
+    
+    function checkLength(itemLength) {
+        if(itemLength == 0) {
+            response.setBody("Error: Items are undefined");
+            return;
+        }
+    }
+    
+    function createItem(item) {
+        var collection = context.getCollection();
+        var collectionLink = collection.getSelfLink();
+        collection.createDocument(collectionLink, item);
+    }
+}
+```
+
+## Triggers
+- Triggers are also written in JS like stored procedures
+- Triggers aren't automatically executed and must be specified for each database operation where you want them to be executed
+- The trigger written for this course is this one (it just sets the quantity on an order item):
+```js
+function validateItem() {
+    var context = getContext();
+    var request = context.getRequest();
+    var item = request.getBody();
+    
+    if(!("quantity" in item)) {
+        item["quantity"] = 0
+    }
+    
+    request.setBody(item);
+}
+```
+
+## Composite Indexes
+- When you want to order a query by multiple columns you need a composite index. In a container it's defined in Scale & Settings -> Indexing Policy and looks like the compositeIndexes section:
+```json
+{
+    "indexingMode": "consistent",
+    "automatic": true,
+    "includedPaths": [
+        {
+            "path": "/*"
+        }
+    ],
+    "excludedPaths": [
+        {
+            "path": "/\"_etag\"/?"
+        }
+    ],
+    "compositeIndexes": [
+        [
+            {
+                "path" : "/category",
+                "order" : "ascending"
+            },
+            {
+                "path": "/quantity",
+                "order": "ascending"
+            }
+        ]
+    ]
+}
+```
+
+## Misc.
+- JSON for setting up some stuff in Cosmos is located in [Misc Files/Cosmos.json](Misc%20Files/Cosmos.json) and [Misc Files/Customers.json](Misc%20Files/Customers.json).
+- Code for this is stored in [Code/Visual Studio Projects/UdemyCosmosApp](Code/Visual%20Studio%20Projects/UdemyCosmosApp/).

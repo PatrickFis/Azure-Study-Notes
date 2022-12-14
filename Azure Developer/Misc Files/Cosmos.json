@@ -1,0 +1,38 @@
+[
+    {
+        "orderId": "01",
+        "category": "Laptop",
+        "quantity": 100,
+        "customer": {
+            "customerId": "C1",
+            "customerName": "CustomerA"
+        }
+    },
+    {
+        "orderId": "02",
+        "category": "Mobile",
+        "quantity": 200,
+        "customer": {
+            "customerId": "C2",
+            "customerName": "CustomerB"
+        }
+    },
+    {
+        "orderId": "03",
+        "category": "Desktop",
+        "quantity": 75,
+        "customer": {
+            "customerId": "C1",
+            "customerName": "CustomerA"
+        }
+    },
+    {
+        "orderId": "04",
+        "category": "Laptop",
+        "quantity": 25,
+        "customer": {
+            "customerId": "C3",
+            "customerName": "CustomerC"
+        }
+    }
+]
