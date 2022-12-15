@@ -1,25 +1,38 @@
 ﻿using Azure;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 
+// Strings for using access keys
 string connectionString = "your connection string";
 string containerName = "scripts";
 string blobName = "File you'd like to store";
-string filePath = "path to file you'd like to store";
-string downloadPath = "path to download files";
 
+
+// Strings for using an app registration instead of access keys
+string clientId = "";
+string tenantId = "";
+string clientSecret = "";
+string blobUri = "URI for the blob you need to access";
+
+// Strings applicable to everything
+string filePath = "path to file you'd like to store";
+string downloadPath = "path to where you'd like the file to be downloaded";
 
 // Code is divided into individual sections that can be run 
+
+// Access keys section
 //await createBlobContainer(containerName);
 //await uploadBlobToContainer(blobName, filePath);
-await listBlobsInContainer(containerName);
+//await listBlobsInContainer(containerName);
 //await downloadBlobFromContainer(blobName);
-await setBlobMetaData(blobName);
-await getMetadata(blobName);
-await acquireLease(blobName);
+//await setBlobMetaData(blobName);
+//await getMetadata(blobName);
+//await acquireLease(blobName);
 
-// Uploading a file to a container
+// App registration section
+await DownloadBlobUsingAppRegistration();
 
 // Connecting to a storage account and creating a container
 async Task createBlobContainer(string containerName)
@@ -100,4 +113,16 @@ async Task acquireLease(string blobName)
     Response<BlobLease> response = await leaseClient.AcquireAsync(leaseTime);
 
     Console.WriteLine($"Lease ID is {response.Value.LeaseId}");
+}
+
+// Download a blob using an app registration
+async Task DownloadBlobUsingAppRegistration()
+{
+    ClientSecretCredential clientSecretCredential = new(tenantId, clientId, clientSecret);
+
+    BlobClient blobClient = new(new Uri(blobUri), clientSecretCredential);
+
+    await blobClient.DownloadToAsync(downloadPath);
+
+    Console.WriteLine("The blob is downloaded");
 }

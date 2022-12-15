@@ -259,3 +259,105 @@ App Configuration data can be secured using the following methods
 
 ## Creating and using App Config
 There are examples of this in [Code/Azure App Service](Code/Azure%20App%20Service/).
+
+
+# Udemy Notes (Section 9 - Split with User Authentication and Authorization)
+
+## Application Objects [MS Documentation](https://learn.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals#application-object)
+- Instead of embedding access keys in an application an application object (like a managed identity) can be used instead.
+
+Registering applications can be done with the following steps:
+1. Navigate to AAD
+2. Click on the App registrations blade
+3. Click New registration
+4. Give a name to the application
+5. Leave the supported account types section alone
+6. Leave the redirect URI alone
+7. Click on Register
+
+After registering an application you can give it access to a resource by following the steps given to assign RBAC roles to a user with one difference: search for the name of the app registration instead of the user.
+
+### Using Application Objects in .NET
+- I'm reusing the UdemyStorageAccountLab project for this.
+- Your code will need the following values to use the app registration (which can be found on the app registration in the portal)
+  - Client ID: Application (client) ID in the portal
+  - Tenant ID: Directory (tenant) ID in the portal
+  - Client secret: Made by going to Certificates & secrets -> Client secrets -> clicking New client secret -> creating the secret -> copying the value from the secret
+- You'll need to install the Azure.Identity package and make use of the ClientSecretCredential class to use these values.
+
+## Microsoft Graph
+- The Graph API can be used to retrieve information about users.
+- A new app registration is needed to interact with the API through Postman. The following steps were used to grant it access to use the Graph API.
+1. Navigate to the app registration that you made for Postman in AAD
+2. Click on the API permissions blade
+3. By default new application objects have the User.Read permission to the Graph API. Remove this permission.
+4. Click on Add a permission
+5. Select Microsoft Graph
+6. Select Application permissions
+7. Find the User section
+8. Select the User.Read.All permission
+9. Click Add permissions
+10. Click Grant admin consent for Default Directory
+
+Postman will need to call MS's authentication service to get an access token. The following steps were performed for this:
+1. Navigate to the app registration for Postman
+2. Click on the Endpoints button
+3. Copy the OAuth 2.0 token endpoint (v2) URL
+4. Create a new POST request in Postman for the URL from step 3
+5. Navigate to the body of the request
+6. Set the body to x-www-form-urlencoded with the following key-value pairs
+   1. grant_type:client_credentials
+   2. client_id: Application (client) ID in the portal
+   3. client_secret: The value of a new client secret generated using the same steps from the Using Application Objects in .NET section
+   4. scope:https://graph.microsoft.com/.default
+7. Click Send and verify that you received a bearer token
+
+Postman can use the access token from the previous steps to make requests to the graph API using the following steps:
+1. Create a new GET request in Postman
+2. Make the URL https://graph.microsoft.com/v1.0/users
+3. Add the bearer token from the previous steps to your request
+4. Send the request and verify that you received details about users in Azure
+
+You can also make changes to users using the Graph API using the following steps:
+1. Add another permission to the Postman app registration: User.ReadWrite.All
+2. Retrieve a new access token
+3. Make a new PATCH request to https://graph.microsoft.com/v1.0/users/[user ID retrieved from the previous set of steps]
+4. Add the bearer token to your request
+5. Send a JSON body like this to update a field associated with the user:
+``` json
+{
+    "givenName": "Test Update from Postman"
+}
+```
+6. Verify that your field was updated for the specified user
+
+## Key Vault
+### Creating a Key Vault
+1. Search for the Key Vault resource in the marketplace
+2. Give the key vault a resource group, name, region, and pricing tier
+3. Change the days to retain deleted vaults to 7 days
+4. Grant yourself access to the key vault in the access policy section
+5. Leave networking and tags alone
+6. Create the key vault
+
+### Creating an encryption key (the steps for secrets are fairly similar)
+1. Navigate to the key vault
+2. Go to the Keys blade
+3. Click Generate/Import
+4. Give the key a name
+5. Click create
+
+### Using the Key Vault in an application
+- The code for this is available in [Code/Visual Studio Projects/UdemyKeyVault](Code/Visual%20Studio%20Projects/UdemyKeyVault/).
+- Install the Azure.Security.KeyVault.Keys and Azure.Security.KeyVault.Secrets packages.
+- Create a new app registration (see the application objects section for how to do this) and a secret to use in your application.
+- Grant your app registration the ability to Get Key permission as well as Decrypt and Encrypt (under Access policies in the keyvault). Also grant it the Get permission for secrets.
+
+
+## Managed Identities
+- I created a temporary VM and enabled its managed identity to try using a managed identity with the key vault program I wrote earlier. I granted the managed identity access to the key vault and the program was able to successfully use it instead of the app registration. My VM was using Ubuntu 20.04 and I used these instructions for installing dotnet 6.0: https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004. I did have some issues with Newtonsoft.Json while trying to run it, but I was able to resolve this by just adding the package before running it (`dotnet add package Newtonsoft.Json`).
+- A Powershell script to turn on the managed identity on a VM is located in [Code/Azure Powershell/PowerShellManagedIdentity.ps1](Code/Azure%20Powershell/PowerShellManagedIdentity.ps1).
+
+### User Assigned Identity
+- User assigned managed identities are resources in Azure and are created by setting up the "User assigned managed identity" resource.
+- The identity can be assigned to resources by going to the Identity blade and then the User assigned section.

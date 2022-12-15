@@ -127,3 +127,56 @@ There are a variety of SDKs available to query Microsoft Graph.
 6. Enter https://localhost:<port your app is listening on>/signin-oidc in the redirect URI input (can retrieve these values from launchSettings.json), and https://localhost:<port your app is listening on>/signout-oidc in the logout URL
 7. Check the ID tokens checkbox
 8. Follow along using the video or the sample code at https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/tree/master/1-WebApp-OIDC/1-1-MyOrg to get your application running and using OIDC
+
+# Udemy Notes (Section 9 - Split with Secure Cloud Solutions)
+
+## Azure AD
+- Identity provider in Azure
+- Helps authenticate users and authorize them use Azure resources
+- Can be used as an identity provider for Azure, Microsoft 365, and other SaaS products
+- Can manage identities of users, groups, and apps as well as their security aspects
+- 3 Tiers (see security fundamentals)
+  - Free: User and group management
+  - Premium P1: Dynamic groups, hybrid identities, self-service password reset for on-prem users
+  - Premium P2: AAD Identity Protection and Privileged Identity Management
+
+### Creating a user in AAD and using them
+- AAD can be found in the portal by navigating to Azure Active Directory
+1. Under the Manage section of AAD click on the Users blade
+   1. This will take you to a page showing you all the users in your directory
+2. Click the New user button
+3. Give the user a username and name
+4. Make a password or keep the auto generated one (by default new users must change their password anyway)
+5. Note the username and password
+6. Click on Create
+7. You'll be taken back to the page noted in step 1. The user should appear fairly quickly (if it hasn't just click refresh a few times)
+8. After creating the account you can sign in to Azure with the new account
+9. Change the password and note it
+
+When you get into Azure you'll see the portal but none of your resources. By default new users are given no access to resources in your subscription.
+
+### RBAC
+- Role-based access control provides a mechanism to control access to your resources
+- Azure includes a number of built in roles that can be found at https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles. Some of the important ones are these:
+  - Contributor - Access to manage resources, but can't assign RBAC roles, manage assignments in Azure Blueprints, or share image galleries.
+  - Owner - Full access to everything.
+  - Reader - View all resources but make no changes.
+  - User Access Administrator - Manage user access to Azure resources.
+- Custom roles can also be defined.
+
+The following steps show you how to assign RBAC roles to the user you created in the notes above.
+1. Navigate to a resource that you'd like to give the user access to (for example: a storage account)
+2. Click on the Access Control (IAM) blade
+3. Click on Add
+4. Click on Add role assignment
+5. Select a role (for example: Reader)
+6. Keep the "Assign access to" setting as "User, group, or service principal"
+7. Click Select members
+8. Select the account you created
+9. Click Select
+10. Click Next
+11. Click Review + assign
+12. Wait for a couple of minutes for the role to take effect
+13. Navigate to all resources on the new account
+14. Verify that you can get to the resource you granted it access to and that the role works as expected
+
