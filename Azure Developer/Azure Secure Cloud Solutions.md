@@ -355,7 +355,7 @@ You can also make changes to users using the Graph API using the following steps
 
 
 ## Managed Identities
-- I created a temporary VM and enabled its managed identity to try using a managed identity with the key vault program I wrote earlier. I granted the managed identity access to the key vault and the program was able to successfully use it instead of the app registration. My VM was using Ubuntu 20.04 and I used these instructions for installing dotnet 6.0: https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004. I did have some issues with Newtonsoft.Json while trying to run it, but I was able to resolve this by just adding the package before running it (`dotnet add package Newtonsoft.Json`).
+- I created a temporary VM and enabled its managed identity to try using a managed identity with the key vault program I wrote earlier. I granted the managed identity access to the key vault and the program was able to successfully use it instead of the app registration. My VM was using Ubuntu 20.04 and I used these instructions for installing dotnet 6.0: https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004.
 - A Powershell script to turn on the managed identity on a VM is located in [Code/Azure Powershell/PowerShellManagedIdentity.ps1](Code/Azure%20Powershell/PowerShellManagedIdentity.ps1).
 
 ### User Assigned Identity
