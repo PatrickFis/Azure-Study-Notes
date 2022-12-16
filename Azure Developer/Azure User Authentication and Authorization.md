@@ -247,7 +247,7 @@ The following steps show you how to assign RBAC roles to the user you created in
 - The code for this is in [Code/Visual Studio Projects/UdemyAuthApi](Code/Visual%20Studio%20Projects/UdemyAuthApi/).
   - This reuses the code set up in [Code/Visual Studio Projects/UdemyAzureFunction](Code/Visual%20Studio%20Projects/UdemyAzureFunction/) for connecting to a SQL database and retrieving results.
   - The Microsoft.Identity.Web package was installed so that authentication and authorization could be required.
-- When publishing to a web app in Azure you'll need to set up a connection string named "SQLConnectionString" with SQLAzure as the type (in launchSettings.json the environment variable is SQLAZURECONNSTR_SQLConnectionString).
+- When publishing to a web app in Azure you'll need to set up a connection string named "SQLConnectionString" with SQLAzure as the type (in appsettings.json or launchSettings.json the environment variable is SQLAZURECONNSTR_SQLConnectionString).
 - A new app registration called UdemyAuthApi was created for this.
   - In the app registration's manifest the accessTokenAcceptedVersion property was updated from null to 2 to have it use Oauth 2.0.
   - A new app role was added to UdemyAuthApi to allow requests from Postman.
