@@ -4,7 +4,6 @@
 # Azure App Settings file
 appsettings.Development.json
 appsettings.json
-launchSettings.json
 
 # Azure Functions localsettings file
 local.settings.json
