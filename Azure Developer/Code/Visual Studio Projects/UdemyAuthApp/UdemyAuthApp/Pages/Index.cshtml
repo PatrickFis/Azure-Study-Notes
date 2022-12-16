@@ -1,0 +1,38 @@
+﻿@page
+@using System.Security.Claims
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div>
+    <h1 class="display-4">Displaying User Claims</h1>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Claim Type</th>
+                <th scope="col">Claim Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _claim in ((ClaimsIdentity)User.Identity).Claims)
+            {
+                <tr>
+                    <td>@_claim.Type</td>
+                    <td>@_claim.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h1 class="display-4">Displaying Access Token</h1>
+    <p>@Model.accessToken</p>
+
+    <h1 class="display-4">Displaying Blob Content</h1>
+    <p>@Model.blobContent</p>
+</div>
