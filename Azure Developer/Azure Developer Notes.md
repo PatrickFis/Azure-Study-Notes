@@ -97,6 +97,6 @@ Various things to install:
 
 
 # Udemy Progress
-- Complete: Sections 1-5
-- Todo: Section 6, skipped because it's easier to work on other sections while in the office
-- Started: Section 7: On 126
+- Complete: Sections 1-10
+- Complete but maybe revisit: Section 6 (probably easier to look up Powershell, Azure CLI, and ARM on your own)
+- Started: Section 11: On 231
