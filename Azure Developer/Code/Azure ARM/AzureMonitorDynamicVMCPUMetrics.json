@@ -1,0 +1,47 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Insights/metricAlerts",
+            "apiVersion": "2018-03-01",
+            "name": "DynamicCPUAlert",
+            "location": "Global",
+            "properties": {
+                "description": "Dynamic Alert for VM CPU percentage goes beyond 70%",
+                "severity": 2,
+                "enabled": true,
+                "scopes": [ "[resourceId('Microsoft.Compute/virtualMachines', 'appvm')]" ],
+                "evaluationFrequency": "PT5M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+                    "allOf": [
+                        {
+                            "criterionType": "DynamicThresholdCriterion",
+                            "name": "Dynamic CPU Criteria",
+                            "metricName": "Percentage CPU",
+                            "dimensions": [],
+                            "operator": "GreaterThan",
+                            "timeAggregation": "Average",
+                            "alertSensitivity": "Medium",
+                            "failingPeriods": {
+                                "numberOfEvaluationPeriods": "4",
+                                "minFailingPeriodsToAlert": "3"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "actionGroupId": "[resourceId('Microsoft.Insights/ActionGroups', 'ARMGroup')]"
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {}
+}

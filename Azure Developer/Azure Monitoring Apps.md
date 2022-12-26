@@ -62,3 +62,122 @@
 
 
 # Studying from Youtube [video here](https://www.youtube.com/watch?v=7uZ8-_CsgkU&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=15)
+
+
+# Udemy Notes (Section 11)
+
+## Azure Monitor
+- Some resources in Azure have a monitoring tab available in the overview. These metrics are available from the monitoring service.
+- Searching for Monitor in the portal will take you to the Azure Monitor.
+- Azure Monitor will allow you to view metrics for your resources.
+- Azure Monitor makes an activity log available that shows the administrative actions that happen as part of your subscription. These actions include things like creating roles, listing storage account keys, etc. Clicking on an event shows more information (and exposes data in a JSON format) for you.
+
+### Alerts in Azure Monitor
+- Alerts can be created in Azure Monitor by going to the Alerts blade.
+- Creating an alert rule can be done by following these steps:
+  1. Navigate to Azure Monitor
+  2. Click on Alerts
+  3. Click on Create -> Alert rule
+  4. Change the "Filter by resource type" filter to All
+  5. Select a resource (for example, a storage account)
+  6. Click Done
+  7. Click on "Next: Condition >" to pick a condition for the alert
+  8. Select an available signal (for example: "Ingress")
+  9. Configure the threshold for the alert
+  10. Click on "Next: Actions >"
+  11. Click on "Create action group" to create a group that defines what should happen when the alert is triggered
+  12. Give the action group a resource group and a name
+  13. Click on "Next: Notifications >"
+  14. Select a notification type (Either "Email Azure Resource Manager Role" or "Email/SMS message/Push/Voice")
+  15. Click "Next: Actions >" (this will allow you to pick something like an Azure Function or Logic App to get triggered by the alert)
+  16. Create the action group and get taken back to the alert rule
+  17. Give the alert rule a name
+  18. Click Create
+  19. Get the alert to fire and verify that you received a notification
+  20. (Optional) Delete the alert and the action group when you're done with them
+- Azure Monitor's Alerts also support dynamic thresholds instead of static thresholds. The difference is that static thresholds use a user-defined value to evaluate the rule while dynamic thresholds use machine learning algorithms to learn the metric's behavior pattern and calculate the thresholds automatically.
+  - Dynamic alerts let you specify the sensitivity of the threshold. The following sensitivities are available:
+    - High: The thresholds will be tight and close to the metric series pattern. An alert rule will be triggered on the smallest deviation, resulting in more alerts.
+    - Medium: The thresholds will be less tight and more balanced. There will be fewer alerts than with high sensitivity (default).
+    - Low: The thresholds will be loose with more distance from metric series pattern. An alert rule will only trigger on large deviations, resulting in fewer alerts.
+  - See [MS Documentation on Dynamic Thresholds](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-dynamic-thresholds).
+
+### ARM Labs
+- See ActionGroup.json, AzureMonitorDynamicVMCPUMetrics.json, and AzureMonitorVMCPUMetrics.json for ARM templates for deploying alerts/action groups to Azure Monitor. There needs to be a VM named "appvm" for the alerts to work. [Code/Azure Arm](Code/Azure%20ARM/).
+
+## Log Analytics Workspace
+- Log Analytics Workspace is a central solution for all of your logs.
+  - Can accept logs from Azure or on-prem
+  - Kusto query language is used to query the workspace
+  - Marketplace solutions are available to extend Log Analytics
+
+### Creating a Log Analytics Workspace
+1. Search the marketplace for Log Analytics Workspace
+2. Give the workspace a resource group, name, and region
+3. Create the resource
+
+After creating the workspace you'll need to configure resources to send logs to it by following these steps:
+1. Navigate to any of the options under "Workspace Data Sources" in the Log Analytics Workspace
+2. Click Add/Connect
+3. Walk through the process of setting up the logs
+
+Things like web apps can send their logs to Log Analytics as well with the following steps:
+1. Open the resource
+2. Navigate to Diagnostic Settings
+3. Check "Send to Log Analytics workspace"
+4. Check the categories that you'd like to send to Log Analytics
+5. Click Save
+
+The logs can take a decent bit of time to start showing up in Log Analytics.
+
+## Application Insights
+- Provides performance monitoring for web apps
+- Supports apps in Azure, on-prem, or other cloud platforms
+- Uses an instrumentation SDK for your app. Or an app insights agent.
+  - JavaScript is available for web pages.
+
+### Working with App Insights
+#### Local Usage
+1. Open a project in VS (in my case: UdemyWebApp)
+2. Right click the project
+3. Click "Configure Application Insights..."
+4. For local testing pick the "Application Insights Sdk (Local)" option
+5. Click Next
+6. Click Finish
+7. Note that a NuGet package was added as well as a line to Program.cs: builder.Services.AddApplicationInsightsTelemetry();
+8. Save and run the app
+9. Access more information from View -> Other Windows -> Application Insights Search
+10. Click the debug telemetry option and view the events that were picked up
+
+#### Usage in Azure
+1. Navigate to an App Service(App Insights can be used for more, but this is just convenient. I'm using my UdemyWebApp service in my fischerpl18_rg_1227 resource group)
+2. Click the "Application Insights" blade
+3. Click "Turn on Application Insights"
+4. Click Enable
+5. Configure the options you're interested in
+6. Click Apply
+7. Open UdemyWebApp in VS
+8. Click on "Connected Services"
+9. On "Application Insights Sdk (Local)" click on "Edit dependency"
+10. Click "Disconnect" (this is just so that we can rely on App Insights in Azure)
+11. Publish the application 
+
+#### Available Features
+- SQL queries can be captured from your application with code like this: builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
+- Users, Sessions and Events
+  - Users - You can see how many people are using your app and its features
+  - Session - You can see sessions of user activity including pages and features of your app
+  - Events - Shows how often certain pages and features have been used in your app
+- Funnels - Here you can see multiple stages like a pipeline. This will show you how users are progressing through your app as an entire process.
+- Cohorts - A set of users, sessions, events or operations that have something in common. This can be used to analyze a particular set of users or events.
+- Impact - You can see how load times and other aspects of your app affect the conversion rate of your app.
+- Retention - See how many users return to your app.
+- User flows - Helps answer these questions:
+  1. What do users click on a page within an app?
+  2. Where are the places within the app that users churn the most from the site?
+  3. Are there places in the app where the users repeat the same action over and over again?
+- Availability Tests
+  - Tests can be defined which monitor the availability and responsiveness of an app
+  - Can be used to send web requests to your app from different points across the world
+  - Can run against HTTP or HTTPS endpoints which are available over the public internet
+  - Can be used to test REST APIs

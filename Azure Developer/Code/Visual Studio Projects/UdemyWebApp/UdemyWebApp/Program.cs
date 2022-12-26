@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.FeatureManagement;
 using UdemyWebApp.Services;
 
@@ -15,6 +16,8 @@ builder.Services.AddTransient<IProductService, ProductService>();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddFeatureManagement();
+builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
 
 var app = builder.Build();
 

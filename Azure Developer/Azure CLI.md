@@ -264,3 +264,70 @@ az webapp up -g fischerpl18_rg_1227 -n testwebappaz204 --plan fischerpl18_asp_97
 az webapp delete --name (or -n) <name of the web app> \
 --resource-group (or -g) <resource group name>
 ```
+
+# SQL Server
+## Create a SQL server
+``` bash
+az sql server create --name (or -n) <name of the SQL server> \
+--resource-group (or -g) <resource group name> \
+--location (or -l) <location> \
+--admin-user (or -u) <admin username> \
+--admin-password (or -p) <admin password>
+```
+
+## Delete a SQL server
+``` bash
+az sql server delete --name (or -n) <name of the SQL server> \
+--resource-group (or -g) <resource group name> \
+--yes (or -y) <skip confirmation, optional>
+```
+
+## Create a database in a SQL server instance
+``` bash
+az sql db create --name (or -n) <database name> \
+--resource-group (or -g) <resource group name> \
+--server (or -s) <SQL server name> \
+--compute-model <Provisioned or Serverless> \
+--edition (or --tier or -e) <Basic, Standard, Premium, GeneralPurpose, BusinessCritical, or Hyperscale> \
+--capacity (or -c) <integer number of DTUs or vcores>
+```
+
+## Delete a database
+``` bash
+az sql db delete --name (or -n) <database name> \
+--resource-group (or -g) <resource group name> \
+--server (or -s) <SQL server name>
+--yes (or -y) <skip confirmation, optional>
+```
+
+# Cosmos DB
+## Create a new Cosmos DB
+``` bash
+az cosmosdb create --name (or -n) <Cosmos DB account name> \
+--resource-group (or -g) <resource group name> \
+--enable-free-tier <true or false> \
+--locations regionName=<location> (note that this is different than the other commands that accept --location or -l)
+```
+
+## Delete a Cosmos DB
+``` bash
+az cosmosdb delete --name or (-n) <Cosmos DB account name> \
+--resource-group (or -g) <resource group name> \
+--yes (or -y) <skip confirmation, optional>
+```
+
+## Create a SQL database under Cosmos (note that the other databases all have their own commands)
+``` bash
+az cosmosdb sql database create --account-name (or -a) <Cosmos DB account name> \
+--name (or -n) <database name> \
+--resource-group (or -g) <resource group name> \
+--throughput <Integer value for RU/s for throughput. The default value is 400.>
+```
+
+## Delete a SQL database under Cosmos
+``` bash
+az cosmosdb sql database delete --account-name (or -a) <Cosmos DB account name> \
+--name (or -n) <database name> \
+--resource-group (or -g) <resource group name>
+--yes (or -y) <skip confirmation, optional>
+```

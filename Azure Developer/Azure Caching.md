@@ -78,3 +78,49 @@ Content can be purged from the cache using the Azure CLI.
 Content can be allowed or blocked in specific countries.
 
 ## Interacting with the CDN using C# (TODO)
+
+
+# Udemy Notes (Split from Section 11 with Azure Monitoring Apps)
+## Azure Cache for Redis
+- Redis is an in-memory data store
+- Helps provide low latency and high throughput for your data
+
+### Creating a Redis Cache
+- Search for Azure Cache for Redis in the marketplace
+- Create the resource using the default options, except change the SKU to C0
+
+### Interacting with Redis using the console from the portal
+- Redis takes fairly simple commands to interact with it:
+  - The set command will store a key-value pair in memory: set <key name> <key value>
+  - The get command will retrieve a key value from memory: get <key name>
+  - The exists command will tell you if a key has an associated value: exists <key name>
+  - The del command will delete a key-value pair: del <key name>
+  - The lpush command will push values onto a linked list: lpush <key name> <element>
+  - The lrange command will list elements in the specified list in the given index range: lrange <key name> <start index> <stop index>
+
+### Working with Redis from .NET
+1. Create a new console app in VS
+2. Add the StackExchange.Redis NuGet package
+3. Retrieve the connection string for Redis from the "Access keys" blade in the resource in the portal
+4. See the code at [Code/Visual Studio Projects/UdemyRedisConsoleApp](Code/Visual%20Studio%20Projects/UdemyRedisConsoleApp/)
+
+### Cache Key Eviction and Invalidation
+- Default policy is to remove the least recently used (LRU) key from the cache.
+- Keys can be deleted with the del command or the KeyDelete method in .NET
+- Keys can be expired after a given timespan with the KeyExpire method
+
+## Azure Content Delivery Network
+- Helps delivery content to users across the globe by placing content at servers placed at different locations throughout the world
+- General process for the CDN:
+  - A user in a location makes a request against the CDN endpoint
+  - The CDN checks whether the point of presence location closest to the user has the request file
+  - If not, a request is made to get the file from the source
+  - A server in the POP will then cache the file
+  - The server will send the file to the user
+- Azure CDN Caching
+  - Caching can be controlled from the "Caching rules" blade in the CDN
+  - By default data is cached for 7 days
+  - Settings can be overriden to retrieve data from the origin more frequently instead of every 7 days.
+
+## Azure Front Door
+- Revisit this.
