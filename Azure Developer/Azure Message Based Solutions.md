@@ -119,3 +119,13 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
 3. Create a ServiceBusClient using connection strings retrieved from shared access policies that allow you to send and receive messages
 4. Use ServiceBusSender to send messages and ServiceBusReceiver to receive them
    1. Note that ServiceBusSender has a constructor which takes ServiceBusReceiverOptions as a parameter. This parameter allows you to specify if the receiver should peek at messages or if it should receive and delete them.
+
+# Udemy Notes (Section 12)
+## Storage Queue Lab
+- The code to interact with a storage queue from a console app is available in [Code/Visual Studio Projects/UdemyQueueStorage](Code/Visual%20Studio%20Projects/UdemyQueueStorage/).
+  - Useful info:
+    - Messages received from the queue must be deleted or they will be added back to the queue after 30 seconds.
+- The code to interact with the queue from an Azure Function is available in [Code/Visual Studio Projects/UdemyQueueFunction](Code/Visual%20Studio%20Projects/UdemyQueueFunction/).
+  - Useful info:
+    - Messages need to be base 64 encoded. If they aren't then the function will try to dequeue the message over and over before putting the messages into a new queue named <queue name>-poison.
+    - The function can receive messages as objects instead of strings.
