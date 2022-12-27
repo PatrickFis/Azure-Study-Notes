@@ -129,3 +129,4 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
   - Useful info:
     - Messages need to be base 64 encoded. If they aren't then the function will try to dequeue the message over and over before putting the messages into a new queue named <queue name>-poison.
     - The function can receive messages as objects instead of strings.
+- Both of these programs expect a queue named "appqueue" to be available.
