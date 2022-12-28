@@ -130,3 +130,36 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
     - Messages need to be base 64 encoded. If they aren't then the function will try to dequeue the message over and over before putting the messages into a new queue named <queue name>-poison.
     - The function can receive messages as objects instead of strings.
 - Both of these programs expect a queue named "appqueue" to be available.
+
+## Azure Service Bus
+- Azure Service Bus is a fully managed enterprise message broker
+- Data within a message can be encoded in various formats
+- Queues are available
+  - Messages are ordered
+  - Messages are held in triple-redundant storage
+  - Data is available across availability zones if enabled
+  - Messages can be retrieved via pull mode
+- Topics are available
+  - Sender send messages to a topic, receivers subscribe to it and each receiver gets a copy of the message
+  - Rules can be created to filter messages
+- Creating a Service Bus Namespace is fairly simple.
+  - Give the resource a unique name
+  - Select the region you need it to be located in
+  - Select the standard pricing tier so that you can create Topics
+
+### Creating Queues
+1. Navigate to your Service Bus Namespace resource
+2. Click "+ Queue"
+3. Give the queue a name
+4. Click "Create"
+
+### Working with Queues in .NET
+- The code for this is available in [Code/Visual Studio Projects/UdemyServiceBus](Code/Visual%20Studio%20Projects/UdemyServiceBus/).
+- Access to queues is governed through shared access policies
+  - These can be created by navigating to the queue, clicking the "Shared access policies" blade, clicking "+ Add", and giving the policy a name and the Listen and Send permissions
+- Useful info for queues:
+  - Messages can be locked for a duration when received instead of just deleting them immediately
+  - Message time to live (TTL) can be overridden by setting the TimeToLive property in a message
+    - Messages that have their TTL expire are moved to the dead letter queue if it is enabled
+  - Duplicate detection must be enabled when a queue is created
+- Code for a message processor is available in [Code/Visual Studio Projects/UdemyServiceBusMessageProcessor](Code/Visual%20Studio%20Projects/UdemyServiceBusMessageProcessor/).
