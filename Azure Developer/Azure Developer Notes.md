@@ -99,4 +99,5 @@ Various things to install:
 # Udemy Progress
 - Complete: Sections 1-11
 - Complete but maybe revisit: Section 6 (probably easier to look up Powershell, Azure CLI, and ARM on your own), Section 11 on Azure Front Door
-- Started: Section 12: On 295
+- Started: Section 12: On 316
+- Note: Sakthi finished 305, mark everything after as not watched

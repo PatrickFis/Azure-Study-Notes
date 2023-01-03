@@ -163,3 +163,52 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
     - Messages that have their TTL expire are moved to the dead letter queue if it is enabled
   - Duplicate detection must be enabled when a queue is created
 - Code for a message processor is available in [Code/Visual Studio Projects/UdemyServiceBusMessageProcessor](Code/Visual%20Studio%20Projects/UdemyServiceBusMessageProcessor/).
+- Code for an Azure Function that uses a Service Bus Queue Trigger is available in [Code/Visual Studio Projects/UdemyServiceBusQueueFunction](Code/Visual%20Studio%20Projects/UdemyServiceBusQueueFunction/).
+  - Note that the connection string for the queue must be defined in local.settings.json and the ";EntityPath=<queue name>" portion of the connection string must be removed for the Function to start.
+
+### Creating Topics
+1. Navigate to your Service Bus Namespace resource
+2. Click "+ Topic"
+3. Give the topic a name
+4. Click "Create"
+
+### Working with Topics
+1. Create a subscription so that you can receive messsages from the topic by opening the topic
+2. Click "+ Subscription"
+3. Give the topic a name and a max delivery count
+4. Click "Create"
+
+### Working with Topics in .NET
+- The code for this is available in [Code/Visual Studio Projects/UdemyServiceBusTopic](Code/Visual%20Studio%20Projects/UdemyServiceBusTopic/).
+- This uses the same dependency as the code for interacting with queues.
+- The code for sending messages to topics is the same as sending messages to queues.
+- The code for receiving messages from topics is almost exactly the same as receiving messages from a queue, but when creating a receiver you have to specify the name of the subscription in the topic as well.
+
+### Topic Filters
+- Subscribers can decide which messages they want to receive with filters
+- Filters are rules with filter conditions
+- Various types
+  - Boolean filter - TrueFilter or FalseFilter. TrueFilter = Receive all messages. FalseFilter = Receive no messages.
+  - SQL filters - SQL like language can be used to evaluate messages using user-defined or system properties.
+  - Correlation filters - Conditions can be matched against the message's user or system defined properties.
+    - More efficient than SQL filters.
+- By default a boolean filter will be added to a subscription to receive all messages
+
+### Creating Topic Filters
+1. Navigate to a subscription in a topic
+2. Click "+ Add filter"
+3. Give the filter a name
+4. Give the filter a condition
+5. Click "Save changes"
+
+#### Filter example from lab for user defined and system defined properties
+1. Create a subscription
+2. Delete the default filter
+3. Add a new SQL filter with the following condition: `user.importance = 'High'`
+4. Create another subscription
+5. Delete the default filter
+6. Add a new SQL filter with the following condition: `sys.messageId = '2'`
+7. Run your program to send messages to the topic
+8. Verify that each of your two new subscriptions received 1 message each
+
+Note that the above filters could be done as correlation filters using key value pairs instead.

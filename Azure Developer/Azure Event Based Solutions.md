@@ -343,3 +343,72 @@ The Event Hub Processor is a dependency that gives you the ability to read event
 1. Navigate to an Event Hub (specifically one using the standard pricing tier) and go to the capture section
 2. Enable capture and select a container to store the events in
 3. You can browse the files that were captured inside the container
+
+# Udemy Notes (Section 12)
+## Azure Event Hubs
+- Big data streaming platform
+- Can receive and process millions of events per second
+- Can stream log data, telemetry data, etc. to Event Hubs
+- Event producers can be configured to send events to Event Hubs using various protocols
+- Internally Event Hubs uses partitions to increase throughput and provide parallelism
+- Event receivers get data from Event Hubs and process the data
+- Consumer groups are views of an entire event hub at a point in time
+
+### Concepts
+- The consumer app needs to keep running to process events in real time from the Event Hub
+- Events don't get deleted after being consumed
+  - There isn't a method to delete events from Event Hubs
+  - Other consumers may need the events
+  - Event Hubs isn't a queue
+  - Messages aren't retained indefinitely but are instead governed by the message retention period setting on the Event Hub
+    - Data can be sent to a different data store for long term storage
+- Consumer programs need to keep track of the events that they've read since by default they will start at the beginning
+- Throughput capacity is specified by you
+  - Ingress - Up to 1 MB/s or 1000 events per second
+  - Egress - Up to 2 MB/s or 4096 events per second
+  - Updatable by navigating to the "Scale" blade in the Event Hubs Namespace resource
+  - You may receive ServerBusyExceptions when the ingress traffic goes beyond the limit
+- Partitions are used for throughput
+  - Data is consumed across partitions
+  - The number of partitions can't be changed after the Event Hub is created except when using the dedicated cluster and premium tier options
+  - Recommended throughput of 1 MB/s per partition
+  - You can specify which property of your data can be the partition key. Event Hub will hash the value and map the event to the relevant partition.
+- Consumer groups
+  - By default there is a $Default consumer group
+  - Other groups can be created for other receivers to use
+  - Recommended to have one receiver per partition, though you can have 5 readers per partition per consumer group
+    - Need to be careful to not duplicate the process of reading the same message
+- Some resources in Azure can send events to Event Hubs by specifying it in their "Diagnostic settings" blade (like specifying a Log Analytics Workspace).
+- Comparison with Azure Service Bus
+  - Service Bus = Message Broker. Event Hubs = Big data ingestion service.
+
+### Creating an Event Hub
+1. Search for Event Hubs in the marketplace
+2. Give the resource a name
+3. Change the location
+4. Choose the standard pricing tier (note: you should delete this resource when done)
+5. Create the resource
+6. Navigate to the resource
+7. Click on "+ Event Hub"
+8. Give the Event Hub a name
+9. Change the partition count to 2
+10. Create the Event Hub
+11. Navigate to the Event Hub using the "Event Hubs" blade
+
+### Using .NET with Event Hub
+#### Sending data
+- Code is available in [Code/Visual Studio Projects/UdemyEventHubSender](Code/Visual%20Studio%20Projects/UdemyEventHubSender/).
+- Install the Azure.Messaging.EventHubs dependency
+- Create a shared access policy (similar to service bus) with the send permission and copy the connection string for your program
+
+#### Receiving data
+- Code is available in [Code/Visual Studio Projects/UdemyEventHubReceiver](Code/Visual%20Studio%20Projects/UdemyEventHubReceiver/).
+- Install the Azure.Messaging.EventHubs dependency
+- Create a shared access policy (similar to service bus) with the listen permission and copy the connection string for your program
+- Your program can read data from a particular partition and position using the EventHubConsumerClient.ReadEventsFromPartitionAsync method
+
+#### Event Processor Lab
+- Code is available in [Code/Visual Studio Projects/UdemyEventHubProcessor](Code/Visual%20Studio%20Projects/UdemyEventHubProcessor/).
+- The Event Processor stores a checkpoint for events that it has read in a storage account, so make one for it to use
+- Install the Azure.Messaging.EventHubs.Processor and Azure.Storage.Blobs dependencies
+- Use the listen SAS from the receiving data section
