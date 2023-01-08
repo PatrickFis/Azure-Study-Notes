@@ -101,3 +101,9 @@ az group delete --name az204-apim-patrick-rg --no-wait
 https://docs.microsoft.com/en-us/azure/api-management/api-management-policies
 
 https://docs.microsoft.com/en-us/azure/api-management/api-management-error-handling-policies
+
+
+# Studying from Udemy (Section 12)
+## Background work
+- This uses the [Code/Visual Studio Projects/UdemyProductApi](Code/Visual%20Studio%20Projects/UdemyProductApi/) project (which is a copy of UdemyAuthApi with the authorization removed).
+  - Remember that this is accessed at /api/<method name minus things like Get>. You can run the project locally to bring up the Swagger interface to determine endpoints as well.

@@ -82,4 +82,9 @@
 # Studying from Udemy
 - Code is located in [Code/Visual Studio Projects/UdemyAzureFunction](Code/Visual%20Studio%20Projects/UdemyAzureFunction/)
 - Note that Azure Functions that need to be deployed that don't use a custom language must have a publish type of code and use a custom handler (see  https://docs.microsoft.com/en-us/azure/azure-functions/functions-custom-handlers).
-- 
+
+# Studying from Udemy (Section 12)
+## Copying blobs using a blob trigger
+- Code is located in [Code/Visual Studio Projects/UdemyCopyBlobFunction](Code/Visual%20Studio%20Projects/UdemyCopyBlobFunction/).
+- This is an Azure Function that uses a blob trigger. It expects two containers in a storage account: one named data and another named newdata.
+- This function needs version 5.0.1 of the Microsoft.Azure.WebJobs.Extensions.Storage dependency.

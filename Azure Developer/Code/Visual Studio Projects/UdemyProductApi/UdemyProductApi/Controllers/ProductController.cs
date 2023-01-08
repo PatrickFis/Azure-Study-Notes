@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using UdemyAuthApi.Models;
 using UdemyAuthApi.Services;
 
@@ -7,7 +6,6 @@ namespace UdemyAuthApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductController : Controller
     {
         private readonly ProductService productService;

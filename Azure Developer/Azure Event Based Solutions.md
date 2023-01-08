@@ -412,3 +412,48 @@ The Event Hub Processor is a dependency that gives you the ability to read event
 - The Event Processor stores a checkpoint for events that it has read in a storage account, so make one for it to use
 - Install the Azure.Messaging.EventHubs.Processor and Azure.Storage.Blobs dependencies
 - Use the listen SAS from the receiving data section
+
+
+## Azure Event Grid
+### Event Grid event schema
+- The Event Grid event schema is a common format that events can follow. It's JSON data that contains a topic, subject, ID, event type, event time, data version, metadata version, and data unique to the event that's being handled.
+
+### Event Grid Labs
+#### Azure Functions - Azure Blob Storage
+1. Create a new function app
+2. Create a new function that uses the "Azure Event Grid trigger" template
+3. Go to a storage account
+4. Click the "Events" blade
+5. Click "+ Event Subscription"
+6. Fill out the requested values
+7. Select an Azure Function as your endpoint and choose the function that you just created as the endpoint
+8. Click "Create"
+9. Navigate to your function
+10. View the filesystem logs
+11. Navigate to your storage account
+12. Upload a blob
+13. Verify that information was logged when the blob was uploaded. You can also try deleting the blob.
+
+#### Debugging Azure Event Grid locally
+- This can be done using ngrok.
+
+#### Azure Storage Queue as an event consumer
+1. Create a new queue in a storage account
+2. Create a new event subscription
+3. Select a storage queue as the endpoint
+4. Create the subscription
+5. Verify that messages are received in the queue
+
+#### Custom Topics
+1. Create an "Event Grid Topic" resource from the marketplace
+2. Navigate to a function app
+3. Create an "Azure Event Grid trigger" function
+4. Navigate to the topic you created in step 1
+5. Click "+ Event Subscription"
+6. Give the subscription a name
+7. Give a custom event type of "app.neworder"
+8. Select your function as the endpoint
+9. Create the subscription
+10. Open the logs of your function
+11. Run the code in [Code/Visual Studio Projects/UdemyPublishEvents](Code/Visual%20Studio%20Projects/UdemyPublishEvents/) to send events to your custom topic.
+12. Verify that the function is logging information about the custom events
