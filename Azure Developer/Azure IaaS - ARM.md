@@ -49,3 +49,24 @@ Code can be found in [Code/Azure ARM](Code/Azure%20ARM/)
 
 ## Resources
 https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions
+
+
+# Separate MS Learn Module
+[Link](https://learn.microsoft.com/en-us/training/paths/deploy-manage-resource-manager-templates/)
+
+## Deploying using ARM
+- I'll be using the ARM template in [Code/Azure ARM/SingleStorageAccount.json](Code/Azure%20ARM/) for this.
+- This template was originally created while working through stuff on Udemy (see storageaccount.json), but I've made a copy of it since I don't want to deploy three different storage accounts. I've modified it a bit while working though the MS Learn Module as well.
+- The template deploys a storage account to a resource group does the following:
+  -  Uses a function to make the account have a unique name.
+  -  It also uses parameters to prompt the user to select the SKU for the account.
+  -  It stores the name of the storage account in a variable so that it can be referenced from multiple locations easily. 
+  -  It stores the location to deploy the account in a variable that retrieves that location from the resource group the account is being deployed to.
+  -  It references the tags associated with the storage account in parameters.
+  -  It outputs the endpoints of the account after the deployment finishes.
+
+## Notes about functions in ARM
+- Strings are denoted with single quotes
+- Literal values need to be escaped
+- Since ARM uses JSON nulls can set as usual ("propertyName": null) or using a function ("propertyName": "[json('null')]")
+- ARM template functions can be referenced [here](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions)

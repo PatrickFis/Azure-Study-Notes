@@ -4,9 +4,9 @@
     "parameters": {
         "storageName": {
             "type": "string",
-            "defaultValue": "az204udemystorageact",
+            "defaultValue": "az204udemy",
             "minLength": 3,
-            "maxLength": 24
+            "maxLength": 11
         },
         "storageSKU": {
             "type": "string",
@@ -15,15 +15,23 @@
                 "Standard_LRS",
                 "Standard_ZRS"
             ]
+        },
+        "resourceTags": {
+            "type": "object",
+            "defaultValue": {
+                "Environment": "Dev",
+                "Project": "AZ204"
+            }
         }
     },
     "functions": [],
     "variables": {
+        "storageName": "[toLower(concat(parameters('storageName'), uniqueString(resourceGroup().id)))]",
         "storageLocation": "[resourceGroup().location]"
     },
     "resources": [
         {
-            "name": "[concat(copyIndex(), parameters('storageName'))]",
+            "name": "[variables('storageName')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2021-04-01",
             "location": "[variables('storageLocation')]",
@@ -31,11 +39,13 @@
             "sku": {
                 "name": "[parameters('storageSKU')]"
             },
-            "copy": {
-                "name": "storagecopy",
-                "count": 3
-            }
+            "tags": "[parameters('resourceTags')]"
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "storageEndpoint": {
+            "type": "object",
+            "value": "[reference(variables('storageName')).primaryEndpoints]"
+        }
+    }
 }
