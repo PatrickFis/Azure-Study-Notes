@@ -30,8 +30,8 @@ Groups are used to manage the visibility of products to devs. API Management has
 - Administrators - Azure subscription admins. Manage the APIM instance, create APIs, operations, and products used by devs.
 - Devs - Authenticated developer portal users. Devs are the customers thatbulid apps using your APIs.
 - Guests - Unauthenticated developer portal users. Can be granted read-only access.
-
-Groups can be managed through AAD.
+- Custom groups can be created
+- External groups in AAD can be used
 
 ## Policies
 - Policies allow APIM to change the behavior of an API through configuration. Policies are a collection of statements that are executed sequentially on the request or response of an API. Popular statements include format conversion and call rate limiting.

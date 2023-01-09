@@ -33,6 +33,13 @@ Logical grouping of VMs used by Azure to provide redundancy and availability to 
   - Large-scale
     - Supports up to 1000 VM instances for standard marketplace and custom images. Note that using a managed image that the limit is reduced to 600 VM instances.
 - Two modes: Uniform and Flexible [Documentation](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-orchestration-modes)
+  - Uniform
+    - Optimized for large-scale workloads with identical instances.
+    - Use a VM profile or template to scale up to the desired capacity.
+    - Individual uniform VM instances are exposed via the Virtual Machine Scale Set VM API and are not compatible with the standard IaaS VM API commands.
+  - Flexible
+    - Allows for identical or multiple VM types.
+    - Spreads VMs across fault domains or an Availability Zone.
 - Supports the use of Azure load balancer for layer-4 traffic distribution and Azure Application Gateway for layer-7 traffic distribution and TLS termination.
 
 ### Load Balancer [MS Documentation on Azure Load Balancer](https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-overview)
