@@ -97,7 +97,5 @@ Various things to install:
 
 
 # Udemy Progress
-- Complete: Sections 1-11
+- Complete: Sections 1-12
 - Complete but maybe revisit: Section 6 (probably easier to look up Powershell, Azure CLI, and ARM on your own), Section 11 on Azure Front Door
-- Started: Section 12: On 334 (the rest of the course should really be done in one sitting as I don't want to leave around an API Management resource because of its hourly cost)
-- Note: Sakthi finished 345, mark everything after as not watched
