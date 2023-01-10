@@ -107,3 +107,75 @@ https://docs.microsoft.com/en-us/azure/api-management/api-management-error-handl
 ## Background work
 - This uses the [Code/Visual Studio Projects/UdemyProductApi](Code/Visual%20Studio%20Projects/UdemyProductApi/) project (which is a copy of UdemyAuthApi with the authorization removed).
   - Remember that this is accessed at /api/<method name minus things like Get>. You can run the project locally to bring up the Swagger interface to determine endpoints as well.
+
+## Creating an API Management Instance
+1. Search for API Management in the marketplace
+2. Click "Create"
+3. Fill out the required details
+4. Select the Developer pricing tier (note that this has a cost per hour)
+5. Leave the other settings as their defaults
+6. Create the resource (this may take a while)
+
+## Publishing an API
+1. Click on the "API" blade in the API Management resource
+2. Click "HTTP"
+3. Provide the name of the API
+4. Provide the URL of the API
+5. Click "Create"
+
+## Adding Operations to an API (follow the previous steps to create the API)
+1. Navigate to the API
+2. Click "+ Add operation"
+3. Give the operation a name (for our API a suitable one would be "Get Products")
+4. Give the URL for the operation (continuing our example we would use "/api/Product")
+5. Click "Save"
+6. This can be tested by clicking on the operation and then clicking the "Test" option near the top
+   1. Calling the API from Postman requires a header (Ocp-Apim-Subscription-Key) whose value can be retrieved from the "Subscriptions" blade. The key is in the "Built-in all-access subscription" key.
+
+## Only allow access to your API from the API Management instance
+1. Navigate to the web app that is hosting your API (UdemyProductApi for me)
+2. Click on the "Networking" blade
+3. Click on "Access restriction"
+4. Click "+ Add rule"
+5. Give the rule the following properties
+   1. Priority: 200
+   2. Name: AllowApiManagement
+   3. Source: <Public IP from API management resource>/32
+   4. Action: Allow
+6. Create another rule with the following properties
+   1. Priority: 300
+   2. Name: BlockOtherTraffic
+   3. Source: 0.0.0.0/0
+   4. Action: Deny
+7. These can be removed if you don't want to keep using them, it's just for demonstration
+
+## Publishing an API using Swagger/OpenAPI
+1. Delete the API you created earlier in the "Publishing an API" section
+2. Launch the UdemyProductApi you created earlier locally
+3. Click on the link to the swagger.json file in the browser
+4. Click on the OpenAPI button in the "API" blade of the API Management resource
+5. Select the swagger.json file you just downloaded
+6. Click on "Create"
+7. Get the URL of the service from your web app
+8. Click on one of the operations and update the "Web service URL" setting with the URL
+9. Note that the URL was updated in all of your operations in the API
+
+## API management policies
+- Policies can control how your users interact with APIs through your APIM instance
+- You can do things like filter calls by IP, limit calls by keys or subscriptions, set usage quotas, and more
+- Policies use XML to define their capabilities with expressions to extend their functionality
+  - Expressions can be written in C#
+- Policies have different sections:
+  - Inbound - Changes the request before it reaches the API management internal service
+  - Backend - Manipulates the request before it reaches the backend service
+  - Outbound - Modifies the response sent to the user
+  - On-error - What happens if any kind of error (timeout, authorization, etc.) occurs
+
+### Rewrite URL Policy
+This is a policy that rewrites requests sent to /api/Product with a query parameter like ?id=1 to their expected form of /api/Product/1
+1. Navigate to the API
+2. Under "Inbound Processing" open the code editor
+3. In the <inbound> section add this line: `<set-variable name="id" value="@(context.Request.Url.Query.GetValueOrDefault("id"))" />`
+   1. This line sets a variable with the ID query parameter stored so that we can use it in another part of the policy
+4. After the set-variable block add this line: `<rewrite-uri template="@{ return "/api/product/" + context.Variables.GetValueOrDefault<string>("id");}" />`
+   1. This rewrites the URL in the form that our backend web service expects
