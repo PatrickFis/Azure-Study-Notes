@@ -62,7 +62,7 @@ The Azure Developer certification covers a number of different areas (https://qu
 - Event-based solutions [Link](Azure%20Event%20Based%20Solutions.md)
   - Azure Event Grid
   - Azure Event Hub (Note: Event Hub does not have a free tier)
-- Message-based solutions [Link (note that you need to finish the exercises for this and write some C# code)](Azure%20Message%20Based%20Solutions.md)
+- Message-based solutions [Link](Azure%20Message%20Based%20Solutions.md)
   - Azure Service Bus
   - Azure Queue Storage
 
@@ -99,3 +99,16 @@ Various things to install:
 # Udemy Progress
 - Complete: Sections 1-12
 - Complete but maybe revisit: Section 6 (probably easier to look up Powershell, Azure CLI, and ARM on your own), Section 11 on Azure Front Door
+
+
+# Review Topics
+- This is a section of areas that I'd like to review since I've finished the Udemy course.
+- Course material
+  - Azure Front Door
+- Practice test 2 areas:
+  - Azure Container Registry permissions
+  - Microsoft Authentication Library
+  - Revoking SAS for a storage account
+  - Application Insights test features (standard vs multi-step)
+  - Azure Cache for Redis (specifically the commands)
+  - Remember the difference and use case for each different API for Cosmos DB
