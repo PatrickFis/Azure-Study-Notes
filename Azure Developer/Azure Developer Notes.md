@@ -105,10 +105,30 @@ Various things to install:
 - This is a section of areas that I'd like to review since I've finished the Udemy course.
 - Course material
   - Azure Front Door
-- Practice test 2 areas:
+    - [Azure Caching - Azure Front Door](Azure%20Caching.md#azure-front-door)
+  - When to use a Service Bus, Storage Account Queue, Event Grid, or Event Hubs 
+    - Service Bus vs Storage Queue: See [Azure Message Based Solutions](Azure%20Message%20Based%20Solutions.md#azure-message-queues-ms-link)
+    - Event Grid vs Event Hubs: See [Azure Event Based Solutions](Azure%20Event%20Based%20Solutions.md#when-should-i-use-event-grid-or-event-hubs-ms-link)
+    - https://learn.microsoft.com/en-us/azure/event-grid/compare-messaging-services
+  - Cosmos DB APIs
+    - [Azure Cosmos DB APIs](Azure%20Cosmos%20DB.md#supported-apis)
+- Practice test 1 areas (test #1):
+  - Accessing blobs through managed identities (specifically code snippets for getting an access token)
+    - See [MS Link](https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-azure-active-directory).
+  - Permissions for interacting with blobs
+    - See [MS Link](https://learn.microsoft.com/en-us/rest/api/storageservices/authorize-with-azure-active-directory).
+    - Azure Storage accepts access tokens from users, service principals, managed identities, and from applications using permissions delegated by users. Azure Storage exposes a single delegation scope named user_impersonation that permits applications to take any action allowed by the user.
+  - Service Bus Topic Filters
+    - See [Azure Message Based Solutions - Topic Filters](Azure%20Message%20Based%20Solutions.md#topic-filters)
+  - Azure Function bindings
+    - See [Azure Functions - Azure Function Bindings for Queue Storage](Azure%20Functions.md#azure-function-bindings-for-queue-storage-ms-link])
+  - Claim types for ID tokens
+    - See [Azure User Authentication and Authorization - Claims in an ID Token](Azure%20User%20Authentication%20and%20Authorization.md#claims-in-an-id-token-ms-link)
+- Practice test 2 areas (test #1):
   - Azure Container Registry permissions
   - Microsoft Authentication Library
   - Revoking SAS for a storage account
+    - [Azure Blob Storage - Shared Access Signatures](Azure%20Blob%20Storage.md#shared-access-signatures)
   - Application Insights test features (standard vs multi-step)
   - Azure Cache for Redis (specifically the commands)
   - Remember the difference and use case for each different API for Cosmos DB

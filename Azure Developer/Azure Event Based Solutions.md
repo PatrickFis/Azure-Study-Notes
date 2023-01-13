@@ -457,3 +457,9 @@ The Event Hub Processor is a dependency that gives you the ability to read event
 10. Open the logs of your function
 11. Run the code in [Code/Visual Studio Projects/UdemyPublishEvents](Code/Visual%20Studio%20Projects/UdemyPublishEvents/) to send events to your custom topic.
 12. Verify that the function is logging information about the custom events
+
+# When should I use Event Grid or Event Hubs? [MS Link](https://learn.microsoft.com/en-us/azure/event-grid/compare-messaging-services)
+- Event Grid is an eventing backplane that gives you the ability to receive and distribute events to registered subscriber endpoints. It allows you to react to changes in your services and applications.
+  - Event Grid is not a data pipeline. It delivers events, not the actual object that was updated.
+- Event Hubs is a big data streaming platform and event ingestion service. It enables you to process data streams or bundled event batches.
+  - It provides a single solution for rapid data retrieval for real-time processing and repeated replay of stored raw data. Data can also be streamed into a file for processing and analysis.

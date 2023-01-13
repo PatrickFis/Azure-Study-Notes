@@ -127,7 +127,7 @@ az storage account show-connection-string --name <name>
   - Objects can be uploaded into folders inside the blob service
 - There are various ways to access objects stored inside a container
   - If you're logged in to Azure you can simply download the resource through the portal
-  - It can be accessed via the unique URL given by the container (the URL will container details like the name of the storage account [just a subdomain off windows.net], the name of the service [blob.core.windows.net], the name of the container, and then the name of the object). By default this will give a 404 not found if accessed anonymously. To allow anonymous access you can change the access level of the container (to private [no anonymouse access], blob [read access to blobs in the container], or container [read access for containers and blobs]).
+  - It can be accessed via the unique URL given by the container (the URL will contain details like the name of the storage account [just a subdomain off windows.net], the name of the service [blob.core.windows.net], the name of the container, and then the name of the object). By default this will give a 404 not found if accessed anonymously. To allow anonymous access you can change the access level of the container (to private [no anonymouse access], blob [read access to blobs in the container], or container [read access for containers and blobs]).
 
 
 ## Shared Access Signatures
@@ -142,6 +142,20 @@ az storage account show-connection-string --name <name>
   - Start and end dates.
   - IP address restrictions.
   - Allowed protocols (HTTPS or HTTPS and HTTP).
+- There are various types of SAS (see [MS Link](https://learn.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature) for more information).
+  - Account SAS
+    - You can delegate access to operations that apply to a service
+    - You can delegate access to read, write, and delete operations on blob containers, tables, queues, and file shares that are not permitted with a service SAS
+  - Service SAS
+    - You can delegate access to just one storage service (blob, queue, table, or files)
+    - Can reference a stored access policy to provide another level of control over a set of signatures. This includes the ability to modify or revoke access to the resource if necessary.
+  - User delegation SAS
+    - Secured with AAD credentials
+    - Only supports blob storage
+    - Can be used to grant access to containers and blobs
+    - Can be revoked by doing the following:
+      - Call the "Revoke User Delegation Keys" operation (which will invalidate any SASes that rely on the key). Then call the "Get User Delegation Key" operation again to create new SASes.
+      - Change the RBAC role assignment for the security principal that's used to create the SAS. When a client uses the SAS to access a resource, Azure Storage verifies that the security principal whose credentials were used to secure the SAS has the required permissions to the resource.
 
 ## Stored Access Policy
 - Containers can have access policies set on them.

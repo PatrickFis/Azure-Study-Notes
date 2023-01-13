@@ -88,3 +88,10 @@
 - Code is located in [Code/Visual Studio Projects/UdemyCopyBlobFunction](Code/Visual%20Studio%20Projects/UdemyCopyBlobFunction/).
 - This is an Azure Function that uses a blob trigger. It expects two containers in a storage account: one named data and another named newdata.
 - This function needs version 5.0.1 of the Microsoft.Azure.WebJobs.Extensions.Storage dependency.
+
+## Azure Function Bindings for Queue Storage [MS Link](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue-trigger?tabs=in-process%2Cextensionv5&pivots=programming-language-csharp)
+- The queue storage trigger runs a function as messages are added to Azure Queue storage.
+- The queue message is provided as input to the function.
+- When there are multiple queue messages waiting, the queue trigger retrieves a batch of messages and invokes function instances concurrently to process them.
+  - Default batch size: 16 (this is configurable in the host.json file)
+  - When there are 8 messages remaining the runtime will get another batch of messages, so the the maximum amount being processed concurrently per function on one VM will be 24. If your function scales to multiple VMs then this limit will be increased proportionally.

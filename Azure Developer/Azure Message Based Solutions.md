@@ -1,4 +1,4 @@
-# Azure Message Queues
+# Azure Message Queues [MS Link](https://learn.microsoft.com/en-us/training/modules/discover-azure-message-queue/2-choose-queue-solution)
 Azure has two types of queues
 - Service Bus queues - Part of the broader messaging infrastructure that supports queuing, pub/sub, and more advanced integration patterns. Designed for apps that may use multiple communication protocols, data contracts, trust domains, or network environments. Service Bus should be used in the following situations:
   - Your solution needs to receive messages without having to poll the queue. With Service Bus, you can achieve it by using a long-polling receive operation using the TCP-based protocols that Service Bus supports.
@@ -193,6 +193,10 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
   - Correlation filters - Conditions can be matched against the message's user or system defined properties.
     - More efficient than SQL filters.
 - By default a boolean filter will be added to a subscription to receive all messages
+- See [MS Link](https://learn.microsoft.com/en-us/azure/service-bus-messaging/topic-filters) for more information about topic filters.
+  - Topic filters are defined with or without actions
+    - Filters without actions are combined using an OR condition and result in a single message on the subscription even if you have multiple matching rules
+    - Filters with an action produce a copy of the message. The message will include a property called RuleName where the value is the name of the matching rule. The action may add or update properties, or delete properties from the original message to produce a message on the subscription. Remember that filters with actions all produce a message if the rule matches.
 
 ### Creating Topic Filters
 1. Navigate to a subscription in a topic

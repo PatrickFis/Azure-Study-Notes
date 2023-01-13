@@ -65,6 +65,13 @@ Azure CDN handles requests through the following process
 5. Additional users can request the same file using the same URL
 6. If the TTL hasn't expired the POP edge server returns the file directly from the cache
 
+## CDN Products
+- Azure CDN Standard from Microsoft
+- Azure CDN Standard from Akamai
+- Azure CDN Standard from Verizon
+- Azure CDN Premium from Verizon
+- https://learn.microsoft.com/en-us/azure/cdn/cdn-features has the features for each product
+
 ## Controlling Cache Behavior
 https://docs.microsoft.com/en-us/learn/modules/develop-for-storage-cdns/3-control-cache-behavior
 
@@ -122,5 +129,27 @@ Content can be allowed or blocked in specific countries.
   - By default data is cached for 7 days
   - Settings can be overriden to retrieve data from the origin more frequently instead of every 7 days.
 
-## Azure Front Door
-- Revisit this.
+## Azure Front Door [MS Link to Documentation](https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview)
+- Azure Front Door is Microsoft's modern cloud CDN
+- Delivers content using MS's global edge network with their points of presence
+
+### Why use it?
+- It lets you build a modern internet-first architecture using a highly automated, secure, and reliable platform
+- It accelerates your ability to deliver your app and content globally and adapt to new demand and markets
+- It lets you secure your application with a zero trust framework
+
+### Key Benefits
+- You can leverage MS's edge locations to improve latency for apps
+- You can accelerate application performance using anycast and split TCP connections
+- SSL terminations and certificate management
+- Native IPv6 and HTTP/2 protocol support
+- Integrates with the typical CLI tools and other devops tools
+- Allows you to integrate other Azure services like DNS, Web Apps, Storage, etc.
+- Built-in reports
+- Real time traffic monitoring and integration with Azure Monitor
+- Each request sent to Front Door can be logged
+- Provides caching, SSL offloading, and layer 3-4 DDoS protection
+- Free managed SSL certs
+- Low entry fee and simplified cost model
+- Has a Web Application Firewall (WAF)
+- Enables private backend connections with Private Links

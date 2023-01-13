@@ -49,27 +49,41 @@ Various APIs allow your applications to treat Cosmos DB like it was another data
   - Features are available in this API first
   - Data is stored in document format
   - Provides query support through SQL
+  - Recommended to be used if you want the following
+    - New features come here first
+    - Support for SQL
+    - You're migrating from another database like Oracle, DynamoDB, HBase, DB2, etc.
 - MongoDB
   - Stores data in a document structure via BSON
+  - Compatible with MongoDB wire protocol without using any native MongoDB related code
+  - Existing MongoDB apps can be used by changing the connection string they use and migrating your data
   - Recommended if you want to use the MongoDB ecosystem
 - Cassandra API
   - Stores data in a column-oriented schema
+  - Useful for storing large volumes of data
   - Apache Cassandra client drivers can use this API to interact with Cosmos
+  - Only supports OLTP scenarios
+  - Recommended for the following:
+    - You're already familiar with Cassandra
+    - You want to use Cassandra Query Language (CQL) and tools like CQL Shell
+    - You want to use features from Cosmos DB like change feeds
 - PostgreSQL API
   - Managed service running PostgreSQL at any scale using Citus open source for distributed tables
-  - Stores data either ona  single node or distributed in a multi-node configuration
+  - Stores data either on a single node or distributed in a multi-node configuration
+  - Recommended if you want to use a managed open source relation database
 - Table API
   - Stores data in a key/value format
-  - Has limitations in latency, scaling, throughput, global distribution, index management, and low query performance
+  - If you're already using Azure Table storage you may have limitations in latency, scaling, throughput, global distribution, index management, and low query performance which are mitigated by this API.
   - Only supports OLTP scenarios
 - Gremlin API
   - Stores data as edges and vertices
   - Graph queries
   - Used with data too complex for relational databases
-  - Only supports OLTP scenarios
-- Table API
-  - Stores values in key/value pairs
-  - If you're already using Azure Table storage you may have limitations in latency, scaling, throughput, global distribution, index management, and low query performance which are mitigated by this API.
+  - Recommended for the following:
+    - You have dynamic data
+    - Your data has complex relations
+    - Your data is too complex to be modeled with relational databases
+    - You want to use the existing Gremlin ecosystem and skills
   - Only supports OLTP scenarios
 
 
