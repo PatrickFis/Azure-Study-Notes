@@ -176,8 +176,12 @@ The logs can take a decent bit of time to start showing up in Log Analytics.
   1. What do users click on a page within an app?
   2. Where are the places within the app that users churn the most from the site?
   3. Are there places in the app where the users repeat the same action over and over again?
-- Availability Tests
+- Availability Tests [MS Documentation](https://learn.microsoft.com/en-us/azure/azure-monitor/app/availability-overview)
   - Tests can be defined which monitor the availability and responsiveness of an app
   - Can be used to send web requests to your app from different points across the world
   - Can run against HTTP or HTTPS endpoints which are available over the public internet
   - Can be used to test REST APIs
+  - URL ping test (classic): You can create this test through the Azure portal to validate whether an endpoint is responding and measure performance associated with that response. You can also set custom success criteria coupled with more advanced features, like parsing dependent requests and allowing for retries.
+  - Standard test: This single request test is similar to the URL ping test. It includes TLS/SSL certificate validity, proactive lifetime check, HTTP request verb (for example, GET, HEAD, or POST), custom headers, and custom data associated with your HTTP request.
+  - Multi-step web test (classic): You can play back this recording of a sequence of web requests to test more complex scenarios. Multi-step web tests are created in Visual Studio Enterprise and uploaded to the portal, where you can run them.
+  - Custom TrackAvailability test: If you decide to create a custom application to run availability tests, you can use the TrackAvailability() method to send the results to Application Insights.

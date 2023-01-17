@@ -105,6 +105,19 @@ Content can be allowed or blocked in specific countries.
   - The lpush command will push values onto a linked list: lpush <key name> <element>
   - The lrange command will list elements in the specified list in the given index range: lrange <key name> <start index> <stop index>
 
+### Redis Data Types [Redis Documentation](https://redis.io/docs/data-types/tutorial/) and [More Redis Documentation](https://redis.io/docs/data-types/)
+- Strings - Sequeuences of bytes
+- Lists - Lists of strings sorted by insertion order
+  - Implemented as a linked list, so elements can be added to the head or tail of the list in constant time. Accessing the head or tail of the list should also be fast.
+- Sets - Unordered collections of unique strings that can add, remove, and test for existence in O(1) time
+- Hashes - Collections of field-value pairs (so hashmaps, dictionaries, etc.)
+- Sorted sets - Collections of unique strings that maintain order by each string's associated score
+- Streams - Data structure that acts like an append-only log
+- Geospatial indexes - Useful for finding locations within a given geographic radius or bounding box
+- Bitmaps - Lets you perform bitwise operations on strings
+- Bitfields - Efficiently encodes multiple counters in a string value. Supports atomic get, set, and increment operations and different overflow policies.
+- HyperLogLog - Provides probabilistic estimates of the cardinality of large sets
+
 ### Working with Redis from .NET
 1. Create a new console app in VS
 2. Add the StackExchange.Redis NuGet package

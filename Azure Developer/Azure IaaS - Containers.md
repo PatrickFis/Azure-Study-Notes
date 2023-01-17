@@ -167,6 +167,18 @@ By default containers are stateless. To persist state data must be stored extern
   - I had to make the registry in Visual Studio since Visual Studio couldn't find the one I made directly in the portal for some reason.
 - The course on Udemy has you publish it using the Azure CLI from a Linux VM, but I don't need to do that with my personal computer's setup.
 
+### Azure Container Registry Permissions
+Credit: https://learn.microsoft.com/en-us/azure/container-registry/container-registry-roles?tabs=azure-cli
+| Role/Permission | Access Resource Manager | Create/delete registry | Push image | Pull image | Delete image data | Change policies | Sign images |
+| --------------- | ----------------------- | ---------------------- | ---------- | ---------- | ----------------- | --------------- | ----------- |
+| Owner           | X                       | X                      | X          | X          | X                 | X               |             |
+| Contributor     | X                       | X                      | X          | X          | X                 | X               |             |
+| Reader          | X                       |                        |            | X          |                   |                 |             |
+| AcrPush         |                         |                        | X          | X          |                   |                 |             |
+| AcrPull         |                         |                        |            | X          |                   |                 |             |
+| AcrDelete       |                         |                        |            |            | X                 |                 |             |
+| AcrImageSigner  |                         |                        |            |            |                   |                 | X           |
+
 ## Azure Container Instances
 - ACI provides a fast and easy way to deploy containers
 - Don't need to manage container's infrastructure

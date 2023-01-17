@@ -126,9 +126,13 @@ Various things to install:
     - See [Azure User Authentication and Authorization - Claims in an ID Token](Azure%20User%20Authentication%20and%20Authorization.md#claims-in-an-id-token-ms-link)
 - Practice test 2 areas (test #1):
   - Azure Container Registry permissions
+    - See [Azure Iaas - Containers - Azure Container Registry Permissions](Azure%20IaaS%20-%20Containers.md#azure-container-registry-permissions)
   - Microsoft Authentication Library
+    - See https://learn.microsoft.com/en-us/azure/active-directory/develop/msal-overview and locate more resources for this?
   - Revoking SAS for a storage account
     - [Azure Blob Storage - Shared Access Signatures](Azure%20Blob%20Storage.md#shared-access-signatures)
   - Application Insights test features (standard vs multi-step)
+    - See [Azure Monitoring Apps - Available Features](Azure%20Monitoring%20Apps.md#available-features)
   - Azure Cache for Redis (specifically the commands)
+    - See [Azure Caching - Redis Data Types](Azure%20Caching.md#redis-data-types-redis-documentation-and-more-redis-documentation)
   - Remember the difference and use case for each different API for Cosmos DB
