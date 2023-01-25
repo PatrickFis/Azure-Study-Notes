@@ -2,10 +2,10 @@
 Azure Event Grid simplifies consumption and lowers costs by eliminating the need for constant polling. Event Grid routes events from Azure and non-Azure resources and distributes the events to registered subscriber endpoints.
 
 ## Features
-- Enables event-drive, reactive programming
+- Enables event-driven, reactive programming
 - Operates on a pub-sub (publish-subscribe) model
 - Publishers emit events but they don't specify how they should be handled, subscribers decide which events they want to handle
-- Event Grid allows you to select the Azure resource you want to subscribe to and then lets you specify an event handler of Webhook endpoint to send the event to
+- Event Grid allows you to select the Azure resource you want to subscribe to and then lets you specify an event handler or Webhook endpoint to send the event to
 - Event Grid supports your own events using custom topics
 - Filters can be used to route specific events to different endpoints, multicast to multiple endpoints, and make sure your messages are reliably delivered
 

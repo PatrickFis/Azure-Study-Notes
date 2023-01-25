@@ -1,5 +1,5 @@
 # Microsoft Identity Platform
-The Microsoft identity platform for developers is a set of tools which includes authentication service, open-source libraries, and application management tools. The platform is made of several components
+The Microsoft identity platform for developers is a set of tools which includes authentication service, open-source libraries, and application management tools. The platform is made of several components:
 - OAuth 2.0 and OpenID Connect standard-compliant authentication service
 - Open-source libraries
 - Application management portal for registration, configuration, and management
@@ -132,7 +132,7 @@ There are a variety of SDKs available to query Microsoft Graph.
 
 ## Azure AD
 - Identity provider in Azure
-- Helps authenticate users and authorize them use Azure resources
+- Helps authenticate users and authorize them to use Azure resources
 - Can be used as an identity provider for Azure, Microsoft 365, and other SaaS products
 - Can manage identities of users, groups, and apps as well as their security aspects
 - 3 Tiers (see security fundamentals)

@@ -97,7 +97,7 @@ Queues contain the following components
 - URL format: https://\<storage account\>.queue.core.windows.net/\<queue\>
 - Storage account - All access to Azure Storage is done through a storage account
 - Queue - A queue contains a set of messages. Note that the queue name must be lowercase.
-- Message - A message, in any format, up to 64 KB. Can include a TTL of any positive number, -1 to indicate it doesn't expire, or be omitted to default to to 7 days.
+- Message - A message, in any format, up to 64 KB. Can include a TTL of any positive number, -1 to indicate it doesn't expire, or be omitted to default to 7 days.
 
 ### Interacting with Azure Queue Storage with C# (TODO)
 
@@ -127,7 +127,7 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
     - Messages received from the queue must be deleted or they will be added back to the queue after 30 seconds.
 - The code to interact with the queue from an Azure Function is available in [Code/Visual Studio Projects/UdemyQueueFunction](Code/Visual%20Studio%20Projects/UdemyQueueFunction/).
   - Useful info:
-    - Messages need to be base 64 encoded. If they aren't then the function will try to dequeue the message over and over before putting the messages into a new queue named <queue name>-poison.
+    - Messages need to be base 64 encoded. If they aren't then the function will try to dequeue the message over and over before putting the messages into a new queue named `<queue name>-poison`.
     - The function can receive messages as objects instead of strings.
 - Both of these programs expect a queue named "appqueue" to be available.
 
@@ -140,7 +140,7 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
   - Data is available across availability zones if enabled
   - Messages can be retrieved via pull mode
 - Topics are available
-  - Sender send messages to a topic, receivers subscribe to it and each receiver gets a copy of the message
+  - Senders send messages to a topic, receivers subscribe to it and each receiver gets a copy of the message
   - Rules can be created to filter messages
 - Creating a Service Bus Namespace is fairly simple.
   - Give the resource a unique name

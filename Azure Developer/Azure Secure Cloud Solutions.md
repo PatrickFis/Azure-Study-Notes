@@ -238,7 +238,7 @@ App Configuration data can be secured using the following methods
 - Customer-managed keys
   - Data is encrypted at rest using a 256-bit AES encryption key provided by MS by default. Providing your own key will change the behavior of App Configuration.
   - App Config will use a managed identity (which is assigned to the App Config and must have GET, WRAP, and UNWRAP permissions in the Key Vault's access policies) to authenticate with AAD and then call a Key Vault to wrap the App Config instance's encryption key. The wrapped encryption key is then stored, and the unwrapped encryption key is cached within the App Config for 1 hour (after which it is refreshed).
-    - Note: Key wrapping is the process of encrypting one key using another key so that it can be securely stored on transmitted over an untrusted channel.
+    - Note: Key wrapping is the process of encrypting one key using another key so that it can be securely stored or transmitted over an untrusted channel.
   - A customer managed key serves as a root encryption key.
   - Access can be revoked by changing a Key Vault access policy which will cause the App Config to lose the ability to decrypt data within one hour.
   - Requires the following

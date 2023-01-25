@@ -1,6 +1,6 @@
 # ARM
 Azure Resource Manager is the deployment and management system for Azure. It is a management layer allowing for creation, updates, and deletion of Azure resources in your subscription.
-- ARM has a declarative syntax that allows for any Azure resource be deployed
+- ARM has a declarative syntax that allows for any Azure resource to be deployed
 - Results are repeatable using templates
 - ARM orchestrates ordering operations for you
 
@@ -57,7 +57,7 @@ https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template
 ## Deploying using ARM
 - I'll be using the ARM template in [Code/Azure ARM/SingleStorageAccount.json](Code/Azure%20ARM/) for this.
 - This template was originally created while working through stuff on Udemy (see storageaccount.json), but I've made a copy of it since I don't want to deploy three different storage accounts. I've modified it a bit while working though the MS Learn Module as well.
-- The template deploys a storage account to a resource group does the following:
+- The template deploys a storage account to a resource group and does the following:
   -  Uses a function to make the account have a unique name.
   -  It also uses parameters to prompt the user to select the SKU for the account.
   -  It stores the name of the storage account in a variable so that it can be referenced from multiple locations easily. 
