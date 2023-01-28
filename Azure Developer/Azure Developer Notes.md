@@ -67,17 +67,13 @@ The Azure Developer certification covers a number of different areas (https://qu
   - Azure Queue Storage
 
 # Resources/Misc
-Azure Cloud Shell can be accessed directly at https://shell.azure.com/
-
-YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt
-
-Fixing Intellisense with OmniSharp in VS Code (solution: Ctrl+Shift+P -> OmniSharp: Select Project -> select the Azure Study Notes project): https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
-
-Tables can be easily copied from the documentation using https://www.tablesgenerator.com/markdown_tables
-
-There are a variety of samples available on Github: https://github.com/Azure-Samples
-
-Labs are available here: https://microsoftlearning.github.io/AZ-204-DevelopingSolutionsforMicrosoftAzure/
+- Azure Cloud Shell can be accessed directly at https://shell.azure.com/
+- YouTube series recommended by coworkers: https://www.youtube.com/playlist?list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt
+- Fixing Intellisense with OmniSharp in VS Code (solution: Ctrl+Shift+P -> OmniSharp: Select Project -> select the Azure Study Notes project): https://stackoverflow.com/questions/29975152/intellisense-not-automatically-working-vscode
+- Tables can be easily copied from the documentation using https://www.tablesgenerator.com/markdown_tables
+- There are a variety of samples available on Github: https://github.com/Azure-Samples
+- Labs are available here: https://microsoftlearning.github.io/AZ-204-DevelopingSolutionsforMicrosoftAzure/
+- Exam prep videos from Microsoft: https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5
 
 Various things to install:
 - VS Code

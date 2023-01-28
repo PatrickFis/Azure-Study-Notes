@@ -5,6 +5,9 @@
   - Consumption plan - Default, autoscaling and pay for what you use.
   - Functions Premium plan - Autoscaling based on demand with pre-warmed workers. More powerful instances and connects to VNets.
   - App service (Dedicated) plan - Runs within an App Service plan at the plan rate. Best for long-running scenarios where you can't use a Durable Function.
+- There are two other hosting options which provide the highest amount of control and isolation for your function apps:
+  - ASE - App Service Environment (ASE) is an App Service feature that provides a fully isolated and dedicated environment for securely running App Service apps at high scale.
+  - Kubernetes - K8s provides a fully isolated and dedicated environment running on top of the k8s platform.
 - A function app requires an Azure Storage account with support for Blob, Queue, Files, and Table storage. Function code files are stored on Azure Files shares on the function's main storage account. When you delete the main storage account of the function app, the function code files are deleted and cannot be recovered.
 ## Scale Azure Functions
 - In consumption and premium plans Functions scale CPU and memory resources by adding additional instances of the Functions host. The number of instances is based on the number of events that trigger a function.
@@ -24,6 +27,60 @@
 - Triggers are what cause a function to run. There can only be one. They define how a function is invoked. They can have associated data which can be provided as the payload of the function. A function must have a trigger.
 - Bindings are a way of declaratively connecting another resource to the function and are input or output bindings (or both, values could be "in" or "out"). Note that bindings aren't required for a function to run.
 - Developing a function app locally requires a number of tools to be installed. The documentation can be found here: https://docs.microsoft.com/en-us/learn/modules/develop-azure-functions/5-create-function-visual-studio-code. The code is available in [Code/Azure Functions](Code/Azure%20Functions/) and uses .NET 6 instead of the version noted in the docs.
+
+### The function.json file
+- The function.json file defines the function's trigger, bindings, and other config settings
+- The file is generated automatically from annotations in code for compiled languages. Scripting languages do not have this benefit and the dev will need to provide this file.
+- The runtime uses this file to determine the events to monitor, how to pass data to the function, and how to return data from a function execution.
+- Bindings require the following properties:
+  - type: A string representing the name of the binding
+  - direction: A string indicating whether the binding is for receiving data into the function or returning data from the function (in or out are examples of direction)
+  - name: A string that is used for the bound data in the function
+- Example file:
+``` json
+{
+    "disabled":false,
+    "bindings":[
+        // ... bindings here
+        {
+            "type": "bindingType",
+            "direction": "in",
+            "name": "myParamName",
+            // ... more depending on binding
+        }
+    ]
+}
+```
+
+### Triggers and Bindings
+- Triggers are what cause a function to run
+- A trigger defines how a function is invoked
+- There can only be one trigger for a function
+- Triggers have associated data (often provided as the payload of the function)
+- Bindings are a way of declaratively connection another resource to the function
+- There can be input bindings, output bindings, out both
+- Data from bindings is provided to the function as parameters
+- Example function.json file for a function which writes a row to Azure Table storage whenever a message appears in Azure Queue storage:
+``` json
+{
+  "bindings": [
+    {
+      "type": "queueTrigger",
+      "direction": "in",
+      "name": "order",
+      "queueName": "myqueue-items",
+      "connection": "MY_STORAGE_ACCT_APP_SETTING"
+    },
+    {
+      "type": "table",
+      "direction": "out",
+      "name": "$return",
+      "tableName": "outTable",
+      "connection": "MY_TABLE_STORAGE_ACCT_APP_SETTING"
+    }
+  ]
+}
+```
 
 ## Durable Functions
 - Durable Functions are an extension of Azure Functions that allow for stateful functions.
@@ -73,6 +130,32 @@
 - Durable Functions provide durable timers that should be used instead of putting threads to sleep.
 - Orchestrator functions have the ability to wait and listen for external events.
 
+## Durable Functions Deep Dive [MS Documentation with code examples!](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp)
+
+### Function Types
+A durable function is made of various functions: activity, orchestrator, entity, and client.
+- Orchestrator
+  - Orchestrator functions describe how actions are executed and the order in which actions are executed
+  - Orchestrator code must be deterministic, otherwise the function can fail to run correctly
+  - See https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-orchestrations?tabs=csharp for more information
+- Activity
+  - Activity functions are the basic unit of work in a durable function orchestration
+  - Unlike orchestrator functions activity functions aren't restricted in the type of work they can do
+  - Frequently used to make network calls or run CPU intensive operations
+  - May return data back to the orchestrator function
+  - The Durable Task Framework guarantees that each called activity function will be executed at least once during an orchestration's execution
+- Entity
+  - Entity functions define operations for reading and updating small pieces of state
+  - Often referred to as durable entities
+  - Entity functions are functions with a special trigger type: entity trigger
+  - Can be invoked from client functions or from orchestrator functions
+  - No specific code constraints
+- Client
+  - A client function is any non-orchestrator function
+  - A client function is made a client function because of the binding that it uses: a durable client output binding
+  - Client functions are a way to deliver messages into a task hub (which are used to trigger orchestrator and entity functions)
+  - Client functions can be used to interact with running orchestrations and entities (you could query them, terminate them, or have events raised to them)
+
 
 # Studying from Youtube [video here](https://www.youtube.com/watch?v=Mo8dYQBx5ic&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=5)
 - I added a few functions to [Code/Azure Functions](Code/Azure%20Functions/) which connect to a SQL database and retrieve or add data.
@@ -81,7 +164,7 @@
 
 # Studying from Udemy
 - Code is located in [Code/Visual Studio Projects/UdemyAzureFunction](Code/Visual%20Studio%20Projects/UdemyAzureFunction/)
-- Note that Azure Functions that need to be deployed that don't use a custom language must have a publish type of code and use a custom handler (see  https://docs.microsoft.com/en-us/azure/azure-functions/functions-custom-handlers).
+- Note that Azure Functions that need to be deployed that don't use a custom language must have a publish type of code and use a custom handler (see https://docs.microsoft.com/en-us/azure/azure-functions/functions-custom-handlers).
 
 # Studying from Udemy (Section 12)
 ## Copying blobs using a blob trigger
@@ -95,3 +178,14 @@
 - When there are multiple queue messages waiting, the queue trigger retrieves a batch of messages and invokes function instances concurrently to process them.
   - Default batch size: 16 (this is configurable in the host.json file)
   - When there are 8 messages remaining the runtime will get another batch of messages, so the the maximum amount being processed concurrently per function on one VM will be 24. If your function scales to multiple VMs then this limit will be increased proportionally.
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
+  - Be familiar with triggers and bindings
+    - Creation with JSON or annotations in code
+    - Know about the function.json file
+      - Know the difference between directly editing files in the portal vs doing it locally and publishing it
+  - Be familiar with classes and interfaces you'll be using
+    - It's not going to be about syntax, but you should know this and some of the larger methods
+  - Be familiar with the Durable Functions SDK
+    - Understand the patterns for using Durable Functions

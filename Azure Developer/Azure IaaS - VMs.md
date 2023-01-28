@@ -49,14 +49,14 @@ Azure Load Balancer is a layer 4 (TCP, UDP) load balancer that distributes incom
 - Internal or private load balancers are used to balance traffic inside a virtual network. Can be connected to from an on-prem network in a hybrid scenario.
 
 ## VM Sizing
-| VM Type                  | Description                                                                            |
-| :----------------------- | :------------------------------------------------------------------------------------- |
-| General Purpose          | Balanced CPU to memory ratio                                                           |
-| Compute Optimized        | High CPU to memory ratio                                                               |
-| Memory Optimized         | High memory to CPU ratio                                                               |
-| Storage Optimized        | High disk throughput and IO (big data)                                                 |
-| GPU                      | Specialized VMs for heavy graphic rendering (and other applications)                   |
-| High Performance Compute | Fastest and most powerful CPUs with optional high-throughput network interfaces (RDMA) |
+| VM Type                  | Description                                                                                                                                                               |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| General Purpose          | Balanced CPU to memory ratio. Ideal for testing and development, small to medium DBs, and low to medium traffic web servers.                                              |
+| Compute Optimized        | High CPU to memory ratio. Good for medium traffic web servers, network appliances, batch processes, and application servers.                                              |
+| Memory Optimized         | High memory to CPU ratio. Great for relation DBs, medium to large caches, and in-memory analytics.                                                                        |
+| Storage Optimized        | High disk throughput and IO for Big Data, SQL, NoSQL DBs, data warehousing and large transactional databases.                                                             |
+| GPU                      | Specialized VMs for heavy graphic rendering and video editing, as well as model training and inferencing (ND) with deep learning. Available with single or multiple GPUs. |
+| High Performance Compute | Fastest and most powerful CPUs with optional high-throughput network interfaces (RDMA).                                                                                   |
 
 VMs can be resized as long as your current hardware config can fit in the new size. Stopping and deallocating VMs allows you to select any size.
 
@@ -87,3 +87,10 @@ az vm open-port --port 80 \
 az group delete --name az204-patrick-vm --no-wait
 az group delete --name NetworkWatcherRG --no-wait
 ```
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
+  - Be familiar with sizing options and use cases for choosing a particular one
+  - Be familiar with availability zones vs availability sets
+  - Scale sets and load balancers may show up, but they probably won't be the focus of a question
+  - Be aware of fault domains and update domains and how they may impact the rolling out of a particular application that spans multiple VMs

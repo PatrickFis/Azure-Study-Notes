@@ -181,3 +181,15 @@ The application published to the app service is stored [here](Code/Visual%20Stud
   - Program.cs needed to be updated to tell the builder to use the app config as well as to enable feature flags.
     - I stored the connection string for the app config inside a connection string setting in the app service's configuration so that I could avoid hardcoding it.
   - The service the program uses for retrieving data was updated to get a connection string for the SQL server from the app config as well as a method to check a feature flag.
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
+  - Be familiar with pricing plans and their differences and features, etc
+  - Be familiar with the applications that can run inside a single ASP
+  - Be familiar with scaling and autoscaling (enabling it, conditions, rules, metrics, monitoring)
+  - Be aware of CI/CD options, though they typically won't be the focus of a question
+    - Be familiar with deploying an application through the CLI and Powershell
+  - Be familiar with deployment slots
+  - Be familiar with logging and where they can be published
+  - Be aware of configuration options in apps (know how to change the settings in the CLI and Powershell, understand deployment slot settings)
+  - Be aware of app settings

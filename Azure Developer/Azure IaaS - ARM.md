@@ -70,3 +70,8 @@ https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template
 - Literal values need to be escaped
 - Since ARM uses JSON nulls can set as usual ("propertyName": null) or using a function ("propertyName": "[json('null')]")
 - ARM template functions can be referenced [here](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions)
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
+  - Be familiar with ARM template files and what can appear inside of them
+  - Be aware of how to deploy an ARM template file using the az cli and Powershell
