@@ -210,7 +210,7 @@ The following steps will walk you through setting up a new AD account and granti
 - Each blob gets an initial ID which is updated alongside the blob
 - Blob versioning can be enabled or disabled at any time
 - Blob versioning is available in the the portal when viewing a storage account. It's available by clicking on data protection under the data management section. After enabling it you will see a versions tab displayed when viewing a blob in the portal. Other options are then made available to set a blob to a previous version.
-- If blob versioning is disabled you will still be able to versions of blobs that were created while versioning was enabled.
+- If blob versioning is disabled you will still be able to access versions of blobs that were created while versioning was enabled.
 
 ## Blob Snapshots
 - Blob snapshots are available when viewing blobs in the portal
