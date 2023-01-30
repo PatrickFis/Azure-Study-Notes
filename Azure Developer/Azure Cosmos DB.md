@@ -269,3 +269,23 @@ function validateItem() {
 ## Misc.
 - JSON for setting up some stuff in Cosmos is located in [Misc Files/Cosmos.json](Misc%20Files/Cosmos.json) and [Misc Files/Customers.json](Misc%20Files/Customers.json).
 - Code for this is stored in [Code/Visual Studio Projects/UdemyCosmosApp](Code/Visual%20Studio%20Projects/UdemyCosmosApp/).
+
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-for-azure-storage-segment-2-of-5 for information on what may appear on the exam.
+  - Be familiar with where Cosmos DB fits in to the larger Azure ecosystem
+  - Be familiar with multi-region replication
+  - Be familiar with consistency levels
+    - Understand consistency patterns
+    - Understand what you get from each consistency level and when you should use a particular consistency level
+  - Understand the supported APIs
+    - Mongo, Cassandra, and the Table API are really more for upgrading
+    - Primarily focus on the Core(SQL) API when looking at functionality
+  - Understand how Cosmos scales (sharding AKA partitioning)
+    - Understand logical vs physical partitions
+    - The exam may focus on how you establish the partition key
+      - You should understand when to use an item as a partition key (so if you have a property with a wide range of values use that)
+  - Understand the resource hierarchy
+    - The Cosmos account
+    - Databases within the account
+    - Containers within databases
+      - Containers are the focus of partitioning and throughput
+    - Items inside the containers

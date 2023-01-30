@@ -232,3 +232,140 @@ The following steps will walk you through setting up a new AD account and granti
 - The storage account used for the labs is az204patrickstorage
 - Metadata can be added to blobs through the Azure portal and used by your program
 - I skipped doing the labs for table storage. I use table storage at work.
+
+# Azure Blob Storage REST API [MS Documentation](https://learn.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api)
+- https://learn.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#resource-uri-syntax has a reference for URI syntax for endpoints:
+
+> Each resource has a corresponding base URI, which refers to the resource itself.
+> For the storage account, the base URI includes the name of the account only:
+>
+> https://myaccount.blob.core.windows.net
+>
+> For a container, the base URI includes the name of the account and the name of the container:
+>
+> https://myaccount.blob.core.windows.net/mycontainer
+>
+> For a blob, the base URI includes the name of the account, the name of the container, and the name of the blob:
+> 
+> https://myaccount.blob.core.windows.net/mycontainer/myblob
+>
+> The URI for a snapshot of a blob is formed as follows:
+>
+> https://myaccount.blob.core.windows.net/mycontainer/myblob?snapshot=`<DateTime>`
+
+## Storage Account
+- The storage account can be manipulated using the REST API with requests sent to https://myaccount.blob.core.windows.net/ with additional URI parameters
+  - Containers can be listed with a GET request and an additional URI parameter: ?comp=list
+  - Blob service properties (things like properties for storage analytics, CORS, and soft delete settings) can be manipulated with additional URI parameters: ?restype=service&comp=properties
+    - A PUT request will set the properties
+      - A request body in XML is used to set the properties
+      ``` xml
+      <?xml version="1.0" encoding="utf-8"?>  
+      <StorageServiceProperties>  
+          <Logging>  
+              <Version>version-number</Version>  
+              <Delete>true|false</Delete>  
+              <Read>true|false</Read>  
+              <Write>true|false</Write>  
+              <RetentionPolicy>  
+                  <Enabled>true|false</Enabled>  
+                  <Days>number-of-days</Days>  
+              </RetentionPolicy>  
+          </Logging>  
+          <Metrics>  
+              <Version>version-number</Version>  
+              <Enabled>true|false</Enabled>  
+              <IncludeAPIs>true|false</IncludeAPIs>  
+              <RetentionPolicy>  
+                  <Enabled>true|false</Enabled>  
+                  <Days>number-of-days</Days>  
+              </RetentionPolicy>  
+          </Metrics>  
+          <!-- The DefaultServiceVersion element can only be set for the Blob service and the request must be made using version 2011-08-18 or later -->  
+          <DefaultServiceVersion>default-service-version-string</DefaultServiceVersion>  
+      </StorageServiceProperties>
+      ```
+    - A GET request will retrieve the properties
+  - Blob service statistics can be retrieved for accounts with geo-redundant replication with a GET request with additional URI parameters: ?restype=service&comp=stats
+  - Account information can be retrieved by sending GET/HEAD requests with additional URI parameters: ?restype=account&comp=properties
+    - This operation can include another parameter: &sv=`<SAS token value>`
+    - This operation can be done for containers or individual blobs as well by specifying /mycontainer or /mycontainer/myblob with the same URI parameters
+  - User delegation SASes can be retrieved by sending a POST request with additional URI parameters: ?restype=service&comp=userdelegationkey
+    - A request body in XML is used to set the start time and expiry time of the SAS
+    ``` xml
+    <?xml version="1.0" encoding="utf-8"?>  
+    <KeyInfo>  
+        <Start>String, formatted ISO Date</Start>
+        <Expiry>String, formatted ISO Date </Expiry>
+    </KeyInfo>  
+    ```
+  - All requests use the common headers noted below
+
+## Containers
+- Containers are manipulated using the REST API with requests sent to https://myaccount.blob.core.windows.net/mycontainer?restype=container
+  - Containers can be created by making a PUT request with the following headers:
+    - The common headers noted below
+    - x-ms-blob-public-access:`<container, blob>` - Optional. Specifies whether data in the container can be accessed publicly and the level of access. Container will allow full public read access and allow for clients to enumerate blobs in the container via anonymous request, but not enumerate containers in the storage account. Blob will allow public read access for blobs. Clients can't enumerate data within the container via anonymous request.
+  - Containers can be deleted by making a DELETE request with the following headers:
+    - The common headers noted below
+  - Container properties can be retrieved with a GET/HEAD request with the following headers:
+    - The common headers noted below
+  - Container metadata can be manipulated with an additional URI parameter: &comp=metadata
+    - A GET/HEAD request will retrieve the metadata when sent with the following headers:
+      - The common headers noted below
+    - A PUT request will set metadata when sent with the following headers:
+      - The common headers noted below
+      - x-ms-meta-name:value - Optional. A name-value pair to associate with the container as metadata. Each call to this operation replaces all existing metadata attached to the container. To remove all metadata from the container, call this operation with no metadata headers.
+  - Blobs inside a container can be listed by making a GET request with an additional URI parameter: &comp=list. The following headers can be sent:
+    - The common headers noted below
+    - A number of additional URI parameters can be specified to filter results
+
+## Blobs
+### Storing, Retrieving, Copying and Deleting Blobs
+- Blobs can be stored and retrieved by making requests to https://myaccount.blob.core.windows.net/mycontainer/myblob
+  - A PUT request will store a blob in your container when sent with the following headers
+    - The common headers noted below
+    - Content-Length - Required. The length of the request. For page or append blobs the value must be set to 0.
+    - x-ms-blob-type: `<BlobBlob | PageBlob | AppendBlob>` - Required to specify the type of blob to be created in the storage account.
+  - A PUT request can also be used to copy a blob when sent with the following headers
+    - The common headers noted below
+    - x-ms-copy-source:name - Required. Specifies the name of the source blob or file. Can be a URL which specifies the blob (though it must be URL encoded).
+  - A GET request will read or download the blob from Azure. The response will include metadata and properties. The following headers are required:
+    - The common headers noted below
+    - The common URI parameters noted below are supported
+  - A DELETE request will delete the blob from your storage account. The following headers are required:
+    - The common headers noted below
+    - x-ms-delete-snapshots: {include, only} - Required if the blob has associated snapshots. Include will delete the base blob and all of its snapshots while only will delete only the blob's snapshots and not the blob itself.
+    - The common URI parameters noted below are supported
+### Blob Metadata
+- Blob metadata can be manipulated by making requests to https://myaccount.blob.core.windows.net/mycontainer/myblob?comp=metadata
+  - A PUT request will store metadata when sent with the following headers:
+    - The common headers noted below
+    - x-ms-meta-name:value - Optional. Sets a name-value pair for the blob. Each call to this operation replaces all existing metadata attached to the blob. To remove all metadata from the blob, call this operation with no metadata headers.
+  - A GET request will retrieve metadata when sent with the following headers:
+    - The common headers noted below
+    - The common URI parameters noted below are supported
+
+### Common headers in requests
+- There are common headers that should be on most requests:
+  - Authorization - Required. Specifies the authorization scheme, account name, and signature.
+  - Date or x-ms-date - Required. Specifies the Coordinated Universal Time (UTC) for the request.
+  - x-ms-version - Required for all authorized requests. Specifies the version of the operation to use for this request.
+
+### General Notes
+- In general, the REST API operates by having requests to manipulate blobs sent to https://myaccount.blob.core.windows.net/mycontainer/myblob with a URI parameter of comp=`<operation>` for operations that aren't storing, getting, deleting, or copying a blob.
+
+## Common URI parameters
+- snapshot - Optional. The snapshot parameter is an opaque DateTime value that, when it's present, specifies the blob snapshot to be retrieved.
+- versionid -	Optional, version 2019-12-12 and later. The versionid parameter is an opaque DateTime value that, when present, specifies the version of the blob to be retrieved.
+- timeout	- Optional. The timeout parameter is expressed in seconds.
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-for-azure-storage-segment-2-of-5 for information on what may appear on the exam.
+  - The exam will assume that you know replication options and blob storage setup
+  - Understand what the client libraries look like (see code examples) and its major classes as well as main methods
+  - Be aware of how to create metadata (SDK and REST API)
+    - It sounds like common questions come up around the REST API. It would be good to review the various API operations.
+  - Be aware of the 3 access tiers as well as their advantages
+  - Be aware of lifecycle management and how to transition a blob from one tier to another
+  - Be aware of lifecycle policies and how to establish them
