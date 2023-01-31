@@ -335,7 +335,7 @@ The following steps will walk you through setting up a new AD account and granti
     - The common URI parameters noted below are supported
   - A DELETE request will delete the blob from your storage account. The following headers are required:
     - The common headers noted below
-    - x-ms-delete-snapshots: {include, only} - Required if the blob has associated snapshots. Include will delete the base blob and all of its snapshots while only will delete only the blob's snapshots and not the blob itself.
+    - x-ms-delete-snapshots: `<include, only>` - Required if the blob has associated snapshots. Include will delete the base blob and all of its snapshots while only will delete only the blob's snapshots and not the blob itself.
     - The common URI parameters noted below are supported
 ### Blob Metadata
 - Blob metadata can be manipulated by making requests to https://myaccount.blob.core.windows.net/mycontainer/myblob?comp=metadata
@@ -345,6 +345,11 @@ The following steps will walk you through setting up a new AD account and granti
   - A GET request will retrieve metadata when sent with the following headers:
     - The common headers noted below
     - The common URI parameters noted below are supported
+
+### Blob Access Tiers
+- Blobs can be moved between access tiers by making PUT requests against https://myaccount.blob.core.windows.net/mycontainer/myblob?comp=tier with the following headers:
+  - The common headers noted below
+  - x-ms-access-tier: `<Hot, Cool, Cold, Archive>` - Required to specify the tier to be set on the blob. The cold tier is in preview.
 
 ### Common headers in requests
 - There are common headers that should be on most requests:
