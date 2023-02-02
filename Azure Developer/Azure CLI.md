@@ -43,6 +43,12 @@
   - [Delete a Cosmos DB](#delete-a-cosmos-db)
   - [Create a SQL database under Cosmos (note that the other databases all have their own commands)](#create-a-sql-database-under-cosmos-note-that-the-other-databases-all-have-their-own-commands)
   - [Delete a SQL database under Cosmos](#delete-a-sql-database-under-cosmos)
+- [API Management](#api-management)
+  - [Create an API Management Service Instance](#create-an-api-management-service-instance)
+  - [Create an APIM API](#create-an-apim-api)
+  - [Import an API](#import-an-api)
+  - [Delete an APIM API](#delete-an-apim-api)
+  - [Delete an APIM Instance](#delete-an-apim-instance)
 
 # Azure CLI
 [MS Documentation](https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli) is a good place to reference CLI commands.
@@ -166,9 +172,12 @@ az storage account generate-sas --expiry <Y-m-d'T'H:M'Z'> \
 --services <(b)lob (f)ile (q)ueue (t)able. Can be combined.> \
 --account-name <storage account name>
 
-# Example command
+# Example command. The returned value can be used in other requests by using the --sas-token optional parameter. The returned value should be given as the value of this parameter and must include the quotes in the returned value.
 end=`date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ'`
 az storage account generate-sas --permissions acdfilprtuwxy --account-name testazcliaccount --resource-types sco --services bfqt --expiry $end
+
+# Example usage.
+az storage container create -n testcontainer2 --account-name az204reviewstorage223 --sas-token "<token here>"
 ```
 
 ## Create a container
@@ -376,4 +385,58 @@ az cosmosdb sql database delete --account-name (or -a) <Cosmos DB account name> 
 --name (or -n) <database name> \
 --resource-group (or -g) <resource group name>
 --yes (or -y) <skip confirmation, optional>
+```
+
+# API Management
+## Create an API Management Service Instance
+``` bash
+az apim create --name (or -n) <instance name> \
+--publisher-email <email> \
+--publisher-name <name> \
+--resource-group (or -g) <resource group name> \
+--location (or -l) <location> \
+--sku-name <Basic, Consumption, Developer, Isolated, Premium, Standard>
+
+# Example Command
+az apim create --name MyApim -g MyResourceGroup -l eastus --sku-name Consumption --enable-client-certificate \
+    --publisher-email email@mydomain.com --publisher-name Microsoft
+```
+
+## Create an APIM API
+``` bash
+az apim api create --api-id <API name> \
+--display-name <name to display for the API> \
+--path <path to the API> \
+--resource-group (or -g) <resource group name> \
+--service-name (or -n) <name of the APIM instance>
+
+# Example command
+az apim api create --service-name MyApim -g MyResourceGroup --api-id MyApi --path '/myapi' --display-name 'My API'
+```
+
+## Import an API
+``` bash
+az apim api import --path <path to the API> \
+--resource-group (or -g) <resource group name> \
+--service-name (or -n) <name of the APIM instance> \
+--specification-format <GraphQL, OpenApi, OpenApiJson, Swagger, Wadl, Wsdl>
+
+# Example command
+az apim api import -g MyResourceGroup --service-name MyApim --path MyApi --specification-url https://MySpecificationURL --specification-format OpenApiJson
+```
+
+## Delete an APIM API
+``` bash
+az apim api delete --api-id <API name> \
+--resource-group (or -g) <resource group name> \
+--service-name (or -n) <name of the APIM instance>
+```
+
+## Delete an APIM Instance
+``` bash
+az apim delete --name (or -n) <name of the APIM instance> \
+--resource-group (or -g) <resource group name>
+
+# Example command
+az apim delete -n MyApim -g MyResourceGroup
 ```
