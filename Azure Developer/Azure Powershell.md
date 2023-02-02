@@ -1,3 +1,17 @@
+- [Azure Powershell](#azure-powershell)
+  - [Connect to an Azure account (skip if using Cloud Shell)](#connect-to-an-azure-account-skip-if-using-cloud-shell)
+  - [Resource Groups](#resource-groups)
+    - [Create a Resource Group](#create-a-resource-group)
+    - [Delete a Resource Group](#delete-a-resource-group)
+  - [Virtual Machines](#virtual-machines)
+    - [Creating a VM (Walkthrough)](#creating-a-vm-walkthrough)
+  - [Storage Accounts](#storage-accounts)
+    - [Create a storage account and transfer a file to it (Walkthrough for creation) (Walkthrough for uploading a file)](#create-a-storage-account-and-transfer-a-file-to-it-walkthrough-for-creation-walkthrough-for-uploading-a-file)
+  - [Key Vault](#key-vault)
+    - [Create an Azure Key Vault (Walkthrough)](#create-an-azure-key-vault-walkthrough)
+  - [SQL Server](#sql-server)
+    - [Create a SQL Server and a database](#create-a-sql-server-and-a-database)
+
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
 
