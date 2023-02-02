@@ -302,3 +302,54 @@ The following steps show you how to assign RBAC roles to the user you created in
 | ver                | String, either 1.0 or 2.0  | Indicates the version of the id_token.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | hasgroups          | Boolean                    | If present, always true, denoting the user is in at least one group. Used in place of the groups claim for JWTs in implicit grant flows if the full groups claim would extend the URI fragment beyond the URL length limits (currently 6 or more groups). Indicates that the client should use the Microsoft Graph API to determine the user's groups (https://graph.microsoft.com/v1.0/users/{userID}/getMemberObjects).                                                                                                                                                                                                                                                                                                                              |
 | groups:src1        | JSON object                | For token requests that are not limited in length (see hasgroups above) but still too large for the token, a link to the full groups list for the user will be included. For JWTs as a distributed claim, for SAML as a new claim in place of the groups claim.  Example JWT Value: "groups":"src1" "_claim_sources: "src1" : { "endpoint" : "https://graph.microsoft.com/v1.0/users/{userID}/getMemberObjects" }  For more info, see Groups overage claim.                                                                                                                                                                                                                                                                                            |
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-implement-azure-security-segment-3-of-5 for information on what may appear on the exam.
+  - The libraries used to interact with AAD and the registering applications to the identity platform
+    - Be familiar with steps you'd go through in the portal to register an application, what's created when you register it, and what libraries you'd use to interface with it. Concentrate on the MSAL library as the main SDK.
+    - Service principals
+    - Application objects
+  - Be aware of the two types of permissions
+    - Delegated: Those assigned to a user
+    - Application: Those for the app itself
+  - Be aware of consent types
+    - Static, incremental, dynamic, or admin consent
+  - You may have to look at an OAuth HTTP request
+    - Be aware of scopes and what permissions they give (look at the graph API for this)
+  - Shared access signatures (SAS)
+    - Be aware of the types (user delegation, service, or account)
+    - Be aware of some of the best practices
+      - Always use HTTPs
+      - Apply minimum-required privileges
+      - Set expiration time to smallest useful time
+      - The most secure SAS is a user delegation SAS
+      - SAS isn't always the correct solution
+    - Understand the URI for a SAS and what they mean
+      - sp = permissions
+      - se = end time for signature
+      - And more
+  - Key Vault 
+    - Secrets, keys, and cert management
+    - Accessing Key Vault using service principals and managed identities
+      - Be aware of how a service principal may use a secret or certificate for access
+      - Be aware of the following best practices:
+        - How to enable logging for Key Vaults
+        - Use separate key vaults per application per environment
+        - Backup and recovery options
+        - Access control
+    - Be aware of how to establish a managed identity for a web app or VM and how to give it permissions
+    - Understand the differences between a system assigned managed identity and a user assigned identity
+  - App Configuration
+    - Be aware of how secrets in a Key Vault can be referenced from App Config 
+  - Be aware of private endpoints
+    - Doesn't allow direct access from the outside world. You have to go through your virtual networks to get to the App Config
+  - Microsoft Graph
+    - Be aware of HTTP access and what an HTTP request may look like
+    - Be aware of the Microsoft Graph library and using it with MSAL
+  - Key points to review
+    - Difference between AuthN and AuthZ
+    - Service principals and RBAC
+    - Registering an application
+    - Security mechanisms like SAS, SSL certs and encryption
+    - Azure Key Vault
+    - Managed Identities

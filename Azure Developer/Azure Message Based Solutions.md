@@ -216,3 +216,45 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
 8. Verify that each of your two new subscriptions received 1 message each
 
 Note that the above filters could be done as correlation filters using key value pairs instead.
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-connect-to-and-consume-azure-services-and-third-party-services-segment-5-of-5 for information on what may appear on the exam.
+  - Be comfortable choosing Event Grid, Event Hubs, or Service Bus to solve a problem
+    | Service     | Purpose                         | Type                          | When to use                                 |
+    | ----------- | ------------------------------- | ----------------------------- | ------------------------------------------- |
+    | Event Grid  | Reactive Programming            | Event distribution (discrete) | React to status changes                     |
+    | Event Hubs  | Big Data Pipeline               | Event streaming (series)      | Telemetry and distributed data streaming    |
+    | Service Bus | High-value enterprise messaging | Message                       | Order processing and financial transactions |
+  - Event Grid
+    - Comes in to play when a client needs to be connected one on one with another process (ie: a VM getting created inside a resource group could cause an event that Event Grid forwards off to a number of different event handlers)
+    - Be comfortable with:
+      - Events
+      - Event sources
+      - Topics
+      - Event subscriptions
+      - Event handlers
+    - When you're thinking about Event Grid on the exam you want to be thinking about distinct, individual occurrences and a series of handlers who might be responding to them
+  - Event Hubs
+    - Use this when there aren't individual events that are occurring, but thousands or millions of events which need to be ingested into Azure
+    - Key scenarios where Event Hubs makes the most sense:
+      - You have a large amount of information coming in
+      - You need the ability to capture data into blob storage so that it can be processed later
+  - Service Bus
+    - Service Bus is a more robust option than Storage Queues
+    - Understand common messaging scenarios:
+      - Messaging: Transfer business data (sales, purchases, journals, inventory, etc)
+      - Decouple applications: Improve reliability and scalability of applications
+      - Topics and subscriptions: Enable 1:n relationships between publishers and subscribers
+      - Message sessions: Implement workflows that require message ordering or message deferral
+    - Topics and subscriptions
+      - Pub-sub model
+      - One sender can create one message that gets delivered to several receivers
+  - Storage Queues
+    - Simplistic
+    - Only supports HTTP
+    - Thin layer sitting over the top of the file system
+    - A single storage account can have multiple storage queues
+    - You'll want to be familiar with the SDKs to communicate with Queue storage
+  - Deciding between message queue solutions:
+    - Generally go with Service Bus
+    - If you have to decide between them for the exam it'll likely come down to features, and really the only feature that can't be done on the Service Bus side is that Storage Queues allow you to store over 80 GB(!!!) of messages in a queue.

@@ -280,3 +280,42 @@ Using this from code will require something similar to the [Code/Visual Studio P
 
 ### Virtual Networks
 - We would use a VNet if we wanted to do something like expose our APIM instance publicly while not exposing our backend services.
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-connect-to-and-consume-azure-services-and-third-party-services-segment-5-of-5 for information on what may appear on the exam.
+  - Be aware of how APIM fits in your broader architecture (it sits between your client apps and the services that they want to call)
+  - Be aware of terminology:
+    - Backend API: A HTTP service that you implement with your business logic
+    - Frontend API: A HTTP service facade hosted by API Management to obfuscate your back-end API
+    - Operation: A specific operation in the front-end API that correlates to a specific request/response from the backend API
+    - Product: One or more APIs, along with a usage quota and terms of use
+    - Subscription: Is a way for consumers to access an API using keys
+      - Subscription key scopes:
+        - All APIs - Applies to every API accessible from the gateway
+        - Single API - Applies to a single imported API and all of its endpoints
+        - Product - A collection of one or more APIs. Can have different access rules, usage quotas, and terms of use.
+      - Securing APIs by using subscriptions
+  - Be aware of various mechanisms for securing APIs:
+    - OAuth 2.0
+    - Subscriptions
+    - Certificates
+    - IP allow listing
+  - Be aware of policies
+    - Be familiar with where policies are applied and how they look in XML:
+      ``` xml
+      <policies>
+        <inbound>
+          <!-- statements to be applied to the request go here -->
+        </inbound>
+        <backend>
+          <!-- statements to be applied before the request is forwarded to 
+              the backend service go here -->
+        </backend>
+        <outbound>
+          <!-- statements to be applied to the response go here -->
+        </outbound>
+        <on-error>
+          <!-- statements to be applied if there is an error condition go here -->
+        </on-error>
+      </policies>
+      ```

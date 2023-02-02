@@ -166,3 +166,20 @@ Content can be allowed or blocked in specific countries.
 - Low entry fee and simplified cost model
 - Has a Web Application Firewall (WAF)
 - Enables private backend connections with Private Links
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-monitor-troubleshoot-and-optimize-azure-solutions-segment-4-of-5 for information on what may appear on the exam.
+  - Azure Cache for Redis
+    - Solution for internal caching
+    - Be aware of uses of Redis for something like a web tier
+      - Cache-aside pattern for storing data instead of retrieving it from a DB or storage
+      - Storing session related data
+    - Be aware of the key scenarios and service tiers for Redis
+      - Be aware of open source vs enterprise features for tiers
+    - Be aware of how to connect from a client application
+  - CDNs
+    - Solution for data available outside of your internal network
+    - Understand how CDNs work with Point of Presence (POP) servers and origin servers
+    - Be aware of the process to create an Azure CDN
+    - Be aware of the 4 available CDN options and how to create them with the CLI and Powershell
+  

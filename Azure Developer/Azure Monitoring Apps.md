@@ -185,3 +185,17 @@ The logs can take a decent bit of time to start showing up in Log Analytics.
   - Standard test: This single request test is similar to the URL ping test. It includes TLS/SSL certificate validity, proactive lifetime check, HTTP request verb (for example, GET, HEAD, or POST), custom headers, and custom data associated with your HTTP request.
   - Multi-step web test (classic): You can play back this recording of a sequence of web requests to test more complex scenarios. Multi-step web tests are created in Visual Studio Enterprise and uploaded to the portal, where you can run them.
   - Custom TrackAvailability test: If you decide to create a custom application to run availability tests, you can use the TrackAvailability() method to send the results to Application Insights.
+
+# Misc
+- See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-monitor-troubleshoot-and-optimize-azure-solutions-segment-4-of-5 for information on what may appear on the exam.
+  - Log Analytics
+    - Be aware of how to configure an application to use Log Analytics
+  - Metrics Explorer
+    - Be aware of what's available inside Metrics Explorer natively and once you've installed various extensions in things like VMs
+  - Application Insights
+    - Be familiar with how to configure application insights at the server level and the application (ie: JS) level
+    - Be aware of the data available inside Application Insights
+    - Be aware of availability tests and how to configure a test which notifies people
+  - Azure Monitor
+    - Understand where it gets data from
+    - Be familiar with how to get information sent to Log Analytics and how to query it with Kusto
