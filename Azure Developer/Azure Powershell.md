@@ -9,6 +9,7 @@
     - [Create a storage account and transfer a file to it (Walkthrough for creation) (Walkthrough for uploading a file)](#create-a-storage-account-and-transfer-a-file-to-it-walkthrough-for-creation-walkthrough-for-uploading-a-file)
   - [Key Vault](#key-vault)
     - [Create an Azure Key Vault (Walkthrough)](#create-an-azure-key-vault-walkthrough)
+    - [Storing an access key from a storage account in a key vault](#storing-an-access-key-from-a-storage-account-in-a-key-vault)
   - [SQL Server](#sql-server)
     - [Create a SQL Server and a database](#create-a-sql-server-and-a-database)
   - [ARM](#arm)
@@ -16,6 +17,9 @@
   - [API Management](#api-management)
     - [Create an API Management Service Instance](#create-an-api-management-service-instance)
     - [Create an API](#create-an-api)
+  - [Managed Identities](#managed-identities)
+    - [Create an User Assigned Identity](#create-an-user-assigned-identity)
+    - [Create a System Assigned Managed Identity](#create-a-system-assigned-managed-identity)
 
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
@@ -200,6 +204,28 @@ Remove-AzKeyVault -Name $kv.VaultName -ResourceGroupName $rg.ResourceGroupName -
 Remove-AzResourceGroup -Name $rg.ResourceGroupName -Force -AsJob
 ```
 
+### Storing an access key from a storage account in a key vault
+``` powershell
+# Store the storage account access key in a variable
+$StorageAccountName = "az204patrickstorage"
+$ResourceGroupName = "fischerpl18_rg_1227"
+
+# Get the first key from the account
+$StorageAccountKey = (Get-AzStorageAccountKey -ResourceGroupName $ResourceGroupName `
+-AccountName $StorageAccountName) | Where-Object {$_.KeyName -eq "key1"}
+
+$StorageAccountKeyValue = $StorageAccountKey.Value
+
+# Convert the key to a secure string so that it can be stored in a key vault
+$KeyVaultName = "az204appservicekeyvault"
+$SecretValue = ConvertTo-SecureString $StorageAccountKeyValue -AsPlainText -Force
+
+# Store the key in a new secret in the key vault
+Set-AzKeyVaultSecret -VaultName $KeyVaultName `
+-Name $StorageAccountName `
+-SecretValue $SecretValue
+```
+
 ## SQL Server
 ### Create a SQL Server and a database
 ``` powershell
@@ -274,4 +300,26 @@ New-AzApiManagementApi -Context $ApiMgmtContext `
 -ServiceUrl <API URL> `
 -Protocols @("http", "https") `
 -Path <path to API>
+```
+
+## Managed Identities
+### Create an User Assigned Identity
+``` powershell
+New-AzUserAssignedIdentity -ResourceGroupName <resource group name> `
+-Name <identity name> `
+-Location <location>
+```
+
+### Create a System Assigned Managed Identity
+``` powershell
+# This example is for a VM
+$ResourceGroupName = "az204reviewgroup"
+$VmName = "tempvmidentityaz204"
+
+$Vm = Get-AzVM -ResourceGroupName $ResourceGroupName `
+-Name $VmName
+
+Update-AzVM -ResourceGroupName $ResourceGroupName `
+-VM $Vm `
+-IdentityType SystemAssigned
 ```

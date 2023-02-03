@@ -375,7 +375,7 @@ The following steps will walk you through setting up a new AD account and granti
   - Be aware of lifecycle management and how to transition a blob from one tier to another
   - Be aware of lifecycle policies and how to establish them
 
-# Blob storage client library class notes
+# Blob storage client library class notes [API Docs](https://learn.microsoft.com/en-us/dotnet/api/overview/azure/storage.blobs-readme?view=azure-dotnet)
 - BlobClient: The BlobClient allows you to manipulate Azure Storage blobs
   - Constructors
     - BlobClient(string connectionString, string blobContainerName, string blobName)
@@ -409,7 +409,7 @@ The following steps will walk you through setting up a new AD account and granti
       - PublicAccessType is an optional parameter and is used to set the access of a container to None, BlobContainer (containers), or Blob
       - metadata is an optional parameter used to set custom metadata for this container
       - encryptionScopeOptions is an optional parameter to set an encryption option
-      - CancellationToken is use dto propagate notifications that the operation should be cancelled
+      - CancellationToken is used to propagate notifications that the operation should be cancelled
     - GetBlobsAsync(BlobTraits traits = BlobTraits.None, BlobStates states = BlobStates.None, string prefix = default, CancellationToken cancellationToken = default)
       - All parameters on this method are optional and are used to filter blobs (aside from cancellationToken)
       - Used to retrieve a list of blobs in the container

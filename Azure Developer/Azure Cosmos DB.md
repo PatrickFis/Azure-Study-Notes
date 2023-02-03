@@ -45,7 +45,7 @@ Cosmos DB is a globally distributed database that is designed for low latency an
 
 ## Supported APIs
 Various APIs allow your applications to treat Cosmos DB like it was another database technology without management overhead.
-- API for NoSQL
+- API for NoSQL (aka Core SQL)
   - Features are available in this API first
   - Data is stored in document format
   - Provides query support through SQL
@@ -289,3 +289,68 @@ function validateItem() {
     - Containers within databases
       - Containers are the focus of partitioning and throughput
     - Items inside the containers
+
+## Cosmos SDK Notes [API Docs](https://learn.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos?view=azure-dotnet)
+- CosmosClient: Provides a client-side logical representation of the Azure Cosmos DB account.
+  - Constructors
+    - CosmosClient(string accountEndpoint, string authKeyOrResourceToken, CosmosClientOptions clientOptions = default)
+      - The accountEndpoint is the Cosmos service endpoint
+      - The authKeyOrResourceToken is an account key or resource token
+      - The clientOptions is an optional resource
+      - Other variations of this endpoint use an AzureKeyCredential instead of the authKeyOrResourceToken parameter
+  - Methods
+    - CreateDatabaseAsync(string id, int? throughput = default, RequestOptions requestOptions = default, CancellationToken cancellationToken = default)
+      - id = Database ID
+      - throughput is an optional parameter to specify the number of RU/s for the DB
+        - An alternate version of this method allows for this to be specified through a ThroughputProperties class which allows for additional configuration
+      - requestOptions is an optional parameter for setting headers, ETags, and other properties
+      - cancellationToken is used to propagate notifications that the operation should be cancelled
+      - Returns a DatabaseResponse which contains information about the created resource
+    - CreateDatabaseIfNotExistsAsync (same as CreateDatabaseAsync)
+      - This method has the same parameters as CreateDatabaseAsync
+      - This method verifies that a DB with the specified ID does not exist before creating the DB
+      - 200 response = DB already exists, 201 = created
+    - GetDatabase(string id)
+      - Retrieves a Database object using the DB's ID
+    - GetContainer(string databaseId, string containerId)
+      - Retrieves a Container object using the DB's ID and the container's ID
+- Database: Allows for reading or deleting an existing database
+  - Constructors
+    - Generally this is going to be returned from a CosmosClient
+  - Methods
+    - ReadAsync(RequestOptions requestOptions = default, CancellationToken cancellationToken = default)
+      - Retrieves a DatabaseResponse containing DatabaseProperties with information about the DBs in Cosmos
+    - CreateContainerAsync(string id, string partitionKeyPath, int? throughput = default, RequestOptions requestOptions = default, CancellationToken cancellationToken = default)
+      - Creates a container with the specified ID and partition key
+    - CreateContainerIfNotExistsAsync (same as CreateContainerAsync)
+    - GetContainer(string id)
+      - Retrieves a Container object using the container's ID
+- Container: Provides a way to read, replace, or delete a specific container or item in a container
+  - Constructors
+    - Generally this is going to be returned from a CosmosClient or Database
+  - Methods
+    - CreateItemAsync`<T>`(T item, PartitionKey? partitionKey = default, ItemRequestOptions requestOptions = default, CancellationToken cancellationToken = default)
+      - Returns an ItemResponse`<T>` after creating an item in a container
+      - The partionKey is nullable. If null the key will be extracted from the item parameter.
+    -  ReadItemAsync`<T>`(string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = default, CancellationToken cancellationToken = default)
+      - Returns an ItemResponse`<T>` containing an item from the container with the specified ID and partition key
+    - GetItemQueryIterator`<T>`(QueryDefinition queryDefinition, string continuationToken = default, QueryRequestOptions requestOptions = default)
+      - Retrieves a FeedIterator`<T>` with items found from a SQL statement using prepared values. QueryDefinitions are defined like this: `QueryDefinition query = new QueryDefinition("select * from sales s where s.AccountNumber = @AccountInput ").WithParameter("@AccountInput", "Account1");`
+
+## Change Feeds [MS Documentation](https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed)
+- Changes feeds are a persistent record of changes to a container in the order they occur.
+- Change feeds work by listening to a container for changes and outputting a sorted list of documents that were changed in the order they were modified.
+- Changes can be processed async
+- Supports one or more consumers for parallel processing
+- Per docs it's supported by all APIs except Postgres and Table
+- Change feeds will contain inserts and updates but not deletes
+
+### Change Feed Features
+- Enabled by default
+- Your provisioned throughput can be used to read from the change feed
+- Inserts and updates are captured
+- Deletes can be captured by setting a soft-delete flag within items
+- Only the most recent change for a given item is included in the change log
+- Changes appear in the feed exactly once, so checkpointing logic must be implemented by the client (or by using a change feed processor)
+- Can be processed by Azure Functions
+- Changes are written to another container

@@ -45,11 +45,69 @@ MSAL is used by devs to acquire tokens from the Microsoft identity platform to a
 ## Library Features
 - Supports a number of different application architectures and platforms
 - Handles tokens for you
+  - The library can acquire tokens on behalf of a user or an application
+  - The library can maintain a token cache and refresh tokens for you when they're close to expiring
 - Helps troubleshoot
 - Supports multiple authentication flows
+  | Flow               | Description                                                                    |
+  | ------------------ | ------------------------------------------------------------------------------ |
+  | Authorization code | Native and web apps securely obtain tokens in the name of the user             |
+  | Client credentials | Service applications run without user interaction                              |
+  | On-behalf-of       | The application calls a service/web API, which in turns calls Microsoft Graph  |
+  | Implicit           | Used in browser-based applications                                             |
+  | Device code        | Enables sign-in to a device by using another device that has a browser         |
+  | Integrated Windows | Windows computers silently acquire an access token when they are domain joined |
+  | Interactive        | Mobile and desktops applications call Microsoft Graph in the name of a user    |
+  | Username/password  | The application signs in a user by using their username and password           |
 
 ## Client Applications
 - Public and confidential client applications are supported through application builders in the library.
+  - Public client applications: Apps which run on devices or desktop computers or in a web browser. These apps aren't trusted to safely keep app secrets, so they only access APIs on behalf of the user (ie, they support only public client flows). Public clients can't hold configuration-time secrets, so they don't have client secrets.
+  - Confidential client applications: Apps that run on servers (web apps, web API apps, or even service/daemon apps). Considered difficult to access and are able to keep an app secret. Can hold configuration time secrets.
+  - https://learn.microsoft.com/en-us/training/modules/implement-authentication-by-using-microsoft-authentication-library/3-initialize-client-applications
+
+### Code Samples for MSAL Client Applications
+- A public client application instantiates itself with the following code:
+  ``` c#
+  IPublicClientApplication app = PublicClientApplicationBuilder.Create(clientId).Build();
+  ```
+- There are various other methods available for these builders like the following:
+  ``` c#
+  // WithAuthority sets the application default authority to an Azure AD authority or another value
+  var clientApp = PublicClientApplicationBuilder.Create(client_id)
+      .WithAuthority(AzureCloudInstance.AzurePublic, tenant_id)
+      .Build();
+
+  // WithRedirectUri overrides the default redirect URI
+  var clientApp = PublicClientApplicationBuilder.Create(client_id)
+    .WithAuthority(AzureCloudInstance.AzurePublic, tenant_id)
+    .WithRedirectUri("http://localhost")
+    .Build();
+  ```
+- A confidential application (in this case: a web app located at https://myapp.azurewebsites.net) is instantiated using the following code:
+  ``` c#
+  string redirectUri = "https://myapp.azurewebsites.net";
+  IConfidentialClientApplication app = ConfidentialClientApplicationBuilder.Create(clientId)
+      .WithClientSecret(clientSecret)
+      .WithRedirectUri(redirectUri)
+      .Build();
+  ```
+- Modifiers that both public and confidential client apps can use are noted below:
+  | Modifier                                            | Description                                                                                                                                                                                                                    |
+  | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | .WithAuthority()                                    | Sets the application default authority to an Azure Active Directory authority, with the possibility of choosing the Azure Cloud, the audience, the tenant (tenant ID or domain name), or providing directly the authority URI. |
+  | .WithTenantId(string tenantId)                      | Overrides the tenant ID, or the tenant description.                                                                                                                                                                            |
+  | .WithClientId(string)                               | Overrides the client ID.                                                                                                                                                                                                       |
+  | .WithRedirectUri(string redirectUri)                | Overrides the default redirect URI. In the case of public client applications, this will be useful for scenarios requiring a broker.                                                                                           |
+  | .WithComponent(string)                              | Sets the name of the library using MSAL.NET (for telemetry reasons).                                                                                                                                                           |
+  | .WithDebugLoggingCallback()                         | If called, the application will call Debug.Write simply enabling debugging traces.                                                                                                                                             |
+  | .WithLogging()                                      | If called, the application will call a callback with debugging traces.                                                                                                                                                         |
+  | .WithTelemetry(TelemetryCallback telemetryCallback) | Sets the delegate used to send telemetry.                                                                                                                                                                                      |
+- Modifiers that are specific to confidential client applications are noted below:
+  | Modifier                                       | Description                                                                                    |
+  | ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+  | .WithCertificate(X509Certificate2 certificate) | Sets the certificate identifying the application with Azure Active Directory.                  |
+  | .WithClientSecret(string clientSecret)         | Sets the client secret (app password) identifying the application with Azure Active Directory. |
 
 ## Implementing Interactive Authentication
 https://docs.microsoft.com/en-us/learn/modules/implement-authentication-by-using-microsoft-authentication-library/4-interactive-authentication-msal
@@ -61,7 +119,35 @@ https://docs.microsoft.com/en-us/learn/modules/implement-authentication-by-using
 5. Fill in the details
 6. Select Register
 7. Create a new application as specified in the above link
+8. Implement the code sample noted below (note that it has a dependency on the Microsoft.Identity.Client package)
 
+``` c#
+using System;
+using System.Threading.Tasks;
+using Microsoft.Identity.Client;
+
+namespace az204_auth
+{
+    class Program
+    {
+        private const string _clientId = "APPLICATION_CLIENT_ID";
+        private const string _tenantId = "DIRECTORY_TENANT_ID";
+
+        public static async Task Main(string[] args)
+        {
+            var app = PublicClientApplicationBuilder
+                .Create(_clientId)
+                .WithAuthority(AzureCloudInstance.AzurePublic, _tenantId)
+                .WithRedirectUri("http://localhost")
+                .Build(); 
+            string[] scopes = { "user.read" };
+            AuthenticationResult result = await app.AcquireTokenInteractive(scopes).ExecuteAsync();
+
+            Console.WriteLine($"Token:\t{result.AccessToken}");
+        }
+    }
+}
+```
 
 # Shared Access Signatures (SAS)
 A SAS is a URI that grants restricted access rights to Azure Storage resources.
@@ -345,6 +431,15 @@ The following steps show you how to assign RBAC roles to the user you created in
     - Doesn't allow direct access from the outside world. You have to go through your virtual networks to get to the App Config
   - Microsoft Graph
     - Be aware of HTTP access and what an HTTP request may look like
+      - Can be accessed by using a token retrieved from MS. The request looks like this (assumes you're using an app registration from AAD):
+        - POST to https://login.microsoftonline.com/tenant-id-here/oauth2/v2.0/token
+        - Headers:
+          - grant_type: client_credentials
+          - client_id: client ID from app registration
+          - client_secret: generated secret from app registration
+          - scope: https://graph.microsoft.com/.default
+        - This will return a response containing an access_token field which can be set in an Authorization header on other requests to the Graph API. For example, the token could be used to send requests to https://graph.microsoft.com/v1.0/users to retrieve information about users.
+          - Note: If you're accessed on the exam about the Authorization header, then the header itself is named "Authorization" and the value is "Bearer `<token here>`"
     - Be aware of the Microsoft Graph library and using it with MSAL
   - Key points to review
     - Difference between AuthN and AuthZ
@@ -353,3 +448,57 @@ The following steps show you how to assign RBAC roles to the user you created in
     - Security mechanisms like SAS, SSL certs and encryption
     - Azure Key Vault
     - Managed Identities
+
+# Code Samples
+## Managed Identities
+- This code is from [Code/Visual Studio Projects/UdemyKeyVault](Code/Visual%20Studio%20Projects/UdemyKeyVault/UdemyKeyVault/Program.cs)
+### Retrieve a token for interacting with a resource
+- This code assumes that it's being run on a resource with a managed identity (like a VM or a web app).
+- It requires the identity to have access to read secrets in a Key Vault and uses the identity to retrieve the value of a secret.
+- DefaultAzureCredential is used to automatically get a token using the managed identity.
+``` c#
+async Task GetSecretUsingManagedIdentity()
+{
+    TokenCredential tokenCredential = new DefaultAzureCredential();
+    SecretClient secretClient = new(new Uri(keyVaultUri), tokenCredential);
+
+    var secret = await secretClient.GetSecretAsync(secretName);
+
+    Console.WriteLine($"The secret is {secret.Value.Value}");
+}
+```
+
+### Retrieve a token manually for interacting with a resource
+- Like the code above this assumes that it's being run from a resource with a managed identity.
+- The tokenUri is only accessible from a resource in Azure.
+- The resource parameter in tokenUri is used to specify the type of resource that you need access to.
+``` c#
+async Task UseManagedIdentityManually()
+{
+    // Get an access token
+    string tokenUri = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://vault.azure.net";
+
+    HttpClient client = new HttpClient();
+    client.DefaultRequestHeaders.Add("Metadata", "true");
+
+    HttpResponseMessage response = await client.GetAsync(tokenUri);
+
+    string content = await response.Content.ReadAsStringAsync();
+
+    Dictionary<string, string> values = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+
+    foreach(KeyValuePair<string, string> pair in values)
+    {
+        Console.WriteLine($"{pair.Key}:, {pair.Value}");
+    }
+
+    // Access the secret using the token
+    string secretUri = $"{keyVaultUri}/secrets/{secretName}/{secretVersion}?api-version=7.3";
+    HttpClient secretClient = new HttpClient();
+    secretClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", values["access_token"]);
+    
+    HttpResponseMessage secretResponse = await secretClient.GetAsync(secretUri);
+    string secret = await secretResponse.Content.ReadAsStringAsync();
+    Console.WriteLine($"The secret is {secret}");
+}
+```
