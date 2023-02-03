@@ -374,3 +374,56 @@ The following steps will walk you through setting up a new AD account and granti
   - Be aware of the 3 access tiers as well as their advantages
   - Be aware of lifecycle management and how to transition a blob from one tier to another
   - Be aware of lifecycle policies and how to establish them
+
+# Blob storage client library class notes
+- BlobClient: The BlobClient allows you to manipulate Azure Storage blobs
+  - Constructors
+    - BlobClient(string connectionString, string blobContainerName, string blobName)
+      - This is used when you're using an access key
+    - BlobClient(Uri blobUri, Azure.Core.TokenCredential credential, Azure.Storage.Blobs.BlobClientOptions options = default)
+      - This is used when using something capable of getting an OAuth token (like an app registration)
+      - The URI is likely something like this: https://{account_name}.blob.core.windows.net/{container_name}/{blob_name}
+      - The TokenCredential class can use something like a ClientSecretCredential
+      - The BlobClientOptions is optional
+  - Methods
+    - DownloadToAsync(string path)
+      - This method downloads the blob specified by the BlobClient to the path parameter
+    - SetMetadataAsync(IDictionary<string, string> metadata)
+      - This method sets metadata on a blob using the dictionary passed to the method
+    - GetPropertiesAsync()
+      - This method returns all user-defined metadata, standard HTTP properties, and system properties for the blob
+- BlobClientOptions: Provides the client configuration options for connecting to Azure Blob Storage
+  - https://learn.microsoft.com/en-us/dotnet/api/azure.storage.blobs.blobclientoptions?view=azure-dotnet is a good reference for the available options
+- BlobContainerClient: The BlobContainerClient allows you to manipulate Azure Storage containers and their blobs
+  - Constructors
+    - BlobContainerClient(string connectionString, string blobContainerName)
+      - This is used when you're using an access key
+    - BlobContainerClient(Uri blobContainerUri, Azure.Storage.Blobs.BlobClientOptions options = default)
+      - The URI is a reference to the container like this: https://{account_name}.blob.core.windows.net/{container_name}
+      - The BlobClientOptions is optional and can be used to specify policies for authentication, retries, etc. which are applied to every request
+    - BlobContainerClient(Uri blobContainerUri, Azure.AzureSasCredential credential, Azure.Storage.Blobs.BlobClientOptions options = default)
+      - The credential parameter is a shared access signature used to sign requests
+  - Methods
+    - CreateAsync(PublicAccessType publicAccessType = PublicAccessType.None, IDictionary<string, string> metadata = default, BlobContainerEncryptionScopeOptions encryptionScopeOptions = default, CancellationToken cancellationToken = default)
+      - This method creates a new container under the specified account
+      - PublicAccessType is an optional parameter and is used to set the access of a container to None, BlobContainer (containers), or Blob
+      - metadata is an optional parameter used to set custom metadata for this container
+      - encryptionScopeOptions is an optional parameter to set an encryption option
+      - CancellationToken is use dto propagate notifications that the operation should be cancelled
+    - GetBlobsAsync(BlobTraits traits = BlobTraits.None, BlobStates states = BlobStates.None, string prefix = default, CancellationToken cancellationToken = default)
+      - All parameters on this method are optional and are used to filter blobs (aside from cancellationToken)
+      - Used to retrieve a list of blobs in the container
+    - GetBlobClient(string blobName)
+      - This method is used to create a BlobClient for the specified blob
+- BlobServiceClient: The BlobServiceClient allows you to manipulate Azure Storage service resources and blob containers. The storage account provides the top-level namespace for the Blob service.
+  - Constructors
+    - BlobServiceClient(string connectionString)
+      - This is used when you're using an access key
+    - This follows the pattern of the other classes and allows you to use URIs for the Blob service, BlobClientOptions to specify options, and the various classes to access the service using SAS or tokens
+  - Methods
+    - CreateBlobContainerAsync(string blobContainerName, PublicAccessType publicAccessType = PublicAccessType.None, IDictionary<string, string> metadata = default, CancellationToken cancellationToken = default)
+      - Fairly similar to the CreateAsync method in BlobContainerClient
+    - GetBlobContainers(BlobContainerTraits traits = BlobContainerTraits.None, BlobContainerStates states = BlobContainerStates.None, string prefix = default, CancellationToken cancellationToken = default)
+      - Fairly similar to the method in BlobContainerClient which retrieves a list of blobs but for containers
+- BlobUriBuilder The BlobUriBuilder class provides a convenient way to modify the contents of a Uri instance to point to different Azure Storage resources like an account, container, or blob.
+  - https://learn.microsoft.com/en-us/dotnet/api/azure.storage.blobs.bloburibuilder?view=azure-dotnet

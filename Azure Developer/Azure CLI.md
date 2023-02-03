@@ -49,6 +49,8 @@
   - [Import an API](#import-an-api)
   - [Delete an APIM API](#delete-an-apim-api)
   - [Delete an APIM Instance](#delete-an-apim-instance)
+- [ARM](#arm)
+  - [Deploy an ARM template to a resource group](#deploy-an-arm-template-to-a-resource-group)
 
 # Azure CLI
 [MS Documentation](https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli) is a good place to reference CLI commands.
@@ -439,4 +441,15 @@ az apim delete --name (or -n) <name of the APIM instance> \
 
 # Example command
 az apim delete -n MyApim -g MyResourceGroup
+```
+
+# ARM
+## Deploy an ARM template to a resource group
+``` bash
+az deployment group create --resource-group (or -g) <resource group name> \
+--name (or -n) <deployment name> \
+--template-uri <URI here> \
+--template-file <path to file here> \
+--parameters <parameter file or JSON string of parameters here> \
+--mode <Complete, Incremental (default)>
 ```

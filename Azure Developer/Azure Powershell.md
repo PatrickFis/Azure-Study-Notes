@@ -11,6 +11,11 @@
     - [Create an Azure Key Vault (Walkthrough)](#create-an-azure-key-vault-walkthrough)
   - [SQL Server](#sql-server)
     - [Create a SQL Server and a database](#create-a-sql-server-and-a-database)
+  - [ARM](#arm)
+    - [Deploying ARM templates](#deploying-arm-templates)
+  - [API Management](#api-management)
+    - [Create an API Management Service Instance](#create-an-api-management-service-instance)
+    - [Create an API](#create-an-api)
 
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
@@ -226,4 +231,47 @@ $database = New-AzSqlDatabase -ResourceGroupName $rg.ResourceGroupName `
 
 # Delete the resource group after you're done with the database
 Remove-AzResourceGroup -Name $rg.ResourceGroupName -Force -AsJob
+```
+
+## ARM
+### Deploying ARM templates
+``` powershell
+# Deploying a local template
+# Create a resource group for the deployment
+New-AzResourceGroup -Name ExampleGroup -Location "East US"
+
+# Deploy a template from a local file
+New-AzResourceGroupDeployment `
+-Name ExampleDeployment `
+-ResourceGroupName ExampleGroup `
+-TemplateFile <path-to-template>
+
+# Deploy a template from a remote location
+New-AzResourceGroupDeployment `
+-Name remoteTemplateDeployment `
+-ResourceGroupName ExampleGroup `
+-TemplateUri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.storage/storage-account-create/azuredeploy.json
+```
+
+## API Management
+### Create an API Management Service Instance
+``` powershell
+New-AzApiManagement -ResourceGroupName <resource group name> `
+-Name <APIM name> `
+-Location <location> `
+-Organization <Organization name> `
+-AdminEmail <email> `
+-Sku <Developer, Basic, Standard, Premium, Consumption>
+```
+
+### Create an API
+``` powershell
+$ApiMgmtContext = New-AzApiManagementContext -ResourceGroupName <resource group name> `
+-ServiceName <service name>
+
+New-AzApiManagementApi -Context $ApiMgmtContext `
+-Name <API name> `
+-ServiceUrl <API URL> `
+-Protocols @("http", "https") `
+-Path <path to API>
 ```
