@@ -20,6 +20,8 @@
   - [Managed Identities](#managed-identities)
     - [Create an User Assigned Identity](#create-an-user-assigned-identity)
     - [Create a System Assigned Managed Identity](#create-a-system-assigned-managed-identity)
+  - [CDN](#cdn)
+    - [Create a new CDN Profile](#create-a-new-cdn-profile)
 
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
@@ -322,4 +324,13 @@ $Vm = Get-AzVM -ResourceGroupName $ResourceGroupName `
 Update-AzVM -ResourceGroupName $ResourceGroupName `
 -VM $Vm `
 -IdentityType SystemAssigned
+```
+
+## CDN
+### Create a new CDN Profile
+``` powershell
+New-AzCdnProfile -Name <CDN name> `
+-ResourceGroupName <resource group name> `
+-Location <location, like Global> `
+-SkuName <Standard_Verizon, Standard_Microsoft, Standard_Akamai, Premium_Verizon, default = Standard_Akamai>
 ```

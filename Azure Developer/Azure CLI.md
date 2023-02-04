@@ -51,6 +51,8 @@
   - [Delete an APIM Instance](#delete-an-apim-instance)
 - [ARM](#arm)
   - [Deploy an ARM template to a resource group](#deploy-an-arm-template-to-a-resource-group)
+- [CDN](#cdn)
+  - [Create a new CDN Profile](#create-a-new-cdn-profile)
 
 # Azure CLI
 [MS Documentation](https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli) is a good place to reference CLI commands.
@@ -452,4 +454,14 @@ az deployment group create --resource-group (or -g) <resource group name> \
 --template-file <path to file here> \
 --parameters <parameter file or JSON string of parameters here> \
 --mode <Complete, Incremental (default)>
+```
+
+# CDN
+## Create a new CDN Profile
+``` bash
+az cdn profile create --name (or -n) <CDN name> \
+--resource-group (or -g) <resource group name> \
+--location (or -l) <location> \
+--sku <Standard_Verizon, Standard_Microsoft, Standard_Akamai, Premium_Verizon, default = Standard_Akamai> \
+--tags <tags>
 ```

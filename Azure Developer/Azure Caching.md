@@ -34,6 +34,23 @@ Service Tiers
 - A time to live (TTL) can be applied to keys in Redis so that it expires
 - Clients can access Redis using the host name, port, and an access key. Two access keys are provided so that you can regenerate the primary key and have no downtime by switching your apps to use the secondary key.
 
+## Common Commands
+| Command                                 | Description                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ping                                    | Ping the server. Returns "PONG".                                                                                                                                                                                                                                                                                                                                                    |
+| set [key] [value]                       | Sets a key/value in the cache. Returns "OK" on success.                                                                                                                                                                                                                                                                                                                             |
+| get [key]                               | Gets a value from the cache.                                                                                                                                                                                                                                                                                                                                                        |
+| exists [key]                            | Returns '1' if the key exists in the cache, '0' if it doesn't.                                                                                                                                                                                                                                                                                                                      |
+| type [key]                              | Returns the type associated to the value for the given key.                                                                                                                                                                                                                                                                                                                         |
+| incr [key]                              | Increment the given value associated with key by '1'. The value must be an integer or double value. This returns the new value.                                                                                                                                                                                                                                                     |
+| incrby [key] [amount]                   | Increment the given value associated with key by the specified amount. The value must be an integer or double value. This returns the new value.                                                                                                                                                                                                                                    |
+| del [key]                               | Deletes the value associated with the key.                                                                                                                                                                                                                                                                                                                                          |
+| flushdb                                 | Delete all keys and values in the database.                                                                                                                                                                                                                                                                                                                                         |
+| expire [key] [seconds] [NX, XX, GT, LT] | Sets a timeout on a key in seconds. Note that expire time resolution is always 1 millisecond. The various options do the following: NX: Set expiry only when the key has no expiry. XX: Set expiry only when the key has an existing expiry. GT: Set expiry only when the new expiry is greater than current one. LT: Set expiry only when the new expiry is less than current one. |
+
+## Connection to Redis from a client application
+- Clients need the host name, port, and access key for Redis (which is available through the Settings -> Access Keys page)
+
 ## Connecting to Redis using C#
 Create a resource group and resources for Redis
 ``` bash
@@ -51,6 +68,25 @@ az group delete --name az204-redis-patrick-rg --no-wait
 ```
 
 More code for interacting with Redis can be found [here](Code/Azure%20App%20Service/).
+
+### Notes on important classes
+- Interacting with Redis uses the StackExchange.Redis package
+- The class which connects to a cache is the ConnectionMultiplexer class
+  - This class connects using the Connect method with a string parameter representing a connection string
+- Redis is represented by an IDatabase retrieved from the ConnectionMultiplexer's GetDatabase method. The following common methods may be useful to remember:
+  | Method               | Description                                                                                                                                               |
+  | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | CreateBatch          | Creates a group of operations that will be sent to the server as a single unit, but not necessarily processed as a unit.                                  |
+  | CreateTransaction    | Creates a group of operations that will be sent to the server as a single unit and processed on the server as a single unit.                              |
+  | KeyDelete            | Delete the key/value.                                                                                                                                     |
+  | KeyExists            | Returns whether the given key exists in cache.                                                                                                            |
+  | KeyExpire            | Sets a time-to-live (TTL) expiration on a key.                                                                                                            |
+  | KeyRename            | Renames a key.                                                                                                                                            |
+  | KeyTimeToLive        | Returns the TTL for a key.                                                                                                                                |
+  | KeyType              | Returns the string representation of the type of the value stored at key. The different types that can be returned are: string, list, set, zset and hash. |
+  | StringSet            | Sets a key value pair.                                                                                                                                    |
+  | StringGet            | Retrieves a value for the specified key.                                                                                                                  |
+  | Execute/ExecuteAsync | Passes commands to the server. The first argument is the command, other arguments are used to pass parameters to the commands.                            |
 
 # Azure Content Delivery Network (CDN)
 - CDNs are distributed networks of servers used to efficiently deliver web content to users
@@ -176,6 +212,11 @@ Content can be allowed or blocked in specific countries.
       - Storing session related data
     - Be aware of the key scenarios and service tiers for Redis
       - Be aware of open source vs enterprise features for tiers
+        - The chart on https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview explains the featuers available for each tier. Basically the following:
+          - Basic has no SLA, all others have an SLA
+          - Every tier supports data encryption in transit and network isolation
+          - All tiers outside of the two enterprise tiers support scaling, reboot, and scheduled updates
+          - Assume that premium and the two enterprise tiers support the exact same list of features (OSS clustering, data persistence, zone redundancy, geo-replication and import/export) otherwise with one major exception: premium does not support Redis Modules, while Enterprise supports them and Enterprise Flash has support (for RedisJSON and RediSearch, not the others) in preview.
     - Be aware of how to connect from a client application
   - CDNs
     - Solution for data available outside of your internal network

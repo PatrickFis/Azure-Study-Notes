@@ -6,7 +6,7 @@ VMs have various options for ensuring availability
 ### Availability zones [MS Documentation on regions and availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?context=%2Fazure%2Fvirtual-machines%2Fcontext%2Fcontext)
 Physically separate zones within an Azure region. Combo of a fault domain and an update domain.
 -  Fault domains - Logical group of underlying hardware similar to a rack in an on-prem datacenter. VMs created in Azure are distributed across fault domains to minimize the impact of hardware failures.
--  Update domains - Logical group of underlying hardware that can undergo maintenance or rebooted at the same time. Azure distributes your VMs over update domains so that at least one instance is up at a time.
+-  Update domains - Logical group of underlying hardware that can undergo maintenance or be rebooted at the same time. Azure distributes your VMs over update domains so that at least one instance is up at a time.
 -  HA made possible through the following
    -  Zonal services - Resource pinned to a specific zone
    -  Zone-redundant services - Azure replicates things across zones
@@ -94,3 +94,6 @@ az group delete --name NetworkWatcherRG --no-wait
   - Be familiar with availability zones vs availability sets
   - Scale sets and load balancers may show up, but they probably won't be the focus of a question
   - Be aware of fault domains and update domains and how they may impact the rolling out of a particular application that spans multiple VMs
+
+## ARM Notes for VMs
+- The various options available in ARM for VMs are located here: https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/virtualMachines?pivots=deployment-language-arm-template
