@@ -28,15 +28,117 @@ APIs are given to devs in the form of products. Products in API Management have 
 ### Groups
 Groups are used to manage the visibility of products to devs. API Management has the following groups
 - Administrators - Azure subscription admins. Manage the APIM instance, create APIs, operations, and products used by devs.
-- Devs - Authenticated developer portal users. Devs are the customers thatbulid apps using your APIs.
+- Devs - Authenticated developer portal users. Devs are the customers that buidd apps using your APIs.
 - Guests - Unauthenticated developer portal users. Can be granted read-only access.
 - Custom groups can be created
 - External groups in AAD can be used
 
+## Benefits of an API Gateway
+- API gateways sit between clients and services and act as a reverse proxy (it routes requests from clients to services).
+- API gateways can solve various issues which occur when you expose your services directly to clients:
+  - Complex client code as the client must keep track of multiple endpoints and handle failures
+  - Coupling between the client and backend since it needs to understand how the service is set up. It makes it harder to refactor both the client and the service.
+  - One operation may need to call multiple services (so multiple network round trips adding latency)
+  - Each public-facing service must handle things like authentication, SSL, and client rate limiting
+  - Services must limit their choice of communication protocols to something friendly like HTTP or WebSocket
+  - Services need to harden their public endpoints and they are a potential attack service
+- These problems are solved by an API gateway since it decouples your clients from your services
+- Gateways can perform a number of additional functions grouped by design patterns:
+  - Gateway routing: The gateway acts as a reverse proxy to route requests to one or more backend services using layer 7 routing. The gateway is a single endpoint for clients (decoupling the client and service).
+  - Gateway aggregation: The gateway can aggregate multiple individual requests into a single request. This pattern is used when a single operation calls multiple backend services. The client sends one request, the gateway sends requests to various backend services, and then the gateway aggregates the results and sends them back to the client (reducing chattiness).
+  - Gateway offloading: The gateway can handle functionality that multiple services need (especially cross-cutting concerns). Some examples include:
+    - SSL termination
+    - Authentication
+    - IP allow/block list
+    - Client rate limiting (throttling)
+    - Logging and monitoring
+    - Response caching
+    - GZIP compression
+    - Servicing static content
+
 ## Policies
 - Policies allow APIM to change the behavior of an API through configuration. Policies are a collection of statements that are executed sequentially on the request or response of an API. Popular statements include format conversion and call rate limiting.
-- Policies are defined through XML files that describe a sequence of inbound and outbound statements. The configuration is divided into inbound, backend, outbound, and on-error.
-- Advanced policies can be created using this documentation https://docs.microsoft.com/en-us/learn/modules/explore-api-management/5-create-advanced-policies.
+- Policies are defined through XML files that describe a sequence of inbound and outbound statements. The configuration is divided into inbound, backend, outbound, and on-error. The configuration looks like this:
+  ``` xml
+  <policies>
+    <inbound>
+      <!-- statements to be applied to the request go here -->
+    </inbound>
+    <backend>
+      <!-- statements to be applied before the request is forwarded to the backend service go here -->
+    </backend>
+    <outbound>
+      <!-- statements to be applied to the response go here -->
+    </outbound>
+    <on-error>
+      <!-- statements to be applied if there is an error condition go here -->
+    </on-error>
+  </policies>
+  ```
+- Advanced policies can be created using this documentation https://docs.microsoft.com/en-us/learn/modules/explore-api-management/5-create-advanced-policies. Here are their examples:
+  - Control flow: Conditionally applies policy statements based on the results of the evaluation of Boolean expressions.
+    ``` xml
+    <choose>
+        <when condition="Boolean expression | Boolean constant">
+            <!— one or more policy statements to be applied if the above condition is true  -->
+        </when>
+        <when condition="Boolean expression | Boolean constant">
+            <!— one or more policy statements to be applied if the above condition is true  -->
+        </when>
+        <otherwise>
+            <!— one or more policy statements to be applied if none of the above conditions are true  -->
+      </otherwise>
+    </choose>
+    ```
+  - Forward request: Forwards the request to the backend service.
+    ``` xml
+    <forward-request timeout="time in seconds" follow-redirects="true | false"/>
+    ```
+  - Limit concurrency: Prevents enclosed policies from executing by more than than the specified number of requests at a time.
+    ``` xml
+    <limit-concurrency key="expression" max-count="number">
+      <!-- nested policy statements -->
+    </limit-concurrency>
+    ```
+  - Log to Event Hub: Sends messages in the specified format to an Event Hub defined by a Logger entity.
+    ``` xml
+    <log-to-eventhub logger-id="id of the logger entity" partition-id="index of the partition where messages are sent" partition-key="value used for partition assignment">
+      Expression returning a string to be logged
+    </log-to-eventhub>
+    ```
+  - Mock response: Aborts pipeline execution and returns a mocked response directly to the caller.
+    ``` xml
+    <mock-response status-code="code" content-type="media type"/>
+    ```
+  - Retry: Retries execution of the enclosed policy statements if and until the condition is met. Execution will repeat at the specified time intervals and up to the specified retry count.
+    ``` xml
+    <retry
+        condition="boolean expression or literal"
+        count="number of retry attempts"
+        interval="retry interval in seconds"
+        max-interval="maximum retry interval in seconds"
+        delta="retry interval delta in seconds"
+        first-fast-retry="boolean expression or literal">
+            <!-- One or more child policies. No restrictions -->
+    </retry>
+    ```
+  - Return response: Aborts pipeline execution and returns either a default or custom response to the caller. Default = 200 OK with no body. Custom = can be specified via a context variable or policy statements (when both are provided the response contained within the context variable is modified by the policy statements before being returned to the caller).
+    ``` xml
+    <return-response response-variable-name="existing context variable">
+      <set-header/>
+      <set-body/>
+      <set-status/>
+    </return-response>
+    ```
+  - IP filtering: This isn't mentioned on the page but was noted in the exam prep video. IPs can be filtered using the following policy:
+    ``` xml
+    <ip-filter action="allow | forbid">
+        <address>address</address>
+        <address-range from="address" to="address" />
+    </ip-filter>
+    ```
+    - One address or address-range element is required, but both can be used.
+    - This can be defined as an inbound policy or at any of the following policy scopes (global, product, API, or operation).
 
 ## Securing APIs through subscriptions
 - APIs can be secured by using subscription keys. Requests sent to consume the API must include a valid subscription key in HTTP request headers or they will be rejected by the APIM gateway.
@@ -47,6 +149,7 @@ Groups are used to manage the visibility of products to devs. API Management has
   - Product - A collection of one or more APIs. The products can have different access rules, usage quotas, and terms of use.
 - Subscriptions include a primary and secondary key. The keys can be regenerated independently of each other.
 - Subscription keys can be sent through the default header of Ocp-Apim-Subscription-Key or through a query parameter of subscription-key
+- Subscriptions can be created from the Subscriptions blade from the APIM instance.
 
 ## Securing APIs through certificates
 - Certs can be used to provide TLS mutual authentication between the client and API gateway with properties like the following
@@ -55,7 +158,38 @@ Groups are used to manage the visibility of products to devs. API Management has
   - Only allow certs with a specified subject
   - Only allow certs that have not expired
   - These properties can be mixed together through policy requirements and are not mutually exclusive
-
+- The Consumption tier of APIM needs to explicitly enable the user of client certificates. This is done through the "Custom domains" blade on the APIM instance.
+- Certs can be validated using the following code examples:
+  - Checking that the thumbprint of the cert passed in the request matches the one issued by the certificate authority:
+    ``` xml
+    <choose>
+        <when condition="@(context.Request.Certificate == null || context.Request.Certificate.Thumbprint != "desired-thumbprint")" >
+            <return-response>
+                <set-status code="403" reason="Invalid client certificate" />
+            </return-response>
+        </when>
+    </choose>
+    ```
+  - Checking the thumbprint against certs uploaded to the APIM instance (the previous example only supported one cert, this will allow you to use multiple certs from different partners):
+    ``` xml
+    <choose>
+        <when condition="@(context.Request.Certificate == null || !context.Request.Certificate.Verify()  || !context.Deployment.Certificates.Any(c => c.Value.Thumbprint == context.Request.Certificate.Thumbprint))" >
+            <return-response>
+                <set-status code="403" reason="Invalid client certificate" />
+            </return-response>
+        </when>
+    </choose>
+    ```
+  - Check the issuer and subject of a client certificate:
+    ``` xml
+    <choose>
+        <when condition="@(context.Request.Certificate == null || context.Request.Certificate.Issuer != "trusted-issuer" || context.Request.Certificate.SubjectName.Name != "expected-subject-name")" >
+            <return-response>
+                <set-status code="403" reason="Invalid client certificate" />
+            </return-response>
+        </when>
+    </choose>
+    ```
 ## Creating a backend API with APIM
 1. Create a resource group and APIM instance using an environment variable for your email (to avoid publishing my email to Github)
 ``` bash
@@ -295,7 +429,7 @@ Using this from code will require something similar to the [Code/Visual Studio P
         - Single API - Applies to a single imported API and all of its endpoints
         - Product - A collection of one or more APIs. Can have different access rules, usage quotas, and terms of use.
       - Securing APIs by using subscriptions
-  - Be aware of various mechanisms for securing APIs:
+  - Be aware of various mechanisms for securing APIs [MS docs with multiple examples for securing APIs](https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-protect-backend-with-aad):
     - OAuth 2.0
     - Subscriptions
     - Certificates
@@ -319,3 +453,13 @@ Using this from code will require something similar to the [Code/Visual Studio P
         </on-error>
       </policies>
       ```
+
+## Important Terminology [MS Docs](https://learn.microsoft.com/en-us/azure/api-management/api-management-terminology)
+- Backend API - A service that implements an API and its operations.
+- Frontend API - APIM serves as a mediation layer over the backend APIs. A Frontend API is an API that is exposed to API consumers from APIM.
+- Product - A product is a bundle of frontend APIs that can be made available to a specified group of API consumers for self-service onboarding under a single access credential and set of usage limits. An API can be part of multiple products.
+- API operation - A frontend API in APIM can define multiple operations. An operation is a combination of an HTTP vern and a URL template uniquely resolvable within the frontend API. Often operations map one-to-one to backend API endpoints.
+- Version - A version is a distinct variant of an existing frontend API that differs in shape or behavior from the original. Versions give customers the ability to stick with an original API or upgrade at a time that they choose. Versions are a mechanism for releasing breaking changes without impacting API consumers.
+- Revision - A copy of an existing API that can be changed without impacting API consumers and swapped with the version currently in use by consumers (usually after validation and testing). Revisions provide a mechanism for safely implementing nonbreaking changes.
+- Policy - A policy is a reusable and composable component that implements common API-related functions.
+- Developer portal - A component of APIM that provides for API discovery and self-service onboarding for API consumers.
