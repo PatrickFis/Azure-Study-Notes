@@ -2,7 +2,7 @@
 
 ## Design considerations
 - There are various aspects of VMs that are important to think about before creating one:
-  - Availability: Azure provides a 99.9% SLA for a single VM with premium storage for all disks.
+  - Availability: Azure provides a 99.8% SLA for a single VM with premium storage for all disks.
   - VM size: Sizing is going to be dependent on your workload. Size will affect things like processing power, memory, and storage capacity.
   - VM limits: There's a default quota of 20 VMs per region (which can be raised with a support ticket).
   - VM image: You can bring your own image or use one from the Azure Marketplace.
@@ -27,9 +27,9 @@ VMs have various options for ensuring availability
 Physically separate zones within an Azure region. Combo of a fault domain and an update domain.
 -  Fault domains - Logical group of underlying hardware similar to a rack in an on-prem datacenter. VMs created in Azure are distributed across fault domains to minimize the impact of hardware failures.
 -  Update domains - Logical group of underlying hardware that can undergo maintenance or be rebooted at the same time. Azure distributes your VMs over update domains so that at least one instance is up at a time.
--  HA made possible through the following
-   -  Zonal services - Resource pinned to a specific zone
-   -  Zone-redundant services - Azure replicates things across zones
+-  Azure services which support Availability Zones fall into two categories:
+   -  Zonal services - Resource pinned to a specific zone (VM, managed disks, standard IP addresses, etc)
+   -  Zone-redundant services - Services which Azure replicates across zones (zone-redundant storage, SQL databases)
 
 ### Availability Sets [MS Documentation on availability sets](https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview)
 Logical grouping of VMs used by Azure to provide redundancy and availability to your application. Composed of fault domains and update domains. 
