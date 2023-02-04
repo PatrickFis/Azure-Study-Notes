@@ -2,7 +2,7 @@
 
 ## Design considerations
 - There are various aspects of VMs that are important to think about before creating one:
-  - Availability: Azure provides a 99.8% SLA for a single VM with premium storage for all disks.
+  - Availability: Azure provides a 99.9% SLA for a single VM with premium storage for all disks.
   - VM size: Sizing is going to be dependent on your workload. Size will affect things like processing power, memory, and storage capacity.
   - VM limits: There's a default quota of 20 VMs per region (which can be raised with a support ticket).
   - VM image: You can bring your own image or use one from the Azure Marketplace.
