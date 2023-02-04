@@ -119,7 +119,10 @@ https://docs.microsoft.com/en-us/learn/modules/implement-authentication-by-using
 5. Fill in the details
 6. Select Register
 7. Create a new application as specified in the above link
+   1. Supported account types = Accounts in this organization directory only
+   2. Redirect URI = Public client/native, value: http://localhost
 8. Implement the code sample noted below (note that it has a dependency on the Microsoft.Identity.Client package)
+9. Code for this can be found in [Code/Visual Studio Projects/Az204InteractiveAuth/](Code/Visual%20Studio%20Projects/Az204InteractiveAuth/)
 
 ``` c#
 using System;
