@@ -1,5 +1,25 @@
 # VMs
 
+## Design considerations
+- There are various aspects of VMs that are important to think about before creating one:
+  - Availability: Azure provides a 99.9% SLA for a single VM with premium storage for all disks.
+  - VM size: Sizing is going to be dependent on your workload. Size will affect things like processing power, memory, and storage capacity.
+  - VM limits: There's a default quota of 20 VMs per region (which can be raised with a support ticket).
+  - VM image: You can bring your own image or use one from the Azure Marketplace.
+  - VM disks: The type of disk you use determines the performance level and the storage account type that contains the disks. 
+    - Azure provides two types of disks:
+      - Standard disks: Backed by HDDs. Cost-effective, ideal for dev/test workloads.
+      - Premium disks: Backed by SSDs. Good for production workloads.
+    - Azure provides two options for disk storage:
+      - Managed disks: This is the recommended model from Azure. You specify the size of the disk you want (up to 4 TB) and Azure creates it and manages the disk and the storage. Note that this way lets you not worry about storage account limits and is easier to scale than unmanaged disks.
+      - Unmanaged disks: You're responsible for the storage accounts holding virtual hard disks (VHDs) that correspond to VM disks. Note that a single storage account has a fixed-rate limit of 20,000 I/O operations per second, so your storage account is only capable of supporting 40 standard VHDs at full utilization. Scaling out requires more storage accounts which can get complicated.
+  - VM extensions
+    - Windows VMs have extensions that configure things after the VM is deployed. Common tasks like the following can be done through extensions:
+       - Run custom scripts: The Custom Script Extension will run your script on a VM when it is provisioned.
+       - Deploy and manage configurations: The PowerShell Desired State Configuration (DSC) Extension helps set up and manage configurations and environments.
+       - Collect diagnostics data: The Azure Diagnostics Extension helps configure your VM to diagnostics data.
+    - Linux VMs support cloud-init across most Linux distros that support it and works with all the major automation tools like Ansible, Chef, SaltStack, and Puppet.
+
 ## Availability
 VMs have various options for ensuring availability
 
@@ -90,7 +110,7 @@ az group delete --name NetworkWatcherRG --no-wait
 
 # Misc
 - See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
-  - Be familiar with sizing options and use cases for choosing a particular one
+  - Be familiar with sizing options and use cases for choosing a particular one and possibly extensions
   - Be familiar with availability zones vs availability sets
   - Scale sets and load balancers may show up, but they probably won't be the focus of a question
   - Be aware of fault domains and update domains and how they may impact the rolling out of a particular application that spans multiple VMs
