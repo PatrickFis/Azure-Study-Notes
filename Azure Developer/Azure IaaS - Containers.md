@@ -227,7 +227,7 @@ spec:
 
 # Misc
 - See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
-  - Be familiar ACR and how to roll it out using the Portal, az cli, and Powershell
+  - Be familiar with ACR and how to roll it out using the Portal, az cli, and Powershell
   - Be familiar with ACR's tiering options and where they can used as well as their advantages
   - Be familiar with ACR's tasks and build capabilities
   - Be familiar with ACI's features

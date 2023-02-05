@@ -6,7 +6,7 @@ Made of the following components
 - API gateway
   - Accepts API calls and routes them
   - Verifies API keys, JWT tokens, certs, and more
-  - Enforces usage quotes and rate limits
+  - Enforces usage quotas and rate limits
   - Transforms your API on the fly without code modifications
   - Caches backend responses
   - Logs call metadata for analytics purposes
@@ -28,7 +28,7 @@ APIs are given to devs in the form of products. Products in API Management have 
 ### Groups
 Groups are used to manage the visibility of products to devs. API Management has the following groups
 - Administrators - Azure subscription admins. Manage the APIM instance, create APIs, operations, and products used by devs.
-- Devs - Authenticated developer portal users. Devs are the customers that buidd apps using your APIs.
+- Devs - Authenticated developer portal users. Devs are the customers that build apps using your APIs.
 - Guests - Unauthenticated developer portal users. Can be granted read-only access.
 - Custom groups can be created
 - External groups in AAD can be used
@@ -143,12 +143,12 @@ Groups are used to manage the visibility of products to devs. API Management has
 ## Securing APIs through subscriptions
 - APIs can be secured by using subscription keys. Requests sent to consume the API must include a valid subscription key in HTTP request headers or they will be rejected by the APIM gateway.
 - Subscription keys are generated through subscriptions, which are named containers for a pair of subscription keys.
-- Subscriptions give granular control over permissions and policies. The three main scopes for subscriptions are the following
+- Subscriptions give granular control over permissions and policies. The three main scopes for subscriptions are the following:
   - All APIs - Applies to every API accessible from the gateway
   - Single API - Applies to a single imported API and its endpoints
   - Product - A collection of one or more APIs. The products can have different access rules, usage quotas, and terms of use.
 - Subscriptions include a primary and secondary key. The keys can be regenerated independently of each other.
-- Subscription keys can be sent through the default header of Ocp-Apim-Subscription-Key or through a query parameter of subscription-key
+- Subscription keys can be sent through the default header of Ocp-Apim-Subscription-Key or through a query parameter of subscription-key.
 - Subscriptions can be created from the Subscriptions blade from the APIM instance.
 
 ## Securing APIs through certificates
@@ -386,16 +386,16 @@ The steps above were required to setup OAuth, but there's still more work to be 
 2. Bring up the policy editor
 3. Add the following inbound policy
 ``` xml
-        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true" clock-skew="0">
-            <!-- This URL can be retrieved from the app registration in AAD. Specifically the "OpenID Connect metadata document" endpoint. -->
-            <openid-config url="https://login.microsoftonline.com/<tenant ID>/v2.0/.well-known/openid-configuration" />
-            <required-claims>
-                <!-- This is the audience claim -->
-                <claim name="aud">
-                    <value>Application (client) ID from app registration</value>
-                </claim>
-            </required-claims>
-        </validate-jwt>
+<validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true" clock-skew="0">
+  <!-- This URL can be retrieved from the app registration in AAD. Specifically the "OpenID Connect metadata document" endpoint. -->
+  <openid-config url="https://login.microsoftonline.com/<tenant ID>/v2.0/.well-known/openid-configuration" />
+  <required-claims>
+    <!-- This is the audience claim -->
+    <claim name="aud">
+      <value>Application (client) ID from app registration</value>
+    </claim>
+  </required-claims>
+</validate-jwt>
 ```
 4. Click "Save"
 

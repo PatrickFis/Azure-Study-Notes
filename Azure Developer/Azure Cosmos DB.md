@@ -28,11 +28,12 @@ Cosmos DB is a globally distributed database that is designed for low latency an
   - Bounded staleness
     - Recommended for apps requiring strong consistency
     - Reads are guaranteed to honor the consistent-prefix guarantee. Reads might lag behind writes by at most "K" versions (aka "updates") of an item or by "T" time interval, whichever is reached first.
-    - Reads performed within a region that accepts writes offers consistency identical to strong consistency
+    - Reads performed within a region that accepts writes offers consistency identical to strong consistency (ie, read your own write within the write region)
     - As the staleness window approaches the service will throttle new writes to allow replication to catch up and honor the consistency guarantee.
   - Session
     - Recommended for many real world scenarios
     - Provides write latencies, availability, and read throughput similar to eventual consistency while also offering consistency guarantees that suit the needs of applications that operate in the context of a user.
+    - Read your own write (within write region like bounded staleness)
   - Consistent prefix
     - Updates made as single document writes see eventual consistency.
     - Updates made as a batch within a transaction are returned consistent to the transaction in which they are committed.
@@ -89,7 +90,7 @@ Various APIs allow your applications to treat Cosmos DB like it was another data
 
 ## Request Units
 - The cost of database operations is expressed by request units (RUs)
-- Represents system resources (SPU, IOPS, memory)
+- Represents system resources (CPU, IOPS, memory)
 - The cost to do a point read of a single 1 KB item is 1 RU
 - RUs are charged in three different ways depending on the type of Cosmos account you've created
   - Provisioned throughput mode - You select how many RUs you want in increments of 100. Changes can be made programmatically or through the Azure portal. Throughput is provisioned at container and database granularity level.
@@ -273,6 +274,8 @@ function validateItem() {
 - See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-for-azure-storage-segment-2-of-5 for information on what may appear on the exam.
   - Be familiar with where Cosmos DB fits in to the larger Azure ecosystem
   - Be familiar with multi-region replication
+    - See https://learn.microsoft.com/en-us/azure/cosmos-db/distribute-data-globally
+    - Cosmos transparently replicates data to all the regions associated with your Azure Cosmos DB account.
   - Be familiar with consistency levels
     - Understand consistency patterns
     - Understand what you get from each consistency level and when you should use a particular consistency level
@@ -332,8 +335,8 @@ function validateItem() {
     - CreateItemAsync`<T>`(T item, PartitionKey? partitionKey = default, ItemRequestOptions requestOptions = default, CancellationToken cancellationToken = default)
       - Returns an ItemResponse`<T>` after creating an item in a container
       - The partionKey is nullable. If null the key will be extracted from the item parameter.
-    -  ReadItemAsync`<T>`(string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = default, CancellationToken cancellationToken = default)
-      - Returns an ItemResponse`<T>` containing an item from the container with the specified ID and partition key
+    - ReadItemAsync`<T>`(string id, PartitionKey partitionKey, ItemRequestOptions requestOptions = default, CancellationToken cancellationToken = default)
+       - Returns an ItemResponse`<T>` containing an item from the container with the specified ID and partition key
     - GetItemQueryIterator`<T>`(QueryDefinition queryDefinition, string continuationToken = default, QueryRequestOptions requestOptions = default)
       - Retrieves a FeedIterator`<T>` with items found from a SQL statement using prepared values. QueryDefinitions are defined like this: `QueryDefinition query = new QueryDefinition("select * from sales s where s.AccountNumber = @AccountInput ").WithParameter("@AccountInput", "Account1");`
 

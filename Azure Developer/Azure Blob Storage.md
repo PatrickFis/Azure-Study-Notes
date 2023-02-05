@@ -97,7 +97,7 @@ az storage account show-connection-string --name <name>
 - A storage account is a resource which provides storage in the cloud.
 - Storage accounts have different types
   - Standard General Purpose V2: Standard storage account for blobs, file shares, queues, and tables
-  - Premium block blobs: Supported for block and sppend blobs. Used when you want fast access to blobs with high transaction rates.
+  - Premium block blobs: Supported for block and append blobs. Used when you want fast access to blobs with high transaction rates.
   - Premium Page blobs: See MS documentation, also remember that these are used to store virtual hard disks for VMs.
   - Premium file shares: Faster access for file shares, also used for high transaction rates.
 
@@ -127,7 +127,7 @@ az storage account show-connection-string --name <name>
   - Objects can be uploaded into folders inside the blob service
 - There are various ways to access objects stored inside a container
   - If you're logged in to Azure you can simply download the resource through the portal
-  - It can be accessed via the unique URL given by the container (the URL will contain details like the name of the storage account [just a subdomain off windows.net], the name of the service [blob.core.windows.net], the name of the container, and then the name of the object). By default this will give a 404 not found if accessed anonymously. To allow anonymous access you can change the access level of the container (to private [no anonymouse access], blob [read access to blobs in the container], or container [read access for containers and blobs]).
+  - It can be accessed via the unique URL given by the container (the URL will contain details like the name of the storage account [just a subdomain off windows.net], the name of the service [blob.core.windows.net], the name of the container, and then the name of the object). By default this will give a 404 not found if accessed anonymously. To allow anonymous access you can change the access level of the container (to private [no anonymous access], blob [read access to blobs in the container], or container [read access for containers and blobs]).
 
 
 ## Shared Access Signatures
@@ -296,7 +296,7 @@ The following steps will walk you through setting up a new AD account and granti
     <?xml version="1.0" encoding="utf-8"?>  
     <KeyInfo>  
         <Start>String, formatted ISO Date</Start>
-        <Expiry>String, formatted ISO Date </Expiry>
+        <Expiry>String, formatted ISO Date</Expiry>
     </KeyInfo>  
     ```
   - All requests use the common headers noted below
@@ -326,7 +326,7 @@ The following steps will walk you through setting up a new AD account and granti
   - A PUT request will store a blob in your container when sent with the following headers
     - The common headers noted below
     - Content-Length - Required. The length of the request. For page or append blobs the value must be set to 0.
-    - x-ms-blob-type: `<BlobBlob | PageBlob | AppendBlob>` - Required to specify the type of blob to be created in the storage account.
+    - x-ms-blob-type: `<BlockBlob | PageBlob | AppendBlob>` - Required to specify the type of blob to be created in the storage account.
   - A PUT request can also be used to copy a blob when sent with the following headers
     - The common headers noted below
     - x-ms-copy-source:name - Required. Specifies the name of the source blob or file. Can be a URL which specifies the blob (though it must be URL encoded).
@@ -427,3 +427,35 @@ The following steps will walk you through setting up a new AD account and granti
       - Fairly similar to the method in BlobContainerClient which retrieves a list of blobs but for containers
 - BlobUriBuilder The BlobUriBuilder class provides a convenient way to modify the contents of a Uri instance to point to different Azure Storage resources like an account, container, or blob.
   - https://learn.microsoft.com/en-us/dotnet/api/azure.storage.blobs.bloburibuilder?view=azure-dotnet
+
+# Simple Lifecycle Management Policy
+- This policy moves a blob to the cool tier after 30 days and to the archive tier after 90 days.
+``` json
+{
+  "rules": [
+    {
+      "enabled": true,
+      "name": "LifecyclePolicy",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": {
+          "baseBlob": {
+            "tierToCool": {
+              "daysAfterModificationGreaterThan": 30
+            },
+            "tierToArchive": {
+              "daysAfterLastTierChangeGreaterThan": 7,
+              "daysAfterModificationGreaterThan": 90
+            }
+          }
+        },
+        "filters": {
+          "blobTypes": [
+            "blockBlob"
+          ]
+        }
+      }
+    }
+  ]
+}
+```
