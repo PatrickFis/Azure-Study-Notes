@@ -29,13 +29,45 @@ ACR Tasks is a feature suite within ACR.
 The following tasks are supported
 - Quick task - Builds and pushes a single container image to a registry on demand (docker build and docker push in the cloud)
   - Can be used to provide an integrated development environment by offloading container image builds to Azure
+  - This uses similar syntax to `docker build`: the command to run it from an Azure CLI is `az acr build`
 - Automatically triggered tasks triggered by the following
   - Source code updates
+    - This can be used with the `az acr task create` command to configure builds to happen from updates to Git repos
+    - This will require a personal access token (PAT) to set up the webhook used by ACR in GitHub or Azure DevOps repos.
   - Base image updates
+    - Base images are parent images on which one or more application images are based
+    - An ACR task can be created to track a dependency on a base image. When updates are pushed to your registry or the base image is updated in a public repo, the task can build any application images based on the base image.
   - Schedule
-- Multi-step task - Specify build and push operations for one or more containers in a YAML file
-
-Each ACR Task has an associated source code context (the location of the source required to build the container image like a Git repo or a local filesystem).
+    - This is useful for running container workloads on a schedule
+    - This can also be used for running maintenance operations or tests on images pushed regularly to your registry
+- Multi-step task
+  - Specify build and push operations for one or more containers in a YAML file
+  - There are three task steps available in a multi-step task:
+    - build: Build one or more container images using `docker build` syntax
+    - push: Push built images to a container registry (can be ACR or a public one like Docker Hub)
+    - cmd: Run a container like using `docker run` (supports passing parameters)
+    - Example:
+      ``` yml
+      version: v1.1.0
+      steps:
+        - id: build-web
+          build: -t $Registry/hello-world:$ID .
+          when: ["-"]
+        - id: build-tests
+          build: -t $Registry/hello-world-tests ./funcTests
+          when: ["-"]
+        - id: push
+          push: ["$Registry/helloworld:$ID"]
+          when: ["build-web", "build-tests"]
+        - id: hello-world-web
+          cmd: $Registry/helloworld:$ID
+        - id: funcTests
+          cmd: $Registry/helloworld:$ID
+          env: ["host=helloworld:80"]
+        - cmd: $Registry/functions/helm package --app-version $ID -d ./helm ./helm/helloworld/
+        - cmd: $Registry/functions/helm upgrade helloworld ./helm/helloworld/ --reuse-values --set helloworld.image=$Registry/helloworld:$ID
+      ```
+- Each ACR Task has an associated source code context (the location of the source required to build the container image like a Git repo or a local filesystem).
 
 ## Creating an ACR and building and running an image using tasks
 https://docs.microsoft.com/en-us/learn/modules/publish-container-image-to-azure-container-registry/6-build-run-image-azure-container-registry
@@ -87,17 +119,61 @@ ACI offers a simple and fast way to run a container in Azure without managing VM
 ## ACI Documentation from Microsoft [link](https://docs.microsoft.com/en-us/azure/container-instances/) (These notes were from work, see if they can be merged into the section above)
 ### Container Groups [reference](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-container-groups)
 - Container groups are the top-level resource in ACI
-- Container groups are collections of containers that get scheduled on the same host machine (similiar to a pod in k8s)
+- Container groups are collections of containers that get scheduled on the same host machine (similar to a pod in k8s)
 - Multi-container groups are currently only supported for Linux containers
 - Multi-container groups are commonly deployed using ARM templates (recommended when you need to deploy additional Azure resources) or yaml files (recommended if you're only deploying container instances)
   - Container group's configuration can be exported to a yaml file using the CLI command `az container export`
 - ACI allocates resources to a multi-container group by adding the resource requests of the instances in the group (so if you have a group creating two container instances that each requests 1 CPU the entire group is allocated 2 CPUs)
   - Resource usage may be different than the maximum resources requested if resource limits are configured. This lets an instance use resources up to the configured limit. Resource usage by other container instances in the group may decrease because of this.
-- Container groups share an external-facing IP address, 1 or more ports on that IP address, and a DNS label with a fully qualifed domain name (FQDN). External clients can reach the container if you expose a port on the IP address. The IP and FQDN are released when the container group is deleted.
+- Container groups share an external-facing IP address, 1 or more ports on that IP address, and a DNS label with a fully qualified domain name (FQDN). External clients can reach the container if you expose a port on the IP address. The IP and FQDN are released when the container group is deleted.
   - Containers inside a group can reach each other via localhost on any port (even if they aren't exposed externally)
   - Container groups can be deployed within an Azure VNet to allow them to securely communicate with other resources in the VNet
 - External volumes can be mounted within a container group: Azure file shares, secrets, empty directories, and cloned git repos
 
+#### Co-scheduled groups
+- Co-scheduled/multi-container groups share a host machine, local network, storage, and lifecycle.
+- The following example can be used to deploy a multi-container group with a yaml file:
+  ``` yaml
+  apiVersion: 2019-12-01
+  location: eastus
+  name: myContainerGroup
+  properties:
+    containers:
+    - name: aci-tutorial-app
+      properties:
+        image: mcr.microsoft.com/azuredocs/aci-helloworld:latest
+        resources:
+          requests:
+            cpu: 1
+            memoryInGb: 1.5
+        ports:
+        - port: 80
+        - port: 8080
+    - name: aci-tutorial-sidecar
+      properties:
+        image: mcr.microsoft.com/azuredocs/aci-tutorial-sidecar
+        resources:
+          requests:
+            cpu: 1
+            memoryInGb: 1.5
+    osType: Linux
+    ipAddress:
+      type: Public
+      ports:
+      - protocol: tcp
+        port: 80
+      - protocol: tcp
+        port: 8080
+  tags: {exampleTag: tutorial}
+  type: Microsoft.ContainerInstance/containerGroups
+  ```
+- The yaml file can be deployed using the following command:
+  ``` bash
+  az container create --resource-group myResourceGroup --file deploy-aci.yaml
+
+  # The deployment state can be viewed using the following command:
+  az container show --resource-group myResourceGroup --name myContainerGroup --output table
+  ```
 ## Deploying a container instance with Azure CLI
 1. Create a new group for ACI
 ``` bash
@@ -107,6 +183,7 @@ az group create --name az204-aci-patrick-rg --location eastus
 ``` bash
 DNS_NAME_LABEL=aci-example-$RANDOM
 
+# Note: The image can come from ACR. The command will prompt you to enter the username and password for ACI (which is enabled through the Access keys blade's admin user setting)
 az container create --resource-group az204-aci-patrick-rg \
 --name mycontainer \
 --image mcr.microsoft.com/azuredocs/aci-helloworld \
@@ -123,6 +200,17 @@ az container show --resource-group az204-aci-patrick-rg \
 4. Remove the resource group with the container afterwards
 ``` bash
 az group delete --name az204-aci-patrick-rg --no-wait
+```
+
+## Executing commands and connecting to a container
+``` bash
+# Commands can be run inside a container using a similar syntax as docker exec
+az container exec --resource-group (or -g) <resource group name> \
+--name <container group name> \
+--exec-command "<command>"
+
+# This can be used to do things like launch a Bash shell like the following example
+az container exec --resource-group myResourceGroup --name mynginx --exec-command "/bin/bash"
 ```
 
 ## Restart Policies
@@ -228,7 +316,7 @@ spec:
 # Misc
 - See https://learn.microsoft.com/en-us/shows/exam-readiness-zone/preparing-for-az-204-develop-azure-compute-solutions-1-of-5 for information on what may appear on the exam.
   - Be familiar with ACR and how to roll it out using the Portal, az cli, and Powershell
-  - Be familiar with ACR's tiering options and where they can used as well as their advantages
+  - Be familiar with ACR's tier options and where they can be used as well as their advantages
   - Be familiar with ACR's tasks and build capabilities
   - Be familiar with ACI's features
   - Be familiar with how to deploy ACI

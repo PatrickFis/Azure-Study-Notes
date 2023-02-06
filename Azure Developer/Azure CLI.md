@@ -55,6 +55,12 @@
   - [Create a new CDN Profile](#create-a-new-cdn-profile)
 - [Azure Service Bus](#azure-service-bus)
   - [Create a Service Bus Namespace and a Queue](#create-a-service-bus-namespace-and-a-queue)
+- [Azure Container Registry](#azure-container-registry)
+  - [Creating an ACR and running an image with an ACR Task](#creating-an-acr-and-running-an-image-with-an-acr-task)
+- [Azure Container Instances](#azure-container-instances)
+  - [Deploying a container instance with Azure CLI](#deploying-a-container-instance-with-azure-cli)
+  - [Executing commands and connecting to a container](#executing-commands-and-connecting-to-a-container)
+  - [Viewing logs inside a container](#viewing-logs-inside-a-container)
 
 # Azure CLI
 [MS Documentation](https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli) is a good place to reference CLI commands.
@@ -490,4 +496,81 @@ az servicebus namespace authorization-rule keys list --resource-group (or -g) <r
 --name RootManageSharedAccessKey \
 --query primaryConnectionString \
 --output tsv
+```
+
+# Azure Container Registry
+## Creating an ACR and running an image with an ACR Task
+1. Create a resource group and a basic ACR
+``` bash
+az group create --name az204-acr-rg-patrick --location eastus
+
+az acr create --resource-group az204-acr-rg-patrick --name az204patrickregistry --sku Basic
+```
+2. Set up a Dockerfile and then build it with the following command
+``` bash
+az acr build --image sample/hello-world:v1 --registry az204patrickregistry --file Dockerfile .
+```
+3. Verify that the repository was set up with the following commands
+``` bash
+az acr repository list --name az204patrickregistry --output table
+
+az acr repository show-tags --name az204patrickregistry --repository sample/hello-world --output table
+```
+4. Run the image with the following command
+``` bash
+az acr run --registry az204patrickregistry --cmd '$Registry/sample/hello-world:v1' /dev/null
+```
+5. Clean up the resources afterwards
+``` bash
+az group delete --name az204-acr-rg-patrick --no-wait
+```
+
+# Azure Container Instances
+## Deploying a container instance with Azure CLI
+1. Create a new group for ACI
+``` bash
+az group create --name az204-aci-patrick-rg --location eastus
+```
+2. Create a DNS name to expose the container to the internet and create the container
+``` bash
+DNS_NAME_LABEL=aci-example-$RANDOM
+
+# Note: The image can come from ACR. The command will prompt you to enter the username and password for ACI (which is enabled through the Access keys blade's admin user setting)
+az container create --resource-group az204-aci-patrick-rg \
+--name mycontainer \
+--image mcr.microsoft.com/azuredocs/aci-helloworld \
+--ports 80 \
+--dns-name-label $DNS_NAME_LABEL --location eastus
+```
+3. Verify the container is running and then navigate to the FQDN
+``` bash
+az container show --resource-group az204-aci-patrick-rg \
+    --name mycontainer \
+    --query "{FQDN:ipAddress.fqdn,ProvisioningState:provisioningState}" \
+    --out table
+```
+4. Remove the resource group with the container afterwards
+``` bash
+az group delete --name az204-aci-patrick-rg --no-wait
+```
+
+## Executing commands and connecting to a container
+``` bash
+# Commands can be run inside a container using a similar syntax as docker exec
+az container exec --resource-group (or -g) <resource group name> \
+--name <container group name> \
+--exec-command "<command>"
+
+# If you have multiple containers in your container group then you'll need to specify the name of the container with --container-name like in this example
+az container exec --resource-group myResourceGroup --name mynginx --container-name nginx-app --exec-command "/bin/bash"
+
+# This can be used to do things like launch a Bash shell like the following example
+az container exec --resource-group myResourceGroup --name mynginx --exec-command "/bin/bash"
+```
+
+## Viewing logs inside a container
+``` bash
+az container logs --resource-group (or -g) <resource group name> \
+--name <container group name> \
+--container-name <container name>
 ```

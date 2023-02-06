@@ -9,6 +9,17 @@
   - ASE - App Service Environment (ASE) is an App Service feature that provides a fully isolated and dedicated environment for securely running App Service apps at high scale.
   - Kubernetes - K8s provides a fully isolated and dedicated environment running on top of the k8s platform.
 - A function app requires an Azure Storage account with support for Blob, Queue, Files, and Table storage. Function code files are stored on Azure Files shares on the function's main storage account. When you delete the main storage account of the function app, the function code files are deleted and cannot be recovered.
+
+## Common Scenarios [MS Docs](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview)
+- Web APIs: Endpoints can be implemented using the HTTP trigger
+- Process file uploads: Code can be run when files are uploaded or changed in blob storage
+- Build a serverless workflow: Event-driven workflows can be created from a series of functions using durable functions
+- Response to DB changes: Code can be run when a document is created or updated in Cosmos
+- Run scheduled tasks: Code can be run on pre-defined timed intervals
+- Create reliable message queue systems: Functions can process message queues using queue storage, service bus, or event hubs
+- Analyze IoT data streams: Data can be processed from IoT devices
+- Process data in real time: Functions and SignalR can response to data in the moment
+
 ## Scale Azure Functions
 - In consumption and premium plans Functions scale CPU and memory resources by adding additional instances of the Functions host. The number of instances is based on the number of events that trigger a function.
   - Each instance is limited to 1.5 GB of memory and one CPU
@@ -21,7 +32,7 @@
 - HTTP triggers can allocate new instances at most once per second. Non-HTTP triggers can allocate new instances at most once every 30 seconds.
 - The maximum number of instances can be restricted by modifying the functionAppScaleLimit value (0 or null for unrestricted or a value between 1 and the app maximum).
 
-## Developing Azure Functions (Todo: Add notes on setting up a Function locally)
+## Developing Azure Functions
 - Functions contain two important pieces: your code and a config (a function.json file). The function.json file defines the trigger, bindings, and other config settings. 
 - The bindings property in the functions.json file are used to configure both triggers and bindings. Each binding requires a type, direction, and name.
 - Triggers are what cause a function to run. There can only be one. They define how a function is invoked. They can have associated data which can be provided as the payload of the function. A function must have a trigger.
@@ -82,16 +93,191 @@
 }
 ```
 
+### Common types of triggers/bindings
+#### HTTP Trigger
+- The trigger is defined by the HttpTrigger attribute in the method signature below.
+- The output binding is defined by returning an IActionResult or Task`<IActionResult>`. An output isn't required.
+``` c#
+[FunctionName("HttpTriggerCSharp")]
+public static async Task<IActionResult> Run(
+    [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] // Attribute defining the trigger
+    HttpRequest req, ILogger log)
+{
+    // logic above
+    return name != null
+        ? (ActionResult)new OkObjectResult($"Hello, {name}")
+        : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+}
+```
+
+#### Timer Trigger 
+- The timer trigger is defined by the TimerTrigger attribute. It uses a format similar to CRON to evaluate when the function should run. The format follows this pattern: {second} {minute} {hour} {day} {month} {day-of-week}.
+- The example below runs every five minutes each hour.
+``` c#
+[FunctionName("TimerTriggerCSharp")]
+public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
+{
+    if (myTimer.IsPastDue)
+    {
+        log.LogInformation("Timer is running late!");
+    }
+    log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+}
+```
+
+#### Blob Trigger
+- The blob trigger is defined by the BlobTrigger attribute. The {name} portion of the expression creates a binding expression which will be made available as part of the name parameter in the method.
+``` c#
+[FunctionName("BlobTriggerCSharp")]        
+public static void Run([BlobTrigger("samples-workitems/{name}")] Stream myBlob, string name, ILogger log)
+{
+    log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
+}
+```
+
+#### Service Bus Trigger
+- The Service Bus trigger is defined by the ServiceBusTrigger attribute. It expects the name of a queue or topic as well as a Connection property. The Connection property is a string value that's set to the name of an app setting or setting collection that specifies how to connect to Service Bus.
+``` c#
+[FunctionName("ServiceBusQueueTriggerCSharp")]                    
+public static void Run(
+    [ServiceBusTrigger("myqueue", Connection = "ServiceBusConnection")] 
+    string myQueueItem,
+    Int32 deliveryCount,
+    DateTime enqueuedTimeUtc,
+    string messageId,
+    ILogger log)
+{
+    log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+    log.LogInformation($"EnqueuedTimeUtc={enqueuedTimeUtc}");
+    log.LogInformation($"DeliveryCount={deliveryCount}");
+    log.LogInformation($"MessageId={messageId}");
+}
+```
+
 ## Durable Functions
 - Durable Functions are an extension of Azure Functions that allow for stateful functions.
   - Stateful workflows are supported by orchestrator functions
   - Stateful entities are supported by entity functions
 - Used for the following patterns (see [this link](https://learn.microsoft.com/en-us/training/modules/implement-durable-functions/2-durable-functions-overview) for code examples of these patterns)
   - Function chaining - Sequence of functions which execute in a specific order with the output of one function being supplied as the input of another function.
+    ``` c#
+    [FunctionName("Chaining")]
+    public static async Task<object> Run(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
+    {
+        try
+        {
+            var x = await context.CallActivityAsync<object>("F1", null);
+            var y = await context.CallActivityAsync<object>("F2", x);
+            var z = await context.CallActivityAsync<object>("F3", y);
+            return  await context.CallActivityAsync<object>("F4", z);
+        }
+        catch (Exception)
+        {
+            // Error handling or compensation goes here.
+        }
+    }
+    ```
+    - In the above example F1, F2, F3, and F4 are the names of other functions in the function app. 
   - Fan out/fan in - Execute multiple functions in parallel and then wait for them to finish.
+    ``` c#
+    [FunctionName("FanOutFanIn")]
+    public static async Task Run(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
+    {
+        var parallelTasks = new List<Task<int>>();
+
+        // Get a list of N work items to process in parallel.
+        object[] workBatch = await context.CallActivityAsync<object[]>("F1", null);
+        for (int i = 0; i < workBatch.Length; i++)
+        {
+            Task<int> task = context.CallActivityAsync<int>("F2", workBatch[i]);
+            parallelTasks.Add(task);
+        }
+
+        await Task.WhenAll(parallelTasks);
+
+        // Aggregate all N outputs and send the result to F3.
+        int sum = parallelTasks.Sum(t => t.Result);
+        await context.CallActivityAsync("F3", sum);
+    }
+    ```
+    - In the above example work is fanned out to multiple instances of F2 and then passed to F3 when all the functions finish running.
   - Async HTTP APIs - Used to kick off a long running operation and redirect the client to a status endpoint. There is built-in support for this.
+    ``` c#
+    public static class HttpStart
+    {
+        [FunctionName("HttpStart")]
+        public static async Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Function, methods: "post", Route = "orchestrators/{functionName}")] HttpRequestMessage req,
+            [DurableClient] IDurableClient starter,
+            string functionName,
+            ILogger log)
+        {
+            // Function input comes from the request content.
+            object eventData = await req.Content.ReadAsAsync<object>();
+            string instanceId = await starter.StartNewAsync(functionName, eventData);
+
+            log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+
+            return starter.CreateCheckStatusResponse(req, instanceId);
+        }
+    }
+    ```
+    - An HttpTrigger (or others like queues or Event Hubs) can be used to manage long-running orchestrations if you don't want to use the built-in version. See the example above.
   - Monitor - Recurring process in a workflow (example: polling until specific conditions are met).
+    ``` c#
+    [FunctionName("MonitorJobStatus")]
+    public static async Task Run(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
+    {
+        int jobId = context.GetInput<int>();
+        int pollingInterval = GetPollingInterval();
+        DateTime expiryTime = GetExpiryTime();
+
+        while (context.CurrentUtcDateTime < expiryTime)
+        {
+            var jobStatus = await context.CallActivityAsync<string>("GetJobStatus", jobId);
+            if (jobStatus == "Completed")
+            {
+                // Perform an action when a condition is met.
+                await context.CallActivityAsync("SendAlert", machineId);
+                break;
+            }
+
+            // Orchestration sleeps until this time.
+            var nextCheck = context.CurrentUtcDateTime.AddSeconds(pollingInterval);
+            await context.CreateTimer(nextCheck, CancellationToken.None);
+        }
+
+        // Perform more work here, or let the orchestration end.
+    }
+    ```
   - Human interaction - Orchestrator functions can be used to wait for human input or to perform some other action after a timeout.
+    ``` c#
+    [FunctionName("ApprovalWorkflow")]
+    public static async Task Run(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
+    {
+        await context.CallActivityAsync("RequestApproval", null);
+        using (var timeoutCts = new CancellationTokenSource())
+        {
+            DateTime dueTime = context.CurrentUtcDateTime.AddHours(72);
+            Task durableTimeout = context.CreateTimer(dueTime, timeoutCts.Token);
+
+            Task<bool> approvalEvent = context.WaitForExternalEvent<bool>("ApprovalEvent");
+            if (approvalEvent == await Task.WhenAny(approvalEvent, durableTimeout))
+            {
+                timeoutCts.Cancel();
+                await context.CallActivityAsync("ProcessApproval", approvalEvent.Result);
+            }
+            else
+            {
+                await context.CallActivityAsync("Escalate", null);
+            }
+        }
+    }
+    ```
 - Durable function types:
   - Orchestrator - Functions which describe how actions are executed and their order. Can include other functions, sub-orchestrations, events, HTTP, and timers. The function must be deterministic.
   - Activity - Basic unit for work in orchestration. Can return data back to an orchestrator function.

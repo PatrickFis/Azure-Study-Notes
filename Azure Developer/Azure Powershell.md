@@ -24,6 +24,8 @@
     - [Create a new CDN Profile](#create-a-new-cdn-profile)
   - [Azure Service Bus](#azure-service-bus)
     - [Create a Service Bus Namespace and a Queue](#create-a-service-bus-namespace-and-a-queue)
+  - [Azure Container Registry](#azure-container-registry)
+    - [Creating a new container registry and running an image from it](#creating-a-new-container-registry-and-running-an-image-from-it)
 
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
@@ -357,4 +359,35 @@ New-AzServiceBusQueue -ResourceGroupName <resource group name> `
 Get-AzServiceBusKey -ResourceGroupName <resource group name> `
 -Namespace <namespace name> `
 -Name RootManageSharedAccessKey
+```
+## Azure Container Registry
+### Creating a new container registry and running an image from it
+``` powershell
+# Create a resource group
+New-AzResourceGroup -Name <resource group name> -Location <location>
+
+# Create the registry
+$registry = New-AzContainerRegistry -ResourceGroupName <resource group name> `
+-Name <registry name> `
+-EnableAdminUser `
+-Sku <Basic, Classic, Standard, Premium>
+
+# Connect to the registry
+Connect-AzContainerRegistry -Name $registry.Name
+
+# You'll need a docker image before you can push anything to the registry. Let's use a hello-world one from Microsoft
+docker pull mcr.microsoft.com/hello-world
+
+# Tag the image with the fully qualified login server name: (registry name).azurecr.io
+docker tag mcr.microsoft.com/hello-world <login server name>/hello-world:v1
+# Example: docker tag mcr.microsoft.com/hello-world mycontainerregistry.azurecr.io/hello-world:v1
+
+# Push the image to the registry
+docker push <login server name>/hello-world:v1
+
+# Remove the image from your local Docker environment so that you can retrieve it from ACR
+docker rmi <login server name>/hello-world:v1
+
+# Run the image from the registry and verify that it downloaded the image from ACR
+docker run <login server name>/hello-world:v1
 ```
