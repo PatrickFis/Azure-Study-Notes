@@ -196,7 +196,16 @@ az group delete --name az204-eventgrid-patrick-rg --no-wait
 
 
 # Azure Event Hubs
-Azure Event Hubs is a big data streaming platform and event ingestion service. It can transform data and store it in real time using an analytics provider or batching/storage adapters.
+- Azure Event Hubs is a big data streaming platform and event ingestion service. It can transform data and store it in real time using an analytics provider or batching/storage adapters.
+- Event Hubs is useful for some of the following scenarios:
+  - Anomaly detection (fraud/outliers)
+  - Application logging
+  - Analytics pipelines, such as clickstreams
+  - Live dashboards
+  - Archiving data
+  - Transaction processing
+  - User telemetry processing
+  - Device telemetry streaming
 
 ## Features & Concepts
 - Event Hubs is a front door for an event pipeline (aka an event ingestor). An event ingestor is a component or service that sits between publishers and consumers and decouples the production of an event stream from the consumption of those events.
@@ -205,7 +214,18 @@ Azure Event Hubs is a big data streaming platform and event ingestion service. I
 - Event Hub client - Primary interface for devs to interact with the client library. There are various clients available for publishing or consuming events.
   - Event Hub producer - Client which serves as a source of data from an application
   - Event Hub consumer - Client which reads info from Event Hub and processes it (often something like Azure Stream Analytics, Apache Spark, or Apache Storm)
-- Partition - Ordered sequence of events in Event Hub. Partitions are used to organize data associated with the parallelism required by event consumers. The number of partitions is specified when an event hub is created and cannot be changed.
+- Partition - Ordered sequence of events in Event Hub. Partitions are used to organize data associated with the parallelism required by event consumers. The number of partitions is specified when an event hub is created and cannot be changed (except at the dedicated cluster and premium tier).
+  - https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-scalability#partitions has good information on partitions.
+  - Partitions can be thought of as a "commit log."
+  - Under the hood maintaining a log that preserves the order of events requires that events are kept together in the underlying storage and its replicas. This results in a throughput ceiling for the log. Partitions allow for multiple parallel logs to be used for the same event hub and multiply the available raw IO throughput capacity.
+  - Processing events may require a large amount of parallel processing capacity. Partitions are how your solution feeds those processes and yet ensures that each event has a clear processing owner.
+  - The recommendation is that you choose to create at least as many partitions as you expect that you'll need during the peak load of your application for that particular event hub.
+  - Changing the partition count for a dedicated or premium tier event hub will change the distribution of streams across partitions because the mapping of partition keys will change, so changing the count should be avoided at these tiers if your application cares about the relative order of events.
+  - Event streams need to be structured in a way that lets you take advantage of having multiple partitions. If you need absolute order preservation then you may not be able to use many partitions, and extra partitions make the processing side of things more complex.
+  - Partition count doesn't affect pricing. That's entirely affected by pricing units (throughput units for the standard tier, processing units for premium, and capacity units for dedicated).
+  - General recommendation: Create 1 partition per 1 MB/s of expected throughput
+  - Data is mapped to a particular partition using a partition key.
+    - The partition key can be sent by the sender which event hubs will pass through a hashing function to create the partition assignment. If you don't specify the key then a round-robin assignment is used.
 - Consumer group - A view of the entire Event Hub. This allows multiple consumers to each have a separate view of an event stream so that they can read it independently at their own pace. There can be at most 5 concurrent readers on a partition per consumer group, though it is recommended that there only be one active consumer for a given partition and consumer group pairing. Each active reader receives all the events from the partition, so if there are multiple readers then they'll receive duplicate events.
 - Event receivers - Something that reads event data from an event hub. Consumers connect via AMQP 1.0 sessions.
 - Throughput units or processing units - Pre-purchased units of capacity that control your throughput capacity.
@@ -216,22 +236,44 @@ Event Hub allows you to store data in a blob or a data lake at no extra cost.
 - Captured data is written in the Apache Avro format.
 - Captured data does not use your egress quota as it reads directly from internal Event Hubs storage.
 - Scaling is controlled by throughput units. One throughput unit = 1 MB per second or 1000 events per second of ingress and twice that amount of egress. Standard Event Hubs can be configured for 1-20 throughput units (more can be requested through a support request).
+- Capture lets you configure a window to control capturing behavior. The window is a minimum size and time configuration with a "first wins policy," so the first trigger encountered causes a capture operation. Example: 15 minute, 100 MB capture window with 1 MB of data sent per second. The size window triggers before the time window.
+- Storage naming convention: {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}
+  - Example: https://mystorageaccount.blob.core.windows.net/mycontainer/mynamespace/myeventhub/0/2017/12/08/03/03/17.avro
+- Captures are the easiest way to get data into Azure. Batch processing can be done on captures using Azure Data Lake, Azure Data Factory, and Azure HDInsight.
 
 ## Scaling your processing application (see MS Learn)
-https://docs.microsoft.com/en-us/learn/modules/azure-event-hubs/4-event-processing
+https://docs.microsoft.com/en-us/learn/modules/azure-event-hubs/4-event-processing and https://learn.microsoft.com/en-us/azure/event-hubs/event-processor-balance-partition-load
+- To scale an event processing application you can run multiple instances of the app and have them load balanced against each other.
+- When designing a consumer application you should handle the following requirements:
+  - Scale: Create multiple consumers and have each one take ownership of a few partitions
+  - Load balance: Increase or reduce the amount of consumers dynamically and have them balance the number of partitions each consumer owns.
+  - Seamless resume on failures: If a consumer fails other consumers can pick up the partitions that the failed consumer was handling and continue. The continuation point (the checkpoint or offset) should be at the exact point at which the failed consumer failed, or slightly before.
+  - Consume events: Write code to actually do something useful with your events.
+- Microsoft provides SDKs for processing events.
+  - Their SDK can be used to let clients work cooperatively within a consumer group.
+  - Clients can automatically manage distribution and balancing of work as instances become available or unavailable for the group.
+- Event processors typically own and process events from one or more partitions.
+- Event processors are given unique identifiers and claim ownership of partitions by adding or updating an entry in a checkpoint store.
+- Receiving events are done by functions that you specify to process events and errors. Each call will deliver a single event from the partition to your application. Generally you'll want to process events fast, so if you need to do more than one thing you should create multiple consumer groups and event processors.
+- Checkpointing is the process that an event processor uses to mark or commit the position of the last successfully processed event within a partition.
+  - Other instances can resume from the checkpoint if the processor goes down.
+  - Users need to decide how often to update the checkpoint. Updating after even successfully processed event can have performance and cost implications as it triggers a write operation to the underlying checkpoint store. Checkpointing after each event also means that you should consider using a queued messaging pattern, so Service Bus may be a better option for you than Event Hubs.
+- While somewhat old, https://devblogs.microsoft.com/azure-sdk/eventhubs-clients/ has information about the classes used for consuming, producing, and processing events. Short overview:
+  - EventHubProducerClient: This class is responsible for publishing event data to Event Hubs.
+  - EventHubConsumerClient: This class is really an onboarding point for consuming events from all partitions without the rigor and complexity of a production application. It's intended to help get developers up to speed. For production scenarios the recommendation is to look into the EventProcessClient or EventProcess`<TPartition>` classes over EventHubConsumerClient.
+  - EventProcessorClient: This class is intended to be used in production scenarios. It's used to read and process events from all partitions of an Event Hub and it collaborates with other EventProcessorClient instances using the same Event Hub and consumer group to balance work between them. It has a high degree of fault tolerance built-in. It allows the application to track progress through checkpointing events that have been processed.
 
 ## Access Control
-Access to Event Hubs can be managed through AAD and shared access signatures. Access to the data in Event Hubs can be managed through AAD and OAuth with these roles
-- Azure Event Hubs Data Owner: Use this role to give complete access to Event Hubs resources.
-- Azure Event Hubs Data Sender: Use this role to give send access to Event Hubs resources.
-- Azure Event Hubs Data Receiver: Use this role to give receiving access to Event Hubs resources.
-
-## Usage example (TODO)
-
-
-# Misc
-Table generated from https://www.tablesgenerator.com/markdown_tables.
-
+Access to Event Hubs can be managed through AAD and shared access signatures. 
+- AAD: Access to the data in Event Hubs can be managed through AAD and OAuth with these roles
+  - Azure Event Hubs Data Owner: Use this role to give complete access to Event Hubs resources.
+  - Azure Event Hubs Data Sender: Use this role to give send access to Event Hubs resources.
+  - Azure Event Hubs Data Receiver: Use this role to give receiving access to Event Hubs resources.
+  - AAD and OAuth 2.0 provides superior security and ease of use over SAS.
+- SAS:
+  - SAS lets you provide limited access to Event Hubs resources.
+  - You can add time constraints or only grant access to certain permissions.
+  - AAD offers similar capabilities to SAS without needing to worry about managing SAS tokens or revoking a compromised SAS.
 
 # Studying from Youtube Event Grid [Link](https://www.youtube.com/watch?v=ekJFp3TJN14&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=17)
 ## Setting up Event Grid

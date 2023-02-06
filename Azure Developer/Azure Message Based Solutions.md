@@ -15,6 +15,10 @@ Azure has two types of queues
 ## Azure Service Bus
 - Fully managed enterprise integration message broker.
 - Data is transferred using messages (container decorated with metadata and contains data).
+- Service Bus namespaces are your container for messaging components (queues and topics).
+  - Multiple queues and topics can exist in a single namespace
+  - Namespaces can be compared to servers in comparison to other message brokers, but they aren't exactly the same. A namespace is a slice of capacity from a large cluster of dozens of all-active VMs. 
+  - Optionally your namespace can span three availability zones.
 
 Common messaging scenarios
 - Messaging - Transfer business data
@@ -51,7 +55,11 @@ Service Bus uses Advanced Messaging Queueing Protocol (AMQP) 1.0 which allows us
 Queues
 - FIFO message delivery.
 - Load-leveling - producers and consumers send and receive messages at different rates. Allows consumers to only handle average load instead of peak load.
+  - Queue depth can grow and contract, and this allows you to create more workers to handle messages as the load grows.
 - Can be used to provide loose coupling between components as producers and consumers aren't aware of each other.
+  - This is because producers and consumers don't have to send and receive messages at the same time since messages are stored durably in the queue
+  - The producer doesn't need to wait for a reply from the consumer to continue to process and send messages
+  - This loose coupling allows for consumers to be upgraded without having any affect on the producer
 - Supports two different modes for receiving messages
   - Receive and delete - Service Bus receives a request from the consumer -> marks the message as being consumed -> returns it to the consumer. Works best for apps that can tolerate not processing a message if a failure occurs.
   - Peek lock - Two-stage receive operation for apps that can't miss messages: The message to be consumed is found and locked so other consumers can't receive it and then returned to the app. After the app is done with the message it requests the Service Bus to complete the second stage of the receive process, then the message is marked as consumed. If apps can't process a message it can request the message be abandoned which will unlock the message and allow it to be received again. The lock also has a timeout which will cause the message to be unlocked.

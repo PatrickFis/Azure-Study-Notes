@@ -22,6 +22,8 @@
     - [Create a System Assigned Managed Identity](#create-a-system-assigned-managed-identity)
   - [CDN](#cdn)
     - [Create a new CDN Profile](#create-a-new-cdn-profile)
+  - [Azure Service Bus](#azure-service-bus)
+    - [Create a Service Bus Namespace and a Queue](#create-a-service-bus-namespace-and-a-queue)
 
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
@@ -333,4 +335,26 @@ New-AzCdnProfile -Name <CDN name> `
 -ResourceGroupName <resource group name> `
 -Location <location, like Global> `
 -SkuName <Standard_Verizon, Standard_Microsoft, Standard_Akamai, Premium_Verizon, default = Standard_Akamai>
+```
+
+## Azure Service Bus
+### Create a Service Bus Namespace and a Queue
+``` powershell
+# Create a resource group to contain the namespace
+New-AzResourceGroup -Name <resource group name> -Location <location>
+
+# Create the namespace
+New-AzServiceBusNamespace -ResourceGroupName <resource group name> `
+-Name <namespace name> `
+-Location <location>
+
+# Create the queue
+New-AzServiceBusQueue -ResourceGroupName <resource group name> `
+-NamespaceName <namespace name> `
+-Name <queue name>
+
+# Get the primary connection string for the namespace to connect to the queue to send and receive messages
+Get-AzServiceBusKey -ResourceGroupName <resource group name> `
+-Namespace <namespace name> `
+-Name RootManageSharedAccessKey
 ```

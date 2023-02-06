@@ -53,6 +53,8 @@
   - [Deploy an ARM template to a resource group](#deploy-an-arm-template-to-a-resource-group)
 - [CDN](#cdn)
   - [Create a new CDN Profile](#create-a-new-cdn-profile)
+- [Azure Service Bus](#azure-service-bus)
+  - [Create a Service Bus Namespace and a Queue](#create-a-service-bus-namespace-and-a-queue)
 
 # Azure CLI
 [MS Documentation](https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli) is a good place to reference CLI commands.
@@ -464,4 +466,28 @@ az cdn profile create --name (or -n) <CDN name> \
 --location (or -l) <location> \
 --sku <Standard_Verizon, Standard_Microsoft, Standard_Akamai, Premium_Verizon, default = Standard_Akamai> \
 --tags <tags>
+```
+
+# Azure Service Bus
+## Create a Service Bus Namespace and a Queue
+``` bash
+# Create a resource group to contain the namespace
+az group create -n <resource group name> -l <location>
+
+# Create the namespace
+az servicebus namespace create --resource-group (or -g) <resource group name> \
+--name (or -n) <namespace name> \
+--location (or -l) <location>
+
+# Create the queue
+az servicebus queue create --resource-group (or -g) <resource group name> \
+--namespace-name <namespace name> \
+--name <queue name>
+
+# Get the primary connection string for the namespace to connect to the queue to send and receive messages
+az servicebus namespace authorization-rule keys list --resource-group (or -g) <resource group name> \
+--namespace-name <namespace name> \
+--name RootManageSharedAccessKey \
+--query primaryConnectionString \
+--output tsv
 ```
