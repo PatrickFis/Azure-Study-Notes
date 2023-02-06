@@ -38,6 +38,55 @@
   - Analyze mobile app usage
   - Availability tests
 
+### Configuring Application Insights
+- Application Insights supports auto-instrumentation for a variety of environments. This allows you to enable Application Insights to collect metrics, requests, and dependencies without making code changes.
+- Adding support through the SDK is another option. The following steps will work for an ASP.NET Core web app:
+1. Add a dependency on the `<PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="5.2.0" />` package.
+2. Add Application Insights Telemetry to your application through the builder. Snippet:
+  ``` c#
+  // This method gets called by the runtime. Use this method to add services to the container.
+  var builder = WebApplication.CreateBuilder(args);
+
+  // The following line enables Application Insights telemetry collection.
+  builder.Services.AddApplicationInsightsTelemetry();
+
+  // This code adds other services for your application.
+  builder.Services.AddMvc();
+
+  var app = builder.Build();
+  ```
+3. Specify the connection string to Application Insights in appsettings.json (it can be provided as part of an ApplicationInsightsServiceOptions argument in the AddApplicationInsightsTelemetry method, but it is recommended to not do this). Alternatively you may provide it through an environment variable of APPLICATIONINSIGHTS_CONNECTION_STRING (which is typically used in web apps). It can also be provided by a configuration provider by passing in an IConfiguration to the AddApplicationInsightsTelemetry method.
+  ``` json
+  {
+    "Logging": {
+      "LogLevel": {
+        "Default": "Information",
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "AllowedHosts": "*",
+    "ApplicationInsights": {
+      "ConnectionString": "Copy connection string from Application Insights Resource Overview"
+    }
+  }
+  ```
+4. Run your application
+
+- The following steps can be used to configure Application Insights through JavaScript:
+1. Add the SDK to your webapp through NPM (or as a JS snippet, though this example uses npm):
+   1. Run `npm i --save @microsoft/applicationinsights-web`
+   2. Add this JS
+    ``` javascript
+    import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+
+    const appInsights = new ApplicationInsights({ config: {
+      connectionString: 'Copy connection string from Application Insights Resource Overview'
+      /* ...Other Configuration Options... */
+    } });
+    appInsights.loadAppInsights();
+    appInsights.trackPageView(); // Manually call trackPageView to establish the current user/session/pageview
+    ```
+
 ### Log-based Metrics
 - Application Insights has two kinds of log-based metrics
   - Log-based metrics - Translated into Kusto queries from stored events (more dimensions than standard metrics, useful for data analysis and ad-hoc diagnostics)
@@ -55,6 +104,22 @@
   - URL ping test (classic) - Validates whether an endpoint is responding and measures performance. Supports custom success criteria. This test relies on the DNS infrastructure of the public internet.
   - Standard test (preview) - Similar to the URL ping test. Includes SSL cert validation, proactive lifetime check, HTTP request verbs (for example GET, HEAD, POST), custom headers, and custom data.
   - Custom TrackAvailability test - A custom application can be created to run availability tests. See https://docs.microsoft.com/en-us/dotnet/api/microsoft.applicationinsights.telemetryclient.trackavailability?view=azure-dotnet for information from the SDK.
+
+#### Creating an Availability Test
+- Availability tests are created through the Application Insights resource through the following steps:
+1. Open your Application Insights resource
+2. Click on the "Availability" blade
+3. Click on "Add Standard test"
+4. Give the test a name
+5. Give the test a URL for your app
+6. Configure how often the test should occur and from which locations requests should be sent
+7. Select the HTTP Request verb for your test
+8. Set a timeout duration for your test
+9. Enable alerts
+10. Click Create
+11. Navigate to the test in the portal
+12. Click on the "Open Rules (Alerts) page" button to view the alert created for the test
+13. Edit the alert properties to configure how you want the alert to behave
 
 ### Application Map
 - Application Map lets you spot performance bottlenecks or failure hotspots across components in distributed apps
@@ -129,6 +194,21 @@ Things like web apps can send their logs to Log Analytics as well with the follo
 5. Click Save
 
 The logs can take a decent bit of time to start showing up in Log Analytics.
+
+#### Example logs
+- I created an APIM instance for studying and I configured it to use Application Insights. This caused logs to be sent to a Log Analytics Workspace.
+- To view the logs in Log Analytics the following steps were done:
+  1. Open the Log Analytics resource
+  2. Click on the "Logs" blade
+  3. Close the popup
+  4. Expand the "LogManagement" section. This section displays tables that have been created to hold logs. For my Application Insights logs a variety of tables were created. Some examples: AppAvailabilityResults (to hold the results of availability tests), AppDependencies (to track dependencies: it showed things like backend requests made by APIM, so I could see requests sent to my Product API from APIM), and AppRequests (which showed the requests sent to my APIM instance).
+  5. Double click on a table to put the table name in the query window
+  6. Click "Run" to fetch all the data in the specified time frame
+  7. Filtering can be applied to queries as well. The following query fetches failed availability tests:
+      ```
+      AppAvailabilityResults
+      | where Success == false
+      ```
 
 ## Application Insights
 - Provides performance monitoring for web apps
