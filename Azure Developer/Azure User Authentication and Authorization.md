@@ -548,12 +548,12 @@ The following steps show you how to assign RBAC roles to the user you created in
   - The payload contains the information about the user requested by your client
 
 ## Header claims
-| Claim | Format                | Description                                                                                                                               |     |     |
-| ----- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --- | --- |
-| typ   | String - always "JWT" | Indicates that the token is a JWT token.                                                                                                  |     |     |
-| alg   | String                | Indicates the algorithm that was used to sign the token. Example: "RS256"                                                                 |     |     |
-| kid   | String                | Specifies the thumbprint for the public key that can be used to validate this token's signature. Emitted in both v1.0 and v2.0 ID tokens. |     |     |
-| x5t   | String                | Functions the same (in use and value) as kid. x5t is a legacy claim emitted only in v1.0 ID tokens for compatibility purposes.            |     |     |
+| Claim | Format                | Description                                                                                                                               |
+| ----- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| typ   | String - always "JWT" | Indicates that the token is a JWT token.                                                                                                  |
+| alg   | String                | Indicates the algorithm that was used to sign the token. Example: "RS256"                                                                 |
+| kid   | String                | Specifies the thumbprint for the public key that can be used to validate this token's signature. Emitted in both v1.0 and v2.0 ID tokens. |
+| x5t   | String                | Functions the same (in use and value) as kid. x5t is a legacy claim emitted only in v1.0 ID tokens for compatibility purposes.            |
 
 ## Payload claims
 | Claim              | Format                     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
