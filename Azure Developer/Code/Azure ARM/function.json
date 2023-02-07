@@ -1,0 +1,73 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageName": {
+            "type": "string",
+            "defaultValue": "az204udemy",
+            "minLength": 3,
+            "maxLength": 11
+        },
+        "storageSKU": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_ZRS"
+            ]
+        },
+        "resourceTags": {
+            "type": "object",
+            "defaultValue": {
+                "Environment": "Dev",
+                "Project": "AZ204"
+            }
+        }
+    },
+    "functions": [
+        {
+            "namespace": "testfunction",
+            "members": {
+                "storageName": {
+                    "parameters": [
+                        {
+                            "name": "storageAcctName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "resourceGroupId",
+                            "type": "string"
+                        }
+                    ],
+                    "output": {
+                        "value": "[toLower(concat(parameters('storageAcctName'), uniqueString(parameters('resourceGroupId'))))]",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    ],
+    "variables": {
+        "storageName": "[testfunction.storageName(parameters('storageName'), resourceGroup().id)]",
+        "storageLocation": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "name": "[variables('storageName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-04-01",
+            "location": "[variables('storageLocation')]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "[parameters('storageSKU')]"
+            },
+            "tags": "[parameters('resourceTags')]"
+        }
+    ],
+    "outputs": {
+        "storageEndpoint": {
+            "type": "object",
+            "value": "[reference(variables('storageName')).primaryEndpoints]"
+        }
+    }
+}
