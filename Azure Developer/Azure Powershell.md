@@ -26,6 +26,11 @@
     - [Create a Service Bus Namespace and a Queue](#create-a-service-bus-namespace-and-a-queue)
   - [Azure Container Registry](#azure-container-registry)
     - [Creating a new container registry and running an image from it](#creating-a-new-container-registry-and-running-an-image-from-it)
+  - [App Service Plans](#app-service-plans)
+    - [Create a new App Service Plan](#create-a-new-app-service-plan)
+    - [Create a new web app](#create-a-new-web-app)
+    - [Configure a web app](#configure-a-web-app)
+    - [Create a web app and use deployment slots](#create-a-web-app-and-use-deployment-slots)
 
 # Azure Powershell
 [MS Documentation](https://learn.microsoft.com/en-us/powershell/azure/get-started-azureps?view=azps-9.2.0) is a good place to reference Powershell commands.
@@ -390,4 +395,62 @@ docker rmi <login server name>/hello-world:v1
 
 # Run the image from the registry and verify that it downloaded the image from ACR
 docker run <login server name>/hello-world:v1
+```
+
+## App Service Plans
+### Create a new App Service Plan
+``` powershell
+New-AzAppServicePlan -Location <location> `
+-Tier <Tier, default = Free> `
+-NumberOfWorkers <size as a 32-bit int> `
+-WorkerSize <Small, Medium, Large, ExtraLarge> `
+-Linux <no arguments, used to specify the ASP is going to run Linux Containers> `
+-Name <ASP name> `
+-ResourceGroupName <resource group name>
+```
+
+### Create a new web app
+``` powershell
+New-AzWebApp -ResourceGroupName <resource group name> `
+-Name <web app name> `
+-Location <location> `
+-AppServicePlan <ASP name, also accepts the ASP ID (which needs to be used if the web app and ASP are in different resource groups)>
+```
+
+### Configure a web app
+``` powershell
+Set-AzWebApp -ResourceGroupName <resource group name> `
+-Name <web app name> `
+# Various settings are available to choose from, here are a few
+-AlwaysOn <false, true (used to leave your web app loaded all the time)> \
+-AppSettings <HashTable with settings (existing settings will be replaced, any not provided are removed)>
+
+# Example: Enable application insights
+$key=(Get-AzApplicationInsights -ResourceId $ai).InstrumentationKey
+$setting=@{"ApplicationInsightsAgent_EXTENSION_VERSION"="~3"; "APPINSIGHTS_INSTRUMENTATIONKEY"=$key}
+Set-AzWebApp -AppSettings $setting -Name 'ContosoWebApp' -ResourceGroupName 'Default-Web-WestUS'
+```
+
+### Create a web app and use deployment slots
+``` powershell
+# Create the web app
+New-AzWebApp -ResourceGroupName <resource group name> `
+-Name <app name> `
+-Location <location> `
+-AppServicePlan <app service plan name>
+
+# Create a slot
+New-AzWebAppSlot -ResourceGroupName <resource group name> `
+-Name <app name> `
+-Slot <deployment slot name> `
+-AppServicePlan <app service plan name>
+
+# Swap deployment slots
+$ParametersObject = @{targetSlot = "[slot name - e.g. "production"]"}
+Invoke-AzResourceAction -ResourceGroupName <resource group name> `
+-ResourceType Microsoft.Web/sites/slots `
+-ResourceName <[app name]/[slot name]> `
+-Action slotsswap `
+-Parameters $ParametersObject `
+-ApiVersion 2015-07-01
 ```

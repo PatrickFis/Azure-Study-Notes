@@ -10,7 +10,9 @@
 - Pricing tier categories
   - Shared compute - Free + Shared share resource pools with other customers.
   - Dedicated compute - Basic, Standard, Premium, PremiumV2, and PremiumV3 run on dedicated VMs. Higher tiers = more VMs to scale out.
+    - You're charged based on each VM instance in the app service plan in this tier.
   - Isolated - Runs on a dedicated VNet.
+    - You're charged based on the number of workers that run your apps. In addition there's a flat Stamp Fee for using an App Service Environment.
   - Consumption - Only available to function apps. Scales dynamically depending on workload.
 
 ## Authentication & Authorization

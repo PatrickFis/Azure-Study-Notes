@@ -33,6 +33,9 @@
   - [Create a new web application](#create-a-new-web-application)
   - [Create a new web app from local files (like from cloud shell)](#create-a-new-web-app-from-local-files-like-from-cloud-shell)
   - [Delete a web app](#delete-a-web-app)
+  - [Create a deployment slot](#create-a-deployment-slot)
+  - [Swap deployment slots](#swap-deployment-slots)
+  - [Configure a web app](#configure-a-web-app)
 - [SQL Server](#sql-server)
   - [Create a SQL server](#create-a-sql-server)
   - [Delete a SQL server](#delete-a-sql-server)
@@ -330,6 +333,32 @@ az webapp up -g fischerpl18_rg_1227 -n testwebappaz204 --plan fischerpl18_asp_97
 ``` bash
 az webapp delete --name (or -n) <name of the web app> \
 --resource-group (or -g) <resource group name>
+```
+
+## Create a deployment slot
+``` bash
+az webapp deployment slot create --name (or -n) <web app name> \
+--resource-group (or -g) <resource group name> \
+--slot (or -s) <slot name>
+```
+
+## Swap deployment slots
+``` bash
+az webapp deployment slot swap --slot (or -s) <slot name> \
+--action <preview (apply target slot's setting on the source slot first), reset (reset the swap), swap (complete swap) (default: swap)> \
+--name (or -n) <web app name> \
+--resource-group (or -g) <resource group name> \
+--target-slot <slot to swap (default: production)>
+```
+
+## Configure a web app
+``` bash
+az webapp config set --resource-group (or -g) <resource group name> \
+--name (or -n) <web app name> \
+# Various settings are available to choose from, here are a few
+--always-on <false, true (used to leave your web app loaded all the time)> \
+--auto-heal-enabled <false, true (used to turn on or off auto heal)> \
+--generic-configurations <site configuration list in a key=value pair or @<json_file>>
 ```
 
 # SQL Server

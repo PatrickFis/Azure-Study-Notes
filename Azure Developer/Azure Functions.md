@@ -69,7 +69,7 @@
 - There can only be one trigger for a function
 - Triggers have associated data (often provided as the payload of the function)
 - Bindings are a way of declaratively connection another resource to the function
-- There can be input bindings, output bindings, out both
+- There can be input bindings, output bindings, or both
 - Data from bindings is provided to the function as parameters
 - Example function.json file for a function which writes a row to Azure Table storage whenever a message appears in Azure Queue storage:
 ``` json
