@@ -6,11 +6,14 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
 
 ## Templates [MS Documentation on Template Functions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions)
 - Template files can be written to extend JSON and use functions provided by ARM. Templates have the following sections
-  - Parameters - Allows templates to be used in different environments
-  - Variables - Can be constructed from parameters
-  - User-defined functions
-  - Resources
-  - Outputs from the deployed resources
+  - $schema - Describes the version of the template language. Required.
+  - contentVersion - Version of the template. Specified by you to track changes in the template. Required.
+  - apiProfile - An API version that serves as a collection of API versions for resource types. Used to avoid having to specify API versions for each resource in the template. Not required.
+  - parameters - Allows templates to be used in different environments by specifying values that will be provided during deployment. Not required.
+  - variables - Values that can be reused in your templates. Can be constructed from parameters. Not required.
+  - User-defined functions (functions is how it appears in the template)- Customized functions used to simplify your template. Not required.
+  - resources - The resources you want to deploy. Required.
+  - outputs - Values that need to be returned from the deployed resources. Not required.
 - Templates are converted by ARM to REST API operations
 - Templates can be deployed using the following
   - Azure portal
@@ -23,6 +26,168 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
 - Template specs enable you to store a template as a resource type so that they can be shared. You can then use RBAC to manage access to the template spec. Users with read access can then deploy it but not change it.
 - Resources can be deployed conditionally using the condition element with a value that resolves to true or false. Note that child resources must specify the same condition as it does not cascade.
   - Conditional deployments can be used to create new resources or use existing ones
+
+### Template structure
+- An ARM template is formatted as JSON with this structure:
+  ``` json
+  {
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "",
+    "apiProfile": "",
+    "parameters": {  },
+    "variables": {  },
+    "functions": [  ],
+    "resources": [  ],
+    "outputs": {  }
+  }
+  ```
+- Parameters are defined using the following format (only parameter-name and type are required):
+  ``` json
+  "parameters": {
+    "<parameter-name>" : {
+      "type" : "<type-of-parameter-value>",
+      "defaultValue": "<default-value-of-parameter>",
+      "allowedValues": [ "<array-of-allowed-values>" ],
+      "minValue": <minimum-value-for-int>,
+      "maxValue": <maximum-value-for-int>,
+      "minLength": <minimum-length-for-string-or-array>,
+      "maxLength": <maximum-length-for-string-or-array-parameters>,
+      "metadata": {
+        "description": "<description-of-the parameter>"
+      }
+    }
+  }
+  ```
+- Variables are defined using the following format:
+  ``` json
+  "variables": {
+    "<variable-name>": "<variable-value>",
+    "<variable-name>": {
+      <variable-complex-type-value>
+    },
+    "<variable-object-name>": {
+      "copy": [
+        {
+          "name": "<name-of-array-property>",
+          "count": <number-of-iterations>,
+          "input": <object-or-value-to-repeat>
+        }
+      ]
+    },
+    "copy": [
+      {
+        "name": "<variable-array-name>",
+        "count": <number-of-iterations>,
+        "input": <object-or-value-to-repeat>
+      }
+    ]
+  }
+  ```
+- Functions are defined using the following format:
+  - Functions can't access variables.
+  - Functions can only use parameters that are defined in the functions.
+  - Functions can't call other user-defined functions.
+  - Functions can't use the reference function.
+  - Parameters for functions can't have default values.
+  - The namespace, function-name, output-type, and output-value elements are required.
+  ``` json
+  "functions": [
+    {
+      "namespace": "<namespace-for-functions>",
+      "members": {
+        "<function-name>": {
+          "parameters": [
+            {
+              "name": "<parameter-name>",
+              "type": "<type-of-parameter-value>"
+            }
+          ],
+          "output": {
+            "type": "<type-of-output-value>",
+            "value": "<function-return-value>"
+          }
+        }
+      }
+    }
+  ],
+  ```
+- Resources are defined using the following format:
+  - The only required elements are type, apiVersion, name, and the location (when required by a resource).
+  ``` json
+  "resources": [
+    {
+        "condition": "<true-to-deploy-this-resource>",
+        "type": "<resource-provider-namespace/resource-type-name>",
+        "apiVersion": "<api-version-of-resource>",
+        "name": "<name-of-the-resource>",
+        "comments": "<your-reference-notes>",
+        "location": "<location-of-resource>",
+        "dependsOn": [
+            "<array-of-related-resource-names>"
+        ],
+        "tags": {
+            "<tag-name1>": "<tag-value1>",
+            "<tag-name2>": "<tag-value2>"
+        },
+        "identity": {
+          "type": "<system-assigned-or-user-assigned-identity>",
+          "userAssignedIdentities": {
+            "<resource-id-of-identity>": {}
+          }
+        },
+        "sku": {
+            "name": "<sku-name>",
+            "tier": "<sku-tier>",
+            "size": "<sku-size>",
+            "family": "<sku-family>",
+            "capacity": <sku-capacity>
+        },
+        "kind": "<type-of-resource>",
+        "scope": "<target-scope-for-extension-resources>",
+        "copy": {
+            "name": "<name-of-copy-loop>",
+            "count": <number-of-iterations>,
+            "mode": "<serial-or-parallel>",
+            "batchSize": <number-to-deploy-serially>
+        },
+        "plan": {
+            "name": "<plan-name>",
+            "promotionCode": "<plan-promotion-code>",
+            "publisher": "<plan-publisher>",
+            "product": "<plan-product>",
+            "version": "<plan-version>"
+        },
+        "properties": {
+            "<settings-for-the-resource>",
+            "copy": [
+                {
+                    "name": ,
+                    "count": ,
+                    "input": {}
+                }
+            ]
+        },
+        "resources": [
+            "<array-of-child-resources>"
+        ]
+    }
+  ]
+  ```
+- Outputs are defined using the following format:
+  - The output-name element is the only required element.
+  ``` json
+  "outputs": {
+    "<output-name>": {
+      "condition": "<boolean-value-whether-to-output-value>",
+      "type": "<type-of-output-value>",
+      "value": "<output-value-expression>",
+      "copy": {
+        "count": <number-of-iterations>,
+        "input": <values-for-the-variable>
+      }
+    }
+  }
+  ```
 
 ## Deployment Modes
 There are two modes used when deploying resources.

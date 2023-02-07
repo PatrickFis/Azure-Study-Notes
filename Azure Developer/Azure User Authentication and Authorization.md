@@ -11,6 +11,7 @@ https://docs.microsoft.com/en-us/learn/modules/explore-microsoft-identity-platfo
 
 Service principals are automatically created when an app is registered. Accessing resources secured by AAD requires that the entity requesting access be represented by a security principal (users = user principal, apps = service principal). There are three types of service principal
 - Application - The type of service principal is the local representation, or application instance, of a global application object in a single tenant or directory. A service principal is created in each tenant where the application is used and references the globally unique app object. The service principal object defines what the app can actually do in the specific tenant, who can access the app, and what resources the app can access.
+  - In AAD the Application Object is the global representation of your app that's used across all tenants. It serves as a template from which common and default properties are derived for use in creating corresponding service principal objects.
 - Managed identity - This type of service principal is used to represent a managed identity. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory authentication. When a managed identity is enabled, a service principal representing that managed identity is created in your tenant. Service principals representing managed identities can be granted access and permissions, but cannot be updated or modified directly.
 - Legacy - This type of service principal represents a legacy app, which is an app created before app registrations were introduced or an app created through legacy experiences. A legacy service principal can have credentials, service principal names, reply URLs, and other properties that an authorized user can edit, but does not have an associated app registration. The service principal can only be used in the tenant where it was created.
 
@@ -31,13 +32,39 @@ Consent types
 - Incremental and dynamic user consent
   - Minimum amount of permissions can be asked for during app registration with more requests coming over time for additional features
   - Can present challenges for permissions that require admin consent
+  - When a permission is requested that the user hasn't consented to, the user will be prompted to consent to only the new permission.
 - Admin consent
   - Used for access to certain high-privilege permissions
   - When done on behalf of an org it still requires static permissions registered for the app
 
-## Conditional Access (Summarize later)
-See SC-900 and https://docs.microsoft.com/en-us/learn/modules/explore-microsoft-identity-platform/5-conditional-access.
+### Requesting individual user consent
+- In an OpenID Connect or OAuth 2.0 authorization request an app can request the permissions it needs by using the scope query parameter:
+  ```
+  GET https://login.microsoftonline.com/common/oauth2/v2.0/authorize?
+  client_id=6731de76-14a6-49ae-97bc-6eba6914391e
+  &response_type=code
+  &redirect_uri=http%3A%2F%2Flocalhost%2Fmyapp%2F
+  &response_mode=query
+  &scope=
+  https%3A%2F%2Fgraph.microsoft.com%2Fcalendars.read%20
+  https%3A%2F%2Fgraph.microsoft.com%2Fmail.send
+  &state=12345
+  ```
+- In the example above the scope parameter is a space-separated list of delegated permissions that the app is requesting. They're all indicated by appending the permission value to the resource's identifier (the application ID URI). In the example the app is requesting permission to read the user's calendar and send mail as the user.
 
+## Conditional Access (Summarize later)
+See SC-900 and https://docs.microsoft.com/en-us/learn/modules/explore-microsoft-identity-platform/5-conditional-access and https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-conditional-access-dev-guide.
+- Feature in AAD to secure an app and protect a service
+- Capable of things like the following:
+  - Requiring MFA
+  - Requiring a device to be enrolled in Intune
+  - Restricting user locations and IP ranges
+- Various scenarios require code to handle Conditional Access challenges (these will come as a response from AAD in a claims parameter):
+  - Apps performing the on-behalf-of flow
+    - This is applicable when an app calls a web service/API which needs to call a downstream service. If the downstream service has a Conditional Access policy applied to it, then the initial request will fail if the user has not satisfied the policy. An error response will be sent back to the first web service/API which will be used to prompt the user to do something (like MFA) to allow the original request to succeed.
+  - Apps accessing multiple services/resources
+  - Single-page apps using MSAL.js
+  - Web Apps calling a resource
 
 # Microsoft Authentication Library (MSAL)
 MSAL is used by devs to acquire tokens from the Microsoft identity platform to authenticate users and access secured web APIs.
@@ -163,17 +190,42 @@ There are three types of SAS
 - Service SAS - Secured with the storage account key. Delegates access to an Azure Storage resource (Blob, Queue, Table, or Files).
 - Account SAS - Secured with the storage account key. Delegates access to resources in one or more of the storage services. All actions available to the above two SAS are available to this one.
 
-SAS tokens are made of several components
-- The URI of the resource
-- A parameter indicating the access rights
-- The date the access starts and ends
-- The version of the storage API to use
-- The kind of storage being accessed
-- The cryptographic signature
+SAS tokens are made of several components. The following is an example of using a SAS token to access a resource in blob storage: https://medicalrecords.blob.core.windows.net/patient-images/patient-116139-nq8z7f.jpg?sp=r&st=2020-01-20T11:42:32Z&se=2020-01-20T19:42:32Z&spr=https&sv=2019-02-02&sr=b&sig=SrW1HZ5Nb6MbRzTbXCaPm%2BJiSEn15tC91Y4umMPwVZs%3D. Breaking down the URL it is composed of the following:
+- The URI: https://medicalrecords.blob.core.windows.net/patient-images/patient-116139-nq8z7f.jpg?
+- The SAS token: sp=r&st=2020-01-20T11:42:32Z&se=2020-01-20T19:42:32Z&spr=https&sv=2019-02-02&sr=b&sig=SrW1HZ5Nb6MbRzTbXCaPm%2BJiSEn15tC91Y4umMPwVZs%3D
+- The SAS token itself is made up of several components:
+  - sp=r: This controls access rights. The various values are the following:
+    - a - add
+    - c - create
+    - d - delete
+    - l - list
+    - r - read
+    - w - write
+    - Multiple values can be used, so you could specify sp=acdlrw to gran all the available rights.
+  - st=2020-01-20T11:42:32Z: The date and time when access starts.
+  - se=2020-01-20T19:42:32Z: The date and time when access ends.
+  - sv=2019-02-02: The version of the storage API to use.
+  - sr=b: The kind of storage being accessed. b is for blob in this example.
+  - sig=SrW1HZ5Nb6MbRzTbXCaPm%2BJiSEn15tC91Y4umMPwVZs%3D: The cryptographic signature.
+
+## Best Practices [MS Docs](https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview)
+- Always use HTTPS to create or distribute a SAS to protect from a man-in-the-middle attack.
+- Use a user delegation SAS for better security instead of a service or account SAS. Since it's secured with AAD credentials you don't need to store your account key with your code.
+- Have a plan to revoke compromised SASes.
+- Configure a SAS expiration policy to recommend an expiration interval to those creating service or account SASes. They'll be shown a warning and logs will be written if Azure Storage logging with Azure Monitor is enabled.
+- Create a stored access policy for a service SAS. This will let you revoke the permissions for a service SAS without having to regenerate the storage account keys. Note: there's a limit of five stored access policies per container.
+- Use near-term expiration times on ad hoc SAS to minimize the amount of time a compromised SAS is useful.
+- Have clients automatically renew their SAS if necessary.
+- Be careful with start times because of clock skew.
+- Be careful with the SAS datetime format.
+- Provide access to specific resources to minimize the amount of permissions given to the user.
+- Understand you'll be billed for any usage of your storage account, including via a SAS.
+- Use Azure Monitor and Azure Storage logs to monitor your application.
 
 ## When to use SAS
 - Use when a client who wouldn't have access to a resource needs access
 - Commonly used for users reading and writing their own data into your storage account
+  - This would generally be accomplished by putting a front-end proxy service in front of storage. This may be difficult to scale to meet demand though, so an alternative is using a SAS generated by a service.
 
 ## Stored Access Policies
 - Stored access policies provide an additional level of control over SAS
@@ -185,15 +237,112 @@ SAS tokens are made of several components
 Microsoft Graph is used to retrieve data from Microsoft 365, Windows 10, and Enterprise Mobility + Security.
 
 ## REST Access
+- Microsoft Graph has a single endpoint: https://graph.microsoft.com.
 - Resources can be accessed using REST
-  - Supports GET, POST, PATCH, PUT, and DELETE
-  - Has a v1.0 and beta version
-  - Resources are included in the URL you use to access the API
+  - Supports GET(read data), POST(create a new resource or perform an action), PATCH(update a resource), PUT(replace a resource), and DELETE(remove a resource).
+  - Has a v1.0(generally available and should be used for production apps) and beta version (includes APIs in preview and may introduce breaking changes while being developed, really should only be used for development/testing and not in production))
+  - Resources are included in the URL you use to access the API (for example: me, user, group, drive, and site. Can include relationships like me/messages or me/drive. Can also be interacted with for things like me/sendEmail.)
   - Query parameters can be OData system query options or other strings that a method accepts to customize its response
+    - Example: `GET https://graph.microsoft.com/v1.0/me/messages?filter=emailAddress eq 'jon@contoso.com'` returns only messages with the specified email.
 
 ## SDK Usage
-There are a variety of SDKs available to query Microsoft Graph.
+There are a variety of SDKs available to query Microsoft Graph. Here's various code examples for interacting with Microsoft Graph.
+- Creating a client
+  ``` c#
+  var scopes = new[] { "User.Read" };
 
+  // Multi-tenant apps can use "common",
+  // single-tenant apps must use the tenant ID from the Azure portal
+  var tenantId = "common";
+
+  // Value from app registration
+  var clientId = "YOUR_CLIENT_ID";
+
+  // using Azure.Identity;
+  var options = new TokenCredentialOptions
+  {
+      AuthorityHost = AzureAuthorityHosts.AzurePublicCloud
+  };
+
+  // Callback function that receives the user prompt
+  // Prompt contains the generated device code that you must
+  // enter during the auth process in the browser
+  Func<DeviceCodeInfo, CancellationToken, Task> callback = (code, cancellation) => {
+      Console.WriteLine(code.Message);
+      return Task.FromResult(0);
+  };
+
+  // https://learn.microsoft.com/dotnet/api/azure.identity.devicecodecredential
+  var deviceCodeCredential = new DeviceCodeCredential(
+      callback, tenantId, clientId, options);
+
+  var graphClient = new GraphServiceClient(deviceCodeCredential, scopes);
+  ```
+- Making a GET request to get information about yourself
+  ``` c#
+  // GET https://graph.microsoft.com/v1.0/me
+
+  var user = await graphClient.Me
+      .Request()
+      .GetAsync();
+  ```
+- Retrieving a list of entities and applying filtering
+  ``` c#
+  // GET https://graph.microsoft.com/v1.0/me/messages?$select=subject,sender&$filter=<some condition>&orderBy=receivedDateTime
+
+  var messages = await graphClient.Me.Messages
+      .Request()
+      .Select(m => new {
+          m.Subject,
+          m.Sender
+      })
+      .Filter("<filter condition>")
+      .OrderBy("receivedDateTime")
+      .GetAsync();
+  ```
+- Deleting an entity
+  ``` c#
+  // DELETE https://graph.microsoft.com/v1.0/me/messages/{message-id}
+
+  string messageId = "AQMkAGUy...";
+  var message = await graphClient.Me.Messages[messageId]
+      .Request()
+      .DeleteAsync();
+  ```
+- Creating a new entity
+  ``` c#
+  // POST https://graph.microsoft.com/v1.0/me/calendars
+
+  var calendar = new Calendar
+  {
+      Name = "Volunteer"
+  };
+
+  var newCalendar = await graphClient.Me.Calendars
+      .Request()
+      .AddAsync(calendar);
+  ```
+
+## Best Practices [MS Docs](https://learn.microsoft.com/en-us/graph/best-practices-concept)
+- Get OAuth 2.0 access tokens and present them to Microsoft Graph through either of these options:
+  - An HTTP Authorization request header as a Bearer token
+  - The graph client constructor from the Microsoft Graph client library
+- Consent and authorization
+  - Apply least privilege. Only give users the lowest level of access that they require.
+  - Use the correct permission type based on scenarios. Avoid using both application and delegated permissions in the same app. If a user signs in then you should use delegated. If you run your app without signed in users then use application permissions.
+  - Configure your app carefully:
+    - Consider who uses your app and request permissions appropriately.
+    - Understand the differences between static and dynamic and incremental consent.
+  - Consider multi-tenant applications since your customers will have various applications and consent controls in different states.
+- Handle responses effectively
+  - Pagination
+    - When querying a resource collection you should expect the Microsoft Graph API to return the result set in multiple pages due to server-side page size limits. A result that spans multiple pages returns an `@odata.nextLink` property in the response that contains a URL to the next page of results.
+      - Example URL: GET https://graph.microsoft.com/v1.0/me/messages
+      - Example property in the JSON response: `"@odata.nextLink": "https://graph.microsoft.com/v1.0/me/messages?$skip=23"`
+- Evolvable Enumerations
+  - Adding members to existing enums can break applications already using the enums. Evolvable enums are used by the Microsoft Graph API to add new members to existing enums without causing a breaking change for applications. By default a GET operation returns only known members for properties of evolvable enum types and your app only needs to handle the known members. If you want to handle unknown members as well you can opt-in to receiving them by adding a header(Prefer: include-unknown-enum-members) to the request.
+- Storing data locally
+  - Ideally you should make calls to Microsoft Graph to retrieve data in real time as necessary. Data shouldn't be cached unless it's required for a specific scenario (and the caching should comply with your terms of use and privacy policy and it shouldn't violate the Microsoft APIs Terms of Use). Your app will also need to implement proper retention and deletion policies.
 
 # Studying from Youtube [video here](https://www.youtube.com/watch?v=gb5yU0Gh9Kg&list=PLLc2nQDXYMHpekgrToMrDpVtFtvmRSqVt&index=15)
 ## Implementing OAuth in App Service
@@ -402,7 +551,7 @@ The following steps show you how to assign RBAC roles to the user you created in
     - Delegated: Those assigned to a user
     - Application: Those for the app itself
   - Be aware of consent types
-    - Static, incremental, dynamic, or admin consent
+    - Static, incremental and dynamic (note: the video says these are different but they're the same per https://github.com/MicrosoftDocs/azure-docs/issues/86161), or admin consent
   - You may have to look at an OAuth HTTP request
     - Be aware of scopes and what permissions they give (look at the graph API for this)
   - Shared access signatures (SAS)
@@ -436,7 +585,7 @@ The following steps show you how to assign RBAC roles to the user you created in
     - Be aware of HTTP access and what an HTTP request may look like
       - Can be accessed by using a token retrieved from MS. The request looks like this (assumes you're using an app registration from AAD):
         - POST to https://login.microsoftonline.com/tenant-id-here/oauth2/v2.0/token
-        - Headers:
+        - Body:
           - grant_type: client_credentials
           - client_id: client ID from app registration
           - client_secret: generated secret from app registration
