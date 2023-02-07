@@ -1,8 +1,8 @@
 # ARM
-Azure Resource Manager is the deployment and management system for Azure. It is a management layer allowing for creation, updates, and deletion of Azure resources in your subscription.
-- ARM has a declarative syntax that allows for any Azure resource to be deployed
-- Results are repeatable using templates
-- ARM orchestrates ordering operations for you
+- Azure Resource Manager is the deployment and management system for Azure. It is a management layer allowing for creation, updates, and deletion of Azure resources in your subscription.
+  - ARM has a declarative syntax that allows for any Azure resource to be deployed
+  - Results are repeatable using templates
+  - ARM orchestrates ordering operations for you
 
 ## Templates [MS Documentation on Template Functions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions)
 - Template files can be written to extend JSON and use functions provided by ARM. Templates have the following sections
