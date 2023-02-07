@@ -57,11 +57,106 @@ Azure Key Vault enforces TLS to protect data while it's traveling to the client.
 
 ### Best Practices
 - Use separate key vaults (a vault is a logical group of secrets) - Recommended approach is to use a vault per app per environment. This helps you not share secrets across environments and reduces the threat in case of a breach.
-- Control access to your vault - Only allow authorized apps and users access to the vault.
+- Control access to your vault - Only allow authorized apps and users access to the vault. Some good controls are the following:
+  - Use RBAC to control access to your subscription, resource group, and key vaults
+  - Create access policies for every vault
+  - Use the principle of least privilege access
+  - Turn on a firewall
+- Turn on purge protection to prevent the accidental deletion of secrets and key vaults (this prevents objects in a deleted state from being purged until a retention period has passed, as with soft delete it is possible to delete an object but it requires elevated roles that aren't granted by default)
 - Backups
-- Logging
-- Recovery options - Enable soft-delete and purge protection
+  - Key Vault doesn't provide a way to back up an entire key vault in a single operation.
+  - Objects (secrets, keys, or certificates) can be backed up by selecting the object in the portal and clicking on the "Download Backup" button.
+  - Backups can be restored by going to the type of object you want to restore inside your key vault and clicking the "Restore Backup" button.
+  - Backups can also be handled with a CLI or Powershell script:
+    - CLI
+      ``` bash
+      ## Log in to Azure
+      az login
 
+      ## Set your subscription
+      az account set --subscription {AZURE SUBSCRIPTION ID}
+
+      ## Register Key Vault as a provider
+      az provider register -n Microsoft.KeyVault
+
+      ## Back up a certificate in Key Vault
+      az keyvault certificate backup --file {File Path} --name {Certificate Name} --vault-name {Key Vault Name} --subscription {SUBSCRIPTION ID}
+
+      ## Back up a key in Key Vault
+      az keyvault key backup --file {File Path} --name {Key Name} --vault-name {Key Vault Name} --subscription {SUBSCRIPTION ID}
+
+      ## Back up a secret in Key Vault
+      az keyvault secret backup --file {File Path} --name {Secret Name} --vault-name {Key Vault Name} --subscription {SUBSCRIPTION ID}
+
+      ## Restore a certificate in Key Vault
+      az keyvault certificate restore --file {File Path} --vault-name {Key Vault Name} --subscription {SUBSCRIPTION ID}
+
+      ## Restore a key in Key Vault
+      az keyvault key restore --file {File Path} --vault-name {Key Vault Name} --subscription {SUBSCRIPTION ID}
+
+      ## Restore a secret in Key Vault
+      az keyvault secret restore --file {File Path} --vault-name {Key Vault Name} --subscription {SUBSCRIPTION ID}
+      ```
+    - Powershell
+      ``` powershell
+      ## Log in to Azure
+      Connect-AzAccount
+
+      ## Set your subscription
+      Set-AzContext -Subscription '{AZURE SUBSCRIPTION ID}'
+
+      ## Back up a certificate in Key Vault
+      Backup-AzKeyVaultCertificate -VaultName '{Key Vault Name}' -Name '{Certificate Name}'
+
+      ## Back up a key in Key Vault
+      Backup-AzKeyVaultKey -VaultName '{Key Vault Name}' -Name '{Key Name}'
+
+      ## Back up a secret in Key Vault
+      Backup-AzKeyVaultSecret -VaultName '{Key Vault Name}' -Name '{Secret Name}'
+
+      ## Restore a certificate in Key Vault
+      Restore-AzKeyVaultCertificate -VaultName '{Key Vault Name}' -InputFile '{File Path}'
+
+      ## Restore a key in Key Vault
+      Restore-AzKeyVaultKey -VaultName '{Key Vault Name}' -InputFile '{File Path}'
+
+      ## Restore a secret in Key Vault
+      Restore-AzKeyVaultSecret -VaultName '{Key Vault Name}' -InputFile '{File Path}'
+      ```
+- Logging - Logging stores data like the time an event occurred, the resource ID of the key vault, the name of the operation, a category, the result type of the request, the result signature (an HTTP status), the result description (when available), and so on. It can be enabled through the CLI, Powershell, or the Azure portal.
+  - CLI
+    ``` bash
+    # Send logs to a storage account. --workspace could be used instead of --storage-account for a Log Analytics workspace.
+    az monitor diagnostic-settings create --storage-account "<storage-account-id>" \
+    --resource "<key-vault-resource-id>" \
+    --name "Key vault logs" \
+    --logs '[{"category": "AuditEvent","enabled": true}]' \
+    --metrics '[{"category": "AllMetrics","enabled": true}]'
+
+    # Optionally you can set a retention policy to delete old logs.
+    az monitor diagnostic-settings update --name "Key vault retention policy" \
+    --resource "<key-vault-resource-id>" \
+    --set retentionPolicy.days=90
+    ```
+  - Powershell
+    ``` powershell
+    # Sends logs to a storage account. -WorkspaceId could be used instead of -StorageAccountId for a Log Analytics workspace.
+    Set-AzDiagnosticSetting -ResourceId "<key-vault-resource-id>" `
+    -StorageAccountId $sa.id `
+    -Enabled $true `
+    -Category "AuditEvent"
+
+    # Optionally you can set a retention policy to delete old logs.
+    Set-AzDiagnosticSetting "<key-vault-resource-id>" -StorageAccountId $sa.id `
+    -Enabled $true `
+    -Category AuditEvent `
+    -RetentionEnabled $true `
+    -RetentionInDays 90
+    ```
+  - Azure portal: Like other resources, logging can be enabled through the portal by going to your key vault and clicking on the "Diagnostic settings" blade. From this page you can select the "audit" and "allLogs" categories and choose where to send the logs before saving.
+- Recovery options - Enable soft-delete and purge protection. 
+  - Soft delete helps you recover objects by making deleted objects recoverable for a configurable retention period. After the period the keys are purged and are permanently deleted.
+  - Purge protection is defined above. It prevents the deletion of a key vault so that no administrator role or permission can override, disable, or circumvent purge protection. Once enabled it can't be disabled or overridden by anyone including Microsoft.
 
 ## Creating an Azure Key Vault and Using it
 ### CLI

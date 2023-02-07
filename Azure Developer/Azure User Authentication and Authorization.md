@@ -578,7 +578,7 @@ The following steps show you how to assign RBAC roles to the user you created in
     - Be aware of how to establish a managed identity for a web app or VM and how to give it permissions
     - Understand the differences between a system assigned managed identity and a user assigned identity
   - App Configuration
-    - Be aware of how secrets in a Key Vault can be referenced from App Config 
+    - Be aware of how secrets in a Key Vault can be referenced from App Config
   - Be aware of private endpoints
     - Doesn't allow direct access from the outside world. You have to go through your virtual networks to get to the App Config
   - Microsoft Graph
