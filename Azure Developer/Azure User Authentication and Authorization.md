@@ -1,3 +1,44 @@
+- [Microsoft Identity Platform](#microsoft-identity-platform)
+  - [Service Principals](#service-principals)
+  - [Permissions and Consent (There's a lot of info in the linked docs, come back and summarize it later)](#permissions-and-consent-theres-a-lot-of-info-in-the-linked-docs-come-back-and-summarize-it-later)
+    - [Requesting individual user consent](#requesting-individual-user-consent)
+  - [Conditional Access (Summarize later)](#conditional-access-summarize-later)
+- [Microsoft Authentication Library (MSAL)](#microsoft-authentication-library-msal)
+  - [Library Features](#library-features)
+  - [Client Applications](#client-applications)
+    - [Code Samples for MSAL Client Applications](#code-samples-for-msal-client-applications)
+  - [Implementing Interactive Authentication](#implementing-interactive-authentication)
+- [Shared Access Signatures (SAS)](#shared-access-signatures-sas)
+  - [Information](#information)
+  - [Best Practices MS Docs](#best-practices-ms-docs)
+  - [When to use SAS](#when-to-use-sas)
+  - [Stored Access Policies](#stored-access-policies)
+- [Microsoft Graph](#microsoft-graph)
+  - [REST Access](#rest-access)
+  - [SDK Usage](#sdk-usage)
+  - [Best Practices MS Docs](#best-practices-ms-docs-1)
+- [Studying from Youtube video here](#studying-from-youtube-video-here)
+  - [Implementing OAuth in App Service](#implementing-oauth-in-app-service)
+- [Udemy Notes (Section 9 - Split with Secure Cloud Solutions)](#udemy-notes-section-9---split-with-secure-cloud-solutions)
+  - [Azure AD](#azure-ad)
+    - [Creating a user in AAD and using them](#creating-a-user-in-aad-and-using-them)
+    - [RBAC](#rbac)
+- [Udemy Notes (Section 10)](#udemy-notes-section-10)
+  - [Authentication and Authorization](#authentication-and-authorization)
+  - [OAuth 2.0](#oauth-20)
+    - [Authorization Code Flow](#authorization-code-flow)
+  - [Authentication Lab](#authentication-lab)
+  - [Authorization Lab](#authorization-lab)
+  - [API Lab](#api-lab)
+- [Claims in an ID Token MS Link](#claims-in-an-id-token-ms-link)
+  - [Header claims](#header-claims)
+  - [Payload claims](#payload-claims)
+- [Misc](#misc)
+- [Code Samples](#code-samples)
+  - [Managed Identities](#managed-identities)
+    - [Retrieve a token for interacting with a resource](#retrieve-a-token-for-interacting-with-a-resource)
+    - [Retrieve a token manually for interacting with a resource](#retrieve-a-token-manually-for-interacting-with-a-resource)
+
 # Microsoft Identity Platform
 The Microsoft identity platform for developers is a set of tools which includes authentication service, open-source libraries, and application management tools. The platform is made of several components:
 - OAuth 2.0 and OpenID Connect standard-compliant authentication service
@@ -233,7 +274,7 @@ SAS tokens are made of several components. The following is an example of using 
   - Can change start time, expiry time, permissions for a signature, or revoke it after it has been issued
 
 
-# Microsoft Graph (Re-review this module)
+# Microsoft Graph
 Microsoft Graph is used to retrieve data from Microsoft 365, Windows 10, and Enterprise Mobility + Security.
 
 ## REST Access
