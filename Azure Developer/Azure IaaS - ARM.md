@@ -53,7 +53,7 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
       "minLength": <minimum-length-for-string-or-array>,
       "maxLength": <maximum-length-for-string-or-array-parameters>,
       "metadata": {
-        "description": "<description-of-the parameter>"
+        "description": "<description-of-the-parameter>"lhnjksdfvd
       }
     }
   }
@@ -61,28 +61,42 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
 - Variables are defined using the following format:
   ``` json
   "variables": {
-    "<variable-name>": "<variable-value>",
-    "<variable-name>": {
-      <variable-complex-type-value>
-    },
-    "<variable-object-name>": {
-      "copy": [
-        {
-          "name": "<name-of-array-property>",
-          "count": <number-of-iterations>,
-          "input": <object-or-value-to-repeat>
-        }
-      ]
-    },
-    "copy": [
-      {
-        "name": "<variable-array-name>",
-        "count": <number-of-iterations>,
-        "input": <object-or-value-to-repeat>
-      }
-    ]
+    "stringVar": "example value"
   }
   ```
+  - They can also be defined from parameters:
+    ``` json
+    "parameters": {
+      "inputValue": {
+        "defaultValue": "deployment parameter",
+        "type": "string"
+      }
+    },
+    "variables": {
+      "stringVar": "myVariable",
+      "concatToVar": "[concat(variables('stringVar'), '-addtovar') ]",
+      "concatToParam": "[concat(parameters('inputValue'), '-addtoparam')]"
+    }
+    ```
+  - They can be defined from template functions:
+    ``` json
+    "variables": {
+      "storageName": "[concat(toLower(parameters('storageNamePrefix')), uniqueString(resourceGroup().id))]"
+    },
+    ```
+  - They're used like this:
+    ``` json
+    "variables": {
+      "storageName": "[concat(toLower(parameters('storageNamePrefix')), uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "name": "[variables('storageName')]",
+        ...
+      }
+    ]
+    ```
 - Functions are defined using the following format:
   - Functions can't access variables.
   - Functions can only use parameters that are defined in the functions.
@@ -90,6 +104,7 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
   - Functions can't use the reference function.
   - Parameters for functions can't have default values.
   - The namespace, function-name, output-type, and output-value elements are required.
+  - They're called in your ARM template like this: `"some property here": "[<namespace>.<function name>(parameters)]"`
   ``` json
   "functions": [
     {
