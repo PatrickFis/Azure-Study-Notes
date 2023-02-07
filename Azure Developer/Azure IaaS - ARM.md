@@ -53,7 +53,7 @@ Azure Resource Manager is the deployment and management system for Azure. It is 
       "minLength": <minimum-length-for-string-or-array>,
       "maxLength": <maximum-length-for-string-or-array-parameters>,
       "metadata": {
-        "description": "<description-of-the-parameter>"lhnjksdfvd
+        "description": "<description-of-the-parameter>"
       }
     }
   }
