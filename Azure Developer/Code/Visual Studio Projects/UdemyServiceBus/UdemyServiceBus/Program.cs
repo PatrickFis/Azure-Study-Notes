@@ -58,7 +58,7 @@ async Task SendMessage(List<Order> orders, int timeToLive = default)
 
 // Peek at messages in the queue
 async Task PeekMessages()
-    {
+{
     ServiceBusClient serviceBusClient = new(connectionString);
     ServiceBusReceiver serviceBusReceiver = serviceBusClient.CreateReceiver(queueName, new ServiceBusReceiverOptions() { ReceiveMode = ServiceBusReceiveMode.PeekLock });
 
