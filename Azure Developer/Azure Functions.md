@@ -44,7 +44,7 @@
 - The file is generated automatically from annotations in code for compiled languages. Scripting languages do not have this benefit and the dev will need to provide this file.
 - The runtime uses this file to determine the events to monitor, how to pass data to the function, and how to return data from a function execution.
 - Bindings require the following properties:
-  - type: A string representing the name of the binding
+  - type: A string representing the type of the binding (example: httpTrigger, table, etc.)
   - direction: A string indicating whether the binding is for receiving data into the function or returning data from the function (in or out are examples of direction)
   - name: A string that is used for the bound data in the function
 - Example file:
@@ -68,7 +68,7 @@
 - A trigger defines how a function is invoked
 - There can only be one trigger for a function
 - Triggers have associated data (often provided as the payload of the function)
-- Bindings are a way of declaratively connection another resource to the function
+- Bindings are a way of declaratively connecting another resource to the function
 - There can be input bindings, output bindings, or both
 - Data from bindings is provided to the function as parameters
 - Example function.json file for a function which writes a row to Azure Table storage whenever a message appears in Azure Queue storage:

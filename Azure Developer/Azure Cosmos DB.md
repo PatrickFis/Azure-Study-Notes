@@ -103,30 +103,219 @@ Various APIs allow your applications to treat Cosmos DB like it was another data
 - Items in a container are divided into distinct subsets called logical partitions
 - Logical partitions are formed based on the value of a partition key associated with each item in a container
 - All items in a logical partition have the same partition key value
+  - Example: You have a container with data in it about food nutrition with a foodGroup property that you want to use as the partition key. Groups of items have specific values like Beef Products or Baked Products. These groups form distinct logical partitions.
 - Each item has an item ID unique within a logical partition
   - Partition key + item ID = unique identifier
 - Items can be updated within a logical partition using database transactions
+- There aren't any limits to the number of logical partitions in your container, though each logical partition can only store 20 GB of data.
 
 ### Physical partitions
 - Containers scale by distributing data and throughput across physical partitions
 - One or more logical partitions are mapped to a single physical partition
+  - Typically smaller containers have many logical partitions but only one physical partition.
 - Physical partitions are an internal implementation of the system and are managed entirely by Cosmos
-- Number depends on the following
+- The number of physical partitions in your container depends on the following:
   - Amount of throughput provisioned (10k RU/s limit for physical partitions)
   - Total data storage (each physical partition can hold 50 GB of data)
 
 ### Partition Keys
-Partition keys should satisfy the following conditions
-- Be a property which does not change. You can't update property values which are partition keys.
-- Have a high cardinality.
-- Spread RU consumption and data storage evenly across all logical partitions.
-- Item IDs are generally a good choice for partition keys.
-- Synthetic partition keys can be created programmatically by the client if your data doesn't have high cardinality.
+- Partition keys have two components: a partition key path and a partition key value.
+  - Consider an example using this item: `{ "userId" : "Andrew", "worksFor": "Microsoft" }`
+    - The partition key we'll choose for this is userId, so the partition key path is "/userId".
+    - The partition key value will be "Andrew".
+- Partition keys should satisfy the following conditions
+  - Be a property which does not change. You can't update property values which are partition keys.
+  - Be a string value.
+  - Have a high cardinality.
+  - Spread RU consumption and data storage evenly across all logical partitions.
+  - Have values that are no larger than 2048 bytes typically, or 101 bytes if large partition keys are not enabled.
+  - Item IDs are generally a good choice for partition keys.
+    - They have a wide range of values.
+    - There's a unique one per item, so it evenly balances RU consumption and data storage.
+    - Point reads are efficient since you'll also know the partition key if you know the item ID.
+    - There are some other things to consider when using item IDs for partition keys:
+      - You can't have items with a duplicate item ID.
+      - If you have a read-heavy container that has lots of physical partitions, queries will be more efficient if they have an equality filter with the item ID.
+      - You can't run stored procedures or triggers across multiple logical partitions.
+  - Synthetic partition keys can be created programmatically by the client if your data doesn't have high cardinality.
 
 ## Microsoft SDKs (come back to this)
 https://docs.microsoft.com/en-us/learn/modules/work-with-cosmos-db/2-cosmos-db-dotnet-overview
 
 I had a lot of issues reading items from Cosmos so I need to come back to this later.
+
+## Stored Procedures
+- Stored procs can create, update, read, query, and delete items inside a container.
+- Stored procs are registered per collection and can operate on any document or attachment in that collection.
+- Sample stored proc which returns "Hello World":
+  ``` javascript
+  var helloWorldStoredProc = {
+      id: "helloWorld",
+      serverScript: function () {
+          var context = getContext();
+          var response = context.getResponse();
+
+          response.setBody("Hello, World");
+      }
+  }
+  ```
+  - The context object provides access to all operations that can be performed in Cosmos DB as well as access to the request and response objects.
+- Items can be created by stored procs. When creating an item an ID will be returned for the created item, and it will also be created asynchronously.
+- This example stored proc takes in a document to create:
+  ``` javascript
+  var createDocumentStoredProc = {
+      id: "createMyDocument",
+      body: function createMyDocument(documentToCreate) {
+          var context = getContext();
+          var collection = context.getCollection();
+          var accepted = collection.createDocument(collection.getSelfLink(),
+                documentToCreate,
+                function (err, documentCreated) {
+                    if (err) throw new Error('Error' + err.message);
+                    context.getResponse().setBody(documentCreated.id)
+                });
+          if (!accepted) return;
+      }
+  }
+  ```
+- Input parameters to stored procs are always sent as a string to the stored proc. If you need a different type like an array you'd need code like this:
+  ``` javascript
+  function sample(arr) {
+      if (typeof arr === "string") arr = JSON.parse(arr);
+
+      arr.forEach(function(a) {
+          // do something here
+          console.log(a);
+      });
+  }
+  ```
+- Transactions can be implemented on items within a container using a stored proc.
+
+## Triggers and User-defined Functions
+- Cosmos supports pre-triggers and post-triggers. Pre-triggers are executed before modifying a database item and post-triggers are executed after modifying a database item. Triggers must be specified for each database operation where you want them to execute (they aren't called automatically like in a relational database). Triggers also need to be registered using the Azure Cosmos DB SDK.
+- Pre-triggers
+  - Pre-triggers can't have any input parameters, the request object in the trigger is used to manipulate the request message associated with the operation.
+  - This example adds a timestamp property to a newly added item if it doesn't have one:
+    ``` javascript
+    function validateToDoItemTimestamp() {
+        var context = getContext();
+        var request = context.getRequest();
+
+        // item to be created in the current operation
+        var itemToCreate = request.getBody();
+
+        // validate properties
+        if (!("timestamp" in itemToCreate)) {
+            var ts = new Date();
+            itemToCreate["timestamp"] = ts.getTime();
+        }
+
+        // update the item that will be created
+        request.setBody(itemToCreate);
+    }
+    ```
+  - The trigger above would need to be registered in C# code and then called like this:
+    ``` c#
+    // Registering the trigger
+    await client.GetContainer("database", "container").Scripts.CreateTriggerAsync(new TriggerProperties
+    {
+        Id = "trgPreValidateToDoItemTimestamp",
+        Body = File.ReadAllText("@..\js\trgPreValidateToDoItemTimestamp.js"),
+        TriggerOperation = TriggerOperation.Create,
+        TriggerType = TriggerType.Pre
+    });
+
+    // Calling the trigger
+    dynamic newItem = new
+    {
+        category = "Personal",
+        name = "Groceries",
+        description = "Pick up strawberries",
+        isComplete = false
+    };
+
+    await client.GetContainer("database", "container").CreateItemAsync(newItem, null, new ItemRequestOptions { PreTriggers = new List<string> { "trgPreValidateToDoItemTimestamp" } });    
+    ```
+- Post-triggers
+  - Post-triggers run as part of the same transaction as the underlying item itself, so exceptions during the post-trigger will cause the entire transaction to fail and anything committed will be rolled back and an exception returned.
+  - This example shows a post-trigger to update details about a newly created item:
+    ``` javascript
+    function updateMetadata() {
+    var context = getContext();
+    var container = context.getCollection();
+    var response = context.getResponse();
+
+    // item that was created
+    var createdItem = response.getBody();
+
+    // query for metadata document
+    var filterQuery = 'SELECT * FROM root r WHERE r.id = "_metadata"';
+    var accept = container.queryDocuments(container.getSelfLink(), filterQuery,
+        updateMetadataCallback);
+    if(!accept) throw "Unable to update metadata, abort";
+
+    function updateMetadataCallback(err, items, responseOptions) {
+        if(err) throw new Error("Error" + err.message);
+            if(items.length != 1) throw 'Unable to find metadata document';
+
+            var metadataItem = items[0];
+
+            // update metadata
+            metadataItem.createdItems += 1;
+            metadataItem.createdNames += " " + createdItem.id;
+            var accept = container.replaceDocument(metadataItem._self,
+                metadataItem, function(err, itemReplaced) {
+                        if(err) throw "Unable to update metadata, abort";
+                });
+            if(!accept) throw "Unable to update metadata, abort";
+            return;
+        }
+    }
+    ```
+  - Like the pre-trigger example above it needs to be registered programmatically and called during a method like CreateItemsAsync. Note that the property to use in an ItemRequestOptions object is PostTriggers instead of PreTriggers.
+- User-defined functions are also defined in JS. Consider the following container with this item:
+  ``` json
+  {
+    "name": "User One",
+    "country": "USA",
+    "income": 70000
+  }
+  ```
+  - This UDF could be called to calculate an income tax bracket:
+    ``` javascript
+    function tax(income) {
+
+            if(income == undefined)
+                throw 'no input';
+
+            if (income < 1000)
+                return income * 0.1;
+            else if (income < 10000)
+                return income * 0.2;
+            else
+                return income * 0.4;
+        }
+    ```
+  - It would be registered and called with this C# code:
+    ``` c#
+    // Register the UDF
+    await client.GetContainer("database", "container").Scripts.CreateUserDefinedFunctionAsync(new UserDefinedFunctionProperties
+    {
+        Id = "Tax",
+        Body = File.ReadAllText(@"..\js\Tax.js")
+    });
+
+    // Call the UDF
+    var iterator = client.GetContainer("database", "container").GetItemQueryIterator<dynamic>("SELECT * FROM Incomes t WHERE udf.Tax(t.income) > 20000");
+    while (iterator.HasMoreResults)
+    {
+        var results = await iterator.ReadNextAsync();
+        foreach (var result in results)
+        {
+            //iterate over results
+        }
+    }
+    ```
 
 # Useful Commands
 Create a new Cosmos DB
