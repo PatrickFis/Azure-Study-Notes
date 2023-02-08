@@ -41,7 +41,7 @@ Groups are used to manage the visibility of products to devs. API Management has
   - One operation may need to call multiple services (so multiple network round trips adding latency)
   - Each public-facing service must handle things like authentication, SSL, and client rate limiting
   - Services must limit their choice of communication protocols to something friendly like HTTP or WebSocket
-  - Services need to harden their public endpoints and they are a potential attack service
+  - Services need to harden their public endpoints and they are a potential attack surface
 - These problems are solved by an API gateway since it decouples your clients from your services
 - Gateways can perform a number of additional functions grouped by design patterns:
   - Gateway routing: The gateway acts as a reverse proxy to route requests to one or more backend services using layer 7 routing. The gateway is a single endpoint for clients (decoupling the client and service).
@@ -158,7 +158,7 @@ Groups are used to manage the visibility of products to devs. API Management has
   - Only allow certs with a specified subject
   - Only allow certs that have not expired
   - These properties can be mixed together through policy requirements and are not mutually exclusive
-- The Consumption tier of APIM needs to explicitly enable the user of client certificates. This is done through the "Custom domains" blade on the APIM instance.
+- The Consumption tier of APIM needs to explicitly enable the use of client certificates. This is done through the "Custom domains" blade on the APIM instance.
 - Certs can be validated using the following code examples:
   - Checking that the thumbprint of the cert passed in the request matches the one issued by the certificate authority:
     ``` xml
@@ -458,7 +458,7 @@ Using this from code will require something similar to the [Code/Visual Studio P
 - Backend API - A service that implements an API and its operations.
 - Frontend API - APIM serves as a mediation layer over the backend APIs. A Frontend API is an API that is exposed to API consumers from APIM.
 - Product - A product is a bundle of frontend APIs that can be made available to a specified group of API consumers for self-service onboarding under a single access credential and set of usage limits. An API can be part of multiple products.
-- API operation - A frontend API in APIM can define multiple operations. An operation is a combination of an HTTP vern and a URL template uniquely resolvable within the frontend API. Often operations map one-to-one to backend API endpoints.
+- API operation - A frontend API in APIM can define multiple operations. An operation is a combination of an HTTP verb and a URL template uniquely resolvable within the frontend API. Often operations map one-to-one to backend API endpoints.
 - Version - A version is a distinct variant of an existing frontend API that differs in shape or behavior from the original. Versions give customers the ability to stick with an original API or upgrade at a time that they choose. Versions are a mechanism for releasing breaking changes without impacting API consumers.
 - Revision - A copy of an existing API that can be changed without impacting API consumers and swapped with the version currently in use by consumers (usually after validation and testing). Revisions provide a mechanism for safely implementing nonbreaking changes.
 - Policy - A policy is a reusable and composable component that implements common API-related functions.
