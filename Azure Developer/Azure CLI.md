@@ -30,6 +30,7 @@
   - [Show the value of a secret](#show-the-value-of-a-secret)
   - [Delete a secret](#delete-a-secret)
 - [Web applications](#web-applications)
+  - [Create a new App Service Plan](#create-a-new-app-service-plan)
   - [Create a new web application](#create-a-new-web-application)
   - [Create a new web app from local files (like from cloud shell)](#create-a-new-web-app-from-local-files-like-from-cloud-shell)
   - [Delete a web app](#delete-a-web-app)
@@ -302,6 +303,16 @@ az keyvault secret delete --name (or -n) <name of the secret> \
 ```
 
 # Web applications
+## Create a new App Service Plan
+``` bash
+az appservice plan create --name (or -n) <app service plan name> \
+--resource-group (or -g) <resource group name> \
+--location (or -l) <location> \
+--sku <sku, like F1 for Free> \
+--number-of-workers <number of workers, default = 1>
+--is-linux (if this is a Linux App Service Plan)
+```
+
 ## Create a new web application
 ``` bash
 az webapp create --name (or -n) <name of the web app> \

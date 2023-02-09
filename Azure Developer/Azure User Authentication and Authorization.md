@@ -285,6 +285,7 @@ Microsoft Graph is used to retrieve data from Microsoft 365, Windows 10, and Ent
   - Resources are included in the URL you use to access the API (for example: me, user, group, drive, and site. Can include relationships like me/messages or me/drive. Can also be interacted with for things like me/sendEmail.)
   - Query parameters can be OData system query options or other strings that a method accepts to customize its response
     - Example: `GET https://graph.microsoft.com/v1.0/me/messages?filter=emailAddress eq 'jon@contoso.com'` returns only messages with the specified email.
+      - Note: While the docs don't mention it, I had to use $filter instead of just filter.
 
 ## SDK Usage
 There are a variety of SDKs available to query Microsoft Graph. Here's various code examples for interacting with Microsoft Graph.

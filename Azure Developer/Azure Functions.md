@@ -18,7 +18,7 @@
 - Run scheduled tasks: Code can be run on pre-defined timed intervals
 - Create reliable message queue systems: Functions can process message queues using queue storage, service bus, or event hubs
 - Analyze IoT data streams: Data can be processed from IoT devices
-- Process data in real time: Functions and SignalR can response to data in the moment
+- Process data in real time: Functions and SignalR can respond to data in the moment
 
 ## Scale Azure Functions
 - In consumption and premium plans Functions scale CPU and memory resources by adding additional instances of the Functions host. The number of instances is based on the number of events that trigger a function.

@@ -177,6 +177,7 @@ Content can be allowed or blocked in specific countries.
   - Caching can be controlled from the "Caching rules" blade in the CDN
   - Default TTLs:
     - General web files: 7 days
+      - Used for static web content like images, JS libraries, style sheets, etc.
     - Large file optimizations: 1 day
     - Media streaming optimizations: 1 year
   - Settings can be overriden to retrieve data from the origin more frequently instead of every 7 days.

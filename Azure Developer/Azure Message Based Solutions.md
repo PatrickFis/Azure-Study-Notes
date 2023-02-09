@@ -197,9 +197,12 @@ Create a standard tier Service Bus namespace so that topics and queues can be cr
 - Filters are rules with filter conditions
 - Various types
   - Boolean filter - TrueFilter or FalseFilter. TrueFilter = Receive all messages. FalseFilter = Receive no messages.
+    - Boolean filters are just special types of SQL filters.
   - SQL filters - SQL like language can be used to evaluate messages using user-defined or system properties.
+    - SQL filters support actions.
   - Correlation filters - Conditions can be matched against the message's user or system defined properties.
     - More efficient than SQL filters.
+    - Correlation filters are basically equality matching. If you need to do something like "find all orders with a quantity greater than 50" then you need a SQL filter.
 - By default a boolean filter will be added to a subscription to receive all messages
 - See [MS Link](https://learn.microsoft.com/en-us/azure/service-bus-messaging/topic-filters) for more information about topic filters.
   - Topic filters are defined with or without actions
