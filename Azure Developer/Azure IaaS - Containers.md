@@ -9,11 +9,20 @@ ACR has three tiers
 - Basic - Cost optimized with throughput suited for lower usage
 - Standard - Same capabilities as basic but with more storage and throughput
 - Premium - Highest amount of storage and throughput and features like geo-replication, content trust, and private links
+- All three tiers have the same programmatic capabilities (AAD authentication integration, image deletion, and webhooks).
 
 ACR supports the following images and artifacts
 - Windows and Linux Docker images
 - Helm charts
 - Images built using the Open Container Initiative (OCI) Image Format Specification
+
+## Registry Overview [MS Docs](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-concepts)
+- Container registries are services which store and distribute container images and related artifacts (for example: Docker Hub).
+- Repositories are collections of container images or artifacts in a registry that have the same name but different tags.
+- Artifacts are container images.
+- Tags for images or artifacts specify their version.
+- Container images and artifacts are made up of one or more layers. Artifacts in a registry share common layers to increase storage efficiency.
+- Manifests are associated with images or artifacts and are generated when content is pushed. It uniquely identifies the artifacts and specifies the layers.
 
 ## Storage Capabilities
 - Images are encrypted at rest
@@ -219,7 +228,7 @@ Containers can be created with the following restart policies
 - Never
 - OnFailure
 
-The restart poilcy is specified with the `--restart-policy` parameter when using `az container create`.
+The restart policy is specified with the `--restart-policy` parameter when using `az container create`.
 
 ## Environment Variables
 Environment variables are specified using the `--environment-variables` parameter when using `az container create`.

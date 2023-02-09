@@ -41,7 +41,7 @@
 ### Configuring Application Insights
 - Application Insights supports auto-instrumentation for a variety of environments. This allows you to enable Application Insights to collect metrics, requests, and dependencies without making code changes.
 - Adding support through the SDK is another option. The following steps will work for an ASP.NET Core web app:
-1. Add a dependency on the `<PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="5.2.0" />` package.
+1. Add a dependency on the `<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />` package.
 2. Add Application Insights Telemetry to your application through the builder. Snippet:
   ``` c#
   // This method gets called by the runtime. Use this method to add services to the container.
@@ -93,7 +93,7 @@
     - Log-based metrics can be added using the SDK or from automatic collection from auto-instrumentation
     - Can enable analysis through diagnostic traces
     - Supports volume reduction techniques if apps create too much telemetry data
-  - Standard metrics - Stored as per-aggregated time series data (better performance than log-based metrics as they're pre-aggregated during collection, useful for dashboards and real-time alerting)
+  - Standard metrics - Stored as pre-aggregated time series data (better performance than log-based metrics as they're pre-aggregated during collection, useful for dashboards and real-time alerting)
     - Newer SDKs pre-aggregate metrics during collection
     - Application Insights will aggregate your metrics for you if your SDK doesn't support it, though you won't benefit from reduced volume of data transmission.
 

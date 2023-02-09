@@ -90,7 +90,7 @@ Event Grid also supports the JSON implementation of CloudEvents v1.0 and HTTP pr
   - Azure Functions with Event Grid Trigger
 - Endpoints can be validated in two different ways (there is a third option in preview, might need to look into that since it says 2018)
   - Synchronous handshake - Event Grid will send a validation event to your endpoint which includes a validationCode property. Your application will validate the event and return the validation code in the response synchronously.
-  - Asynchronous handshake - Certain cases don't allow you to response with the validation code synchronously.
+  - Asynchronous handshake - Certain cases don't allow you to respond with the validation code synchronously.
   - The 2018-05-01 preview has added support for a manual validation handshake that contains a URL that can be used to validate the subscription.
 
 ## Filtering Events
@@ -260,7 +260,7 @@ https://docs.microsoft.com/en-us/learn/modules/azure-event-hubs/4-event-processi
   - Users need to decide how often to update the checkpoint. Updating after each successfully processed event can have performance and cost implications as it triggers a write operation to the underlying checkpoint store. Checkpointing after each event also means that you should consider using a queued messaging pattern, so Service Bus may be a better option for you than Event Hubs.
 - While somewhat old, https://devblogs.microsoft.com/azure-sdk/eventhubs-clients/ has information about the classes used for consuming, producing, and processing events. Short overview:
   - EventHubProducerClient: This class is responsible for publishing event data to Event Hubs.
-  - EventHubConsumerClient: This class is really an onboarding point for consuming events from all partitions without the rigor and complexity of a production application. It's intended to help get developers up to speed. For production scenarios the recommendation is to look into the EventProcessClient or EventProcess`<TPartition>` classes over EventHubConsumerClient.
+  - EventHubConsumerClient: This class is really an onboarding point for consuming events from all partitions without the rigor and complexity of a production application. It's intended to help get developers up to speed. For production scenarios the recommendation is to look into the EventProcessorClient or EventProcess`<TPartition>` classes over EventHubConsumerClient.
   - EventProcessorClient: This class is intended to be used in production scenarios. It's used to read and process events from all partitions of an Event Hub and it collaborates with other EventProcessorClient instances using the same Event Hub and consumer group to balance work between them. It has a high degree of fault tolerance built-in. It allows the application to track progress through checkpointing events that have been processed.
 
 ## Access Control
