@@ -256,7 +256,7 @@ az keyvault key create --kty <EC, EC-HSM, RSA, RSA-HSM, oct, oct-HSM> \
 
 ## Encrypt a string using a key
 ``` bash
-az keyvault key encrypt --algorithmn <A128CBC, A128CBCPAD, A128GCM, A192CBC, A192CBCPAD, A192GCM, A256CBC, A256CBCPAD, A256GCM, RSA-OAEP, RSA-OAEP-256, RSA1_5> \
+az keyvault key encrypt --algorithm <A128CBC, A128CBCPAD, A128GCM, A192CBC, A192CBCPAD, A192GCM, A256CBC, A256CBCPAD, A256GCM, RSA-OAEP, RSA-OAEP-256, RSA1_5> \
 --value <unencrypted value> \
 --data-type <base64 or plaintext> \
 --name (or -n) <name of the key to encrypt the value with> \

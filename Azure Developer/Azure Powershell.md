@@ -104,7 +104,7 @@ $job = Remove-AzResourceGroup -Name temptutorial -Force -AsJob
 $rg = New-AzResourceGroup -Name tempstoragetutorial -Location eastus
 
 # Create a storage account
-$storageaccount = New-AzStorageAccount -ResourceGroup $rg.ResourceGroupName `
+$storageaccount = New-AzStorageAccount -ResourceGroupName $rg.ResourceGroupName `
 -Name tempstoragetutorial `
 -Location $rg.Location `
 -SkuName Standard_LRS `
