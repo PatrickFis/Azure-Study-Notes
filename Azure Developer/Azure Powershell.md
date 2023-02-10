@@ -453,4 +453,10 @@ Invoke-AzResourceAction -ResourceGroupName <resource group name> `
 -Action slotsswap `
 -Parameters $ParametersObject `
 -ApiVersion 2015-07-01
+
+# Other command option that's far simpler
+Switch-AzWebAppSlot -SourceSlotName "sourceslot" `
+-DestinationSlotName "destinationslot" `
+-ResourceGroupName "Default-Web-WestUS" `
+-Name "ContosoWebApp"
 ```
