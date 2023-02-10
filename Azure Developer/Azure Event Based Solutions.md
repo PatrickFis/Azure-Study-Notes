@@ -235,7 +235,7 @@ Event Hub allows you to store data in a blob or a data lake at no extra cost.
 - Event Hubs Capture allows you to store off data in blob storage or a data lake.
 - Captured data is written in the Apache Avro format.
 - Captured data does not use your egress quota as it reads directly from internal Event Hubs storage.
-- Scaling is controlled by throughput units. One throughput unit = 1 MB per second or 1000 events per second of ingress and twice that amount of egress. Standard Event Hubs can be configured for 1-20 throughput units (more can be requested through a support request).
+- Scaling is controlled by throughput units. One throughput unit = 1 MB per second or 1000 events per second of ingress and 2 MB per second or 4096 events per second of egress. Standard Event Hubs can be configured for 1-20 throughput units (more can be requested through a support request).
 - Capture lets you configure a window to control capturing behavior. The window is a minimum size and time configuration with a "first wins policy," so the first trigger encountered causes a capture operation. Example: 15 minute, 100 MB capture window with 1 MB of data sent per second. The size window triggers before the time window.
 - Storage naming convention: {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}
   - Example: https://mystorageaccount.blob.core.windows.net/mycontainer/mynamespace/myeventhub/0/2017/12/08/03/03/17.avro
