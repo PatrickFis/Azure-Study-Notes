@@ -76,7 +76,7 @@ Various APIs allow your applications to treat Cosmos DB like it was another data
   - Stores data in a key/value format
   - If you're already using Azure Table storage you may have limitations in latency, scaling, throughput, global distribution, index management, and low query performance which are mitigated by this API.
   - Only supports OLTP scenarios
-- Gemlin API
+- Gremlin API
   - Stores data as edges and vertices
   - Graph queries
   - Used with data too complex for relational databases
