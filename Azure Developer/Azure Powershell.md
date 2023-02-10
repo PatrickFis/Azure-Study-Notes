@@ -167,7 +167,7 @@ Get-AzStorageBlobContent @DownloadBlob2
 
 # Remove the storage account when you're done with it (just remove the resource group, but this is just to note the command for removing the storage account)
 Remove-AzStorageAccount -Name $storageaccount.StorageAccountName `
--ResourceGroup $storageaccount.ResourceGroupName `
+-ResourceGroupName $storageaccount.ResourceGroupName `
 -Force
 
 # Remove the resource group
