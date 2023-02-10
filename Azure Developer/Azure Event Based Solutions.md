@@ -16,7 +16,7 @@ Azure Event Grid has five key concepts
 - Topics - Topics provide an endpoint for event sources to send their events. The publisher creates the topic and decides if a source needs one or more topics. Topics are collections of related events. Subscribers can subscribe to topics to respond to the events. There are two types of topics.
   - System topics - Built-in topics provided by Azure services. Not seen in your subscription but you can subscribe to them if you have access to the resource.
   - Custom topics - App and third-party topics.
-- Event subscriptions -Subscriptions tell Event Grid the topics that you're interested in receiving. When creating the subscription you provide an endpoint for handling the event. The events can be filtered by event type or subject pattern. You can also set an expiration for the subscription so that you don't have to worry about cleaning it up if it's only needed for a limited time.
+- Event subscriptions - Subscriptions tell Event Grid the topics that you're interested in receiving. When creating the subscription you provide an endpoint for handling the event. The events can be filtered by event type or subject pattern. You can also set an expiration for the subscription so that you don't have to worry about cleaning it up if it's only needed for a limited time.
 - Event handlers - An event handler is the place where an event is sent to be processed. You can use an Azure service or your own Webhook as the handler. Depending on the type of handler Event Grid uses different ways to guarantee that the event was delivered. 
 
 ## Event Schemas
